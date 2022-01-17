@@ -8,6 +8,9 @@ group = 'com.mumulcom'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+//인코딩 방식
+compileJava.options.encoding = 'UTF-8'
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -19,12 +22,15 @@ repositories {
 }
 
 dependencies {
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'mysql:mysql-connector-java'
+    implementation  group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
+    implementation  'io.jsonwebtoken:jjwt:0.9.0'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
