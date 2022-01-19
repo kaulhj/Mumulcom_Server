@@ -23,17 +23,37 @@ repositories {
 
 dependencies {
 
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'mysql:mysql-connector-java'
-    implementation  group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
-    implementation  'io.jsonwebtoken:jjwt:0.9.0'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
+    //Spring Data JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.2'
+
+    //JDBC
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.6.2'
+
+    //Security
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.6.2'
+
+    //Web
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.2'
+
+    //Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    //MySQL
+    runtimeOnly 'mysql:mysql-connector-java:8.0.25'
+
+    //JWT
+    implementation  group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    //DozerMapper
+    implementation 'com.github.dozermapper:dozer-core:6.5.2'
+
+    //Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation:2.6.2'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.2'
+    testImplementation 'org.springframework.security:spring-security-test:5.5.1'
 }
 
 test {
