@@ -21,7 +21,7 @@ public class UserService {
 
     /**
      * 회원가입
-     * @param userSignUpData 클라이언트에서 받을 데이터
+     * @param userSignUpData 회원가입 시 필요한 데이터
      * @return User
      */
     public User join(UserSignUpData userSignUpData) {

@@ -16,14 +16,14 @@ public class UserSignUpData {
 
     @NotBlank(message = "이메일을 입력해주세요.")
     @Email
-    @Mapping("userEmail")
+    @Mapping("email")
     private String email;
 
     @NotBlank(message = "이름을 입력해주세요.")
-    @Mapping("userName")
+    @Mapping("name")
     private String name;
 
-    @Mapping("userBirth")
+    @Mapping("birth")
     private String birth;
 
     @NotBlank(message = "닉네임을 입력해주세요.")
@@ -31,6 +31,6 @@ public class UserSignUpData {
     @Size(max=8)
     private String nickname;
 
-//    @Mapping("group")
-//    private String group;
+    @Mapping("group")
+    private String group;
 }
