@@ -8,7 +8,7 @@ import lombok.*;
 public class GetCodingQuestionRes {
     private Long questionIdx;
     private Long userIdx;
-    private String name;
+    private String nickname;
     private String createdAt;
     private String title;
     private String currentError;

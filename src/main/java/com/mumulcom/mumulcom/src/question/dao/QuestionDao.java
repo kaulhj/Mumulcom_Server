@@ -26,7 +26,7 @@ public class QuestionDao {
      */
     public List<GetCodingQuestionRes> getCodingQuestions(int questionIdx) {
         String getCodingQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.name, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.currentError, CQ.myCodingSkill, q.bigCategoryIdx, q.smallCategoryIdx, l.likeCount, r.replyCount" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.currentError, CQ.myCodingSkill, q.bigCategoryIdx, q.smallCategoryIdx, l.likeCount, r.replyCount" +
                 " FROM User u" +
                 " INNER JOIN Question q" +
                 " on u.userIdx = q.userIdx" +
@@ -41,7 +41,7 @@ public class QuestionDao {
                 (rs, rowNum) -> new GetCodingQuestionRes(
                         rs.getLong("questionIdx"),
                         rs.getLong("userIdx"),
-                        rs.getString("name"),
+                        rs.getString("nickname"),
                         rs.getString("createdAt"),
                         rs.getString("title"),
                         rs.getString("currentError"),
@@ -59,7 +59,7 @@ public class QuestionDao {
      */
     public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx) {
         String getConceptQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.name, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.content, q.bigCategoryIdx, q.smallCategoryIdx, l.likeCount, r.replyCount\n" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.content, q.bigCategoryIdx, q.smallCategoryIdx, l.likeCount, r.replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -74,7 +74,7 @@ public class QuestionDao {
                 (rs, rowNum) -> new GetConceptQuestionRes(
                         rs.getLong("questionIdx"),
                         rs.getLong("userIdx"),
-                        rs.getString("name"),
+                        rs.getString("nickname"),
                         rs.getString("createdAt"),
                         rs.getString("title"),
                         rs.getString("content"),

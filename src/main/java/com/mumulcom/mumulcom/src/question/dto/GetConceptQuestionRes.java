@@ -11,7 +11,7 @@ public class GetConceptQuestionRes {
 
     private Long questionIdx;
     private Long userIdx;
-    private String userName;
+    private String nickname;
     private String createdAt;
     private String title;
     private String content;
