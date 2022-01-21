@@ -1,6 +1,7 @@
 package com.mumulcom.mumulcom.src.question.dao;
 
 import com.mumulcom.mumulcom.src.question.dto.GetCodingQuestionRes;
+import com.mumulcom.mumulcom.src.question.dto.GetConceptQuestionRes;
 import com.mumulcom.mumulcom.src.question.dto.GetQuestionRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -51,6 +52,39 @@ public class QuestionDao {
                         rs.getInt("replyCount")),
                 getCodingQuestionParams, getCodingQuestionParams, getCodingQuestionParams);
     }
+
+    /**
+     * 6번 API
+     * 개념 질문 조회
+     */
+    public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx) {
+        String getConceptQuestionQuery =
+                "SELECT q.questionIdx, u.userIdx, u.name, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.content, q.bigCategoryIdx, q.smallCategoryIdx, l.likeCount, r.replyCount\n" +
+                        "FROM User u\n" +
+                        "INNER JOIN Question q\n" +
+                        "on u.userIdx = q.userIdx\n" +
+                        "INNER JOIN ConceptQuestion CQ on q.questionIdx = CQ.questionIdx\n" +
+                        "INNER JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` WHERE questionIdx = ?) l\n" +
+                        "ON q.questionIdx = l.questionIdx\n" +
+                        "INNER JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
+                        "ON q.questionIdx = r.questionIdx\n" +
+                        "WHERE q.questionIdx = ?";
+        int getConceptQuestionParams = questionIdx;
+        return this.jdbcTemplate.query(getConceptQuestionQuery,
+                (rs, rowNum) -> new GetConceptQuestionRes(
+                        rs.getLong("questionIdx"),
+                        rs.getLong("userIdx"),
+                        rs.getString("name"),
+                        rs.getString("createdAt"),
+                        rs.getString("title"),
+                        rs.getString("content"),
+                        rs.getString("bigCategoryIdx"),
+                        rs.getString("smallCategoryIdx"),
+                        rs.getInt("likeCount"),
+                        rs.getInt("replyCount")),
+                getConceptQuestionParams, getConceptQuestionParams, getConceptQuestionParams);
+    }
+
 
     /**
      * yeji test API

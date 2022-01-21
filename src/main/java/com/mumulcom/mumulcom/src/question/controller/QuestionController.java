@@ -3,6 +3,7 @@ package com.mumulcom.mumulcom.src.question.controller;
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.src.question.domain.Question;
+import com.mumulcom.mumulcom.src.question.dto.GetConceptQuestionRes;
 import com.mumulcom.mumulcom.src.question.dto.GetQuestionRes;
 import com.mumulcom.mumulcom.src.question.service.QuestionService;
 import com.mumulcom.mumulcom.src.question.dto.GetCodingQuestionRes;
@@ -36,6 +37,21 @@ public class QuestionController {
         try{
             List<GetCodingQuestionRes> getCodingQuestionRes = questionService.getCodingQuestions(questionIdx);
             return new BaseResponse<>(getCodingQuestionRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 6번 API 개념 질문 조회
+     * [GET] /question/concept/:questionIdx
+     */
+    @ResponseBody
+    @GetMapping("/concept/{questionIdx}")
+    public BaseResponse<List<GetConceptQuestionRes>> getConceptQuestions(@PathVariable("questionIdx") int questionIdx) {
+        try {
+            List<GetConceptQuestionRes> getConceptQuestionRes = questionService.getConceptQuestions(questionIdx);
+            return new BaseResponse<>(getConceptQuestionRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

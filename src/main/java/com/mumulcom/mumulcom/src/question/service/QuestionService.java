@@ -4,6 +4,7 @@ import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.src.question.dao.QuestionDao;
 import com.mumulcom.mumulcom.src.question.domain.Question;
 import com.mumulcom.mumulcom.src.question.dto.GetCodingQuestionRes;
+import com.mumulcom.mumulcom.src.question.dto.GetConceptQuestionRes;
 import com.mumulcom.mumulcom.src.question.dto.GetQuestionRes;
 import com.mumulcom.mumulcom.src.question.repository.QuestionRepository;
 import org.slf4j.Logger;
@@ -55,6 +56,20 @@ public class QuestionService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    /**
+     * 6번 API 개념 질문 조회
+     */
+    public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx) throws BaseException {
+        try {
+            List<GetConceptQuestionRes> getConceptQuestionRes = questionDao.getConceptQuestions(questionIdx);
+            return getConceptQuestionRes;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 
     /**
      * questionIdx를 이용한 특정 질문 조회 test API
