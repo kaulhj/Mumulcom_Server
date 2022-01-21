@@ -26,16 +26,16 @@ public class QuestionDao {
      */
     public List<GetCodingQuestionRes> getCodingQuestions(int questionIdx) {
         String getCodingQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.currentError, CQ.myCodingSkill, q.bigCategoryIdx, q.smallCategoryIdx, l.likeCount, r.replyCount" +
-                " FROM User u" +
-                " INNER JOIN Question q" +
-                " on u.userIdx = q.userIdx" +
-                " INNER JOIN CodeQuestion CQ on q.questionIdx = CQ.questionIdx" +
-                " INNER JOIN (SELECT questionIdx, count(questionIdx) likeCount FROM `Like` WHERE questionIdx =?) l" +
-                " ON q.questionIdx = l.questionIdx" +
-                " INNER JOIN (SELECT questionIdx, count(questionIdx) replyCount FROM Reply WHERE questionIdx =?) r" +
-                " ON q.questionIdx = r.questionIdx" +
-                " WHERE q.questionIdx =?";
+                "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.currentError, CQ.myCodingSkill, q.bigCategoryIdx, q.smallCategoryIdx, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                        "FROM User u\n" +
+                        "INNER JOIN Question q\n" +
+                        "on u.userIdx = q.userIdx\n" +
+                        "INNER JOIN CodeQuestion CQ on q.questionIdx = CQ.questionIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` WHERE questionIdx = ?) l\n" +
+                        "ON q.questionIdx = l.questionIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
+                        "ON q.questionIdx = r.questionIdx\n" +
+                        "WHERE q.questionIdx = ?";
         int getCodingQuestionParams = questionIdx;
         return this.jdbcTemplate.query(getCodingQuestionQuery,
                 (rs, rowNum) -> new GetCodingQuestionRes(
@@ -59,14 +59,14 @@ public class QuestionDao {
      */
     public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx) {
         String getConceptQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.content, q.bigCategoryIdx, q.smallCategoryIdx, l.likeCount, r.replyCount\n" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.content, q.bigCategoryIdx, q.smallCategoryIdx, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
                         "INNER JOIN ConceptQuestion CQ on q.questionIdx = CQ.questionIdx\n" +
-                        "INNER JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` WHERE questionIdx = ?) l\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` WHERE questionIdx = ?) l\n" +
                         "ON q.questionIdx = l.questionIdx\n" +
-                        "INNER JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
                         "ON q.questionIdx = r.questionIdx\n" +
                         "WHERE q.questionIdx = ?";
         int getConceptQuestionParams = questionIdx;
