@@ -2,6 +2,7 @@ package com.mumulcom.mumulcom.src.question.dao;
 
 import com.mumulcom.mumulcom.src.question.dto.GetCodingQuestionRes;
 import com.mumulcom.mumulcom.src.question.dto.GetConceptQuestionRes;
+import com.mumulcom.mumulcom.src.question.dto.GetQuestionListRes;
 import com.mumulcom.mumulcom.src.question.dto.GetQuestionRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -85,6 +86,60 @@ public class QuestionDao {
                 getConceptQuestionParams, getConceptQuestionParams, getConceptQuestionParams);
     }
 
+    /**
+     * yeji 7번 API
+     * 카테고리별 질문 목록 조회 API (최신순, 핫한순 정렬)
+     */
+    public List<GetQuestionListRes> getQuestionsByCategory(int sort, int bigCategoryIdx, int smallCategoryIdx) {
+        String getQuestionsQuery;
+        String orderBy = "";
+        int getQuestionsParams;
+
+        if (sort == 1) {
+            orderBy = "q.createdAt";
+        } else if(sort == 2){
+            orderBy = "likeCount";
+        }
+
+        if(smallCategoryIdx == 0) {
+            getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, q.bigCategoryIdx, q.smallCategoryIdx, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                    "FROM User u\n" +
+                    "INNER JOIN Question q\n" +
+                    "on u.userIdx = q.userIdx\n" +
+                    "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` group by questionIdx) l\n" +
+                    "ON q.questionIdx = l.questionIdx\n" +
+                    "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply group by questionIdx) r\n" +
+                    "ON q.questionIdx = r.questionIdx\n" +
+                    "where q.bigCategoryIdx = ?\n" +
+                    "order by "+ orderBy +" desc";
+            getQuestionsParams = bigCategoryIdx;
+        } else {
+            getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, q.bigCategoryIdx, q.smallCategoryIdx, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                    "FROM User u\n" +
+                    "INNER JOIN Question q\n" +
+                    "on u.userIdx = q.userIdx\n" +
+                    "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` group by questionIdx) l\n" +
+                    "ON q.questionIdx = l.questionIdx\n" +
+                    "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply group by questionIdx) r\n" +
+                    "ON q.questionIdx = r.questionIdx\n" +
+                    "where q.smallCategoryIdx = ?\n" +
+                    "order by "+ orderBy +" desc";
+            getQuestionsParams = smallCategoryIdx;
+        }
+
+        return this.jdbcTemplate.query(getQuestionsQuery,
+                (rs, rowNum) -> new GetQuestionListRes(
+                        rs.getLong("questionIdx"),
+                        rs.getLong("userIdx"),
+                        rs.getString("nickname"),
+                        rs.getString("createdAt"),
+                        rs.getString("title"),
+                        rs.getString("bigCategoryIdx"),
+                        rs.getString("smallCategoryIdx"),
+                        rs.getInt("likeCount"),
+                        rs.getInt("replyCount")),
+                getQuestionsParams);
+    }
 
     /**
      * yeji test API

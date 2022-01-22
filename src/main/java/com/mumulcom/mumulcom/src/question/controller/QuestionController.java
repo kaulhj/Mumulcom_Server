@@ -4,6 +4,7 @@ import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.src.question.domain.Question;
 import com.mumulcom.mumulcom.src.question.dto.GetConceptQuestionRes;
+import com.mumulcom.mumulcom.src.question.dto.GetQuestionListRes;
 import com.mumulcom.mumulcom.src.question.dto.GetQuestionRes;
 import com.mumulcom.mumulcom.src.question.service.QuestionService;
 import com.mumulcom.mumulcom.src.question.dto.GetCodingQuestionRes;
@@ -29,7 +30,7 @@ public class QuestionController {
 
     /**
      * 5번 API 코딩 질문 조회
-     * [GET] /question/coding/:questionIdx
+     * [GET] /questions/coding/:questionIdx
      */
     @ResponseBody
     @GetMapping("/coding/{questionIdx}")
@@ -44,7 +45,7 @@ public class QuestionController {
 
     /**
      * 6번 API 개념 질문 조회
-     * [GET] /question/concept/:questionIdx
+     * [GET] /questions/concept/:questionIdx
      */
     @ResponseBody
     @GetMapping("/concept/{questionIdx}")
@@ -52,6 +53,21 @@ public class QuestionController {
         try {
             List<GetConceptQuestionRes> getConceptQuestionRes = questionService.getConceptQuestions(questionIdx);
             return new BaseResponse<>(getConceptQuestionRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 7번 API 카테고리별 질문 목록 조회
+     * [GET] /questions/?sort=&?bigCategory=&?smallCategory
+     */
+    @ResponseBody
+    @GetMapping("")
+    public BaseResponse<List<GetQuestionListRes>> getQuestionsList(@RequestParam int sort, @RequestParam int bigCategoryIdx, @RequestParam(required = false, defaultValue = "0") int smallCategoryIdx) {
+        try {
+            List<GetQuestionListRes> getQuestionListRes = questionService.getQuestionsByCategory(sort, bigCategoryIdx, smallCategoryIdx);
+            return new BaseResponse<>(getQuestionListRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

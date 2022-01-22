@@ -5,6 +5,7 @@ import com.mumulcom.mumulcom.src.question.dao.QuestionDao;
 import com.mumulcom.mumulcom.src.question.domain.Question;
 import com.mumulcom.mumulcom.src.question.dto.GetCodingQuestionRes;
 import com.mumulcom.mumulcom.src.question.dto.GetConceptQuestionRes;
+import com.mumulcom.mumulcom.src.question.dto.GetQuestionListRes;
 import com.mumulcom.mumulcom.src.question.dto.GetQuestionRes;
 import com.mumulcom.mumulcom.src.question.repository.QuestionRepository;
 import org.slf4j.Logger;
@@ -70,10 +71,22 @@ public class QuestionService {
         }
     }
 
+    /**
+     * 7번 API
+     * 카테고리별 질문 목록 조회 API
+     */
+    public List<GetQuestionListRes> getQuestionsByCategory(int sort, int bigCategoryIdx, int smallCategoryIdx) throws BaseException {
+        try {
+            List<GetQuestionListRes> getQuestionListRes = questionDao.getQuestionsByCategory(sort, bigCategoryIdx, smallCategoryIdx);
+            return getQuestionListRes;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
     /**
      * questionIdx를 이용한 특정 질문 조회 test API
-     * @param questionIdx
      */
     public List<GetQuestionRes> getQuestions(int questionIdx) throws BaseException {
         try {
