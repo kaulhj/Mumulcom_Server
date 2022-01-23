@@ -40,10 +40,20 @@ public class QuestionController {
 
 
 
-    //2. 유저의 최근(7일 이내)  질문등 조회 .우선적으로 하나 조회(다중은 좀더 고민..)
+    //2.21 유저의 최근(7일 이내)  질문등 조회/....옆으로 스크롤 시 그 이전 질문 보이기(4개까지)
     @ResponseBody
     @GetMapping("/questions/my/home/{userIdx}")
-    public BaseResponse<GetRecQueRes> getRecentQuestion(@PathVariable("userIdx")long userIdx){
+    public BaseResponse<GetRecQueRes> getRecentQuestion(@PathVariable("userIdx")long userIdx,
+    @RequestParam(required = false) String page){
+        try{
+            if(page !=null){
+                int pages = Integer.parseInt(page)-1;
+                GetRecQueRes getRecQueRes = questionProvider.getRecQueByPage(userIdx, pages);
+                return new BaseResponse<>(getRecQueRes);
+            }
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
         try{
             GetRecQueRes getRecQueRes = questionProvider.getRecentQuestion(userIdx);
             return new BaseResponse<>(getRecQueRes);
@@ -53,10 +63,11 @@ public class QuestionController {
 
     }
 
-    //20.유저의 최근(7일이내) 질문등 조회
+    //20.유저의 최근(7일이내) 질문등 조회 /
     @ResponseBody
     @GetMapping("/questions/my/latest/{userIdx}")
-    public BaseResponse<List<GetRecQueRes>> getRecQuestions(@PathVariable("userIdx")long userIdx){
+    public BaseResponse<List<GetRecQueRes>> getRecQuestions(@PathVariable("userIdx")long userIdx
+                                                       ){
         try{
             List<GetRecQueRes> getRecQueRes = questionProvider.getRecQuestions(userIdx);
             return new BaseResponse<>(getRecQueRes);

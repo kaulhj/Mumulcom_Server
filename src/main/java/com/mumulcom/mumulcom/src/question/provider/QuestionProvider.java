@@ -45,6 +45,17 @@ public class QuestionProvider {
       }}
    }
 
+   //21.
+   public GetRecQueRes getRecQueByPage(long userIdx, int pages) throws BaseException {
+      try{
+         GetRecQueRes getRecQueRes = questionDao.getRecQueByPage(userIdx,pages);
+         return getRecQueRes;
+      }catch (Exception exception){{
+         exception.printStackTrace();
+         throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+      }}
+   }
+
    //20
    public List<GetRecQueRes> getRecQuestions(long userIdx) throws BaseException{
       try{

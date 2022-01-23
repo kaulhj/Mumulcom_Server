@@ -76,6 +76,56 @@ public class QuestionDao {
 
     }
 
+    //21. 홈화면 최근질문 페이징조회
+    public GetRecQueRes getRecQueByPage(long userIdx, int pages) {
+        String getRecQueQuery1 = "SELECT\n" +
+                "       count(CASE WHEN Q.questionIdx = L.questionIdx then 1 END )as LikeCount\n" +
+                "FROM\n" +
+                "Question Q\n" +
+                "INNER JOIN `Like` L ON Q.questionIdx = L.questionIdx\n" +
+                "where Q.userIdx = ?\n" +
+                "group by Q.questionIdx\n" +
+                "order by Q.questionIdx desc limit 1 offset ?";
+
+        Object[] getRecQueParam = new Object[]{userIdx, pages};
+        long reply = this.jdbcTemplate.queryForObject(getRecQueQuery1,
+                long.class,
+                getRecQueParam);
+
+        //나머지 값들 조회
+        String getRecQueQuery2 = "SELECT q.questionIdx,q.bigCategoryIdx,q.smallCategoryIdx,u.name,\n" +
+                "              concat(MONTH(q.createdAt),'/',day(q.createdAt),',',substring(year(q.createdAt),-2))as created\n" +
+                " ,count(CASE WHEN q.questionIdx = r.questionIdx then 1 END )as replies\n" +
+                ",title \n" +
+                " FROM\n" +
+                "\n" +
+                "      Question q\n" +
+                "          INNER JOIN User u on q.userIdx = u.userIdx\n" +
+                "INNER JOIN BigCategory b on q.bigCategoryIdx = b.bigCategoryIdx\n" +
+                "INNER JOIN SmallCategory s on q.smallCategoryIdx = s.smallCategoryIdx\n" +
+                "\n" +
+                "INNER JOIN Reply r on q.questionIdx = r.questionIdx\n" +
+                "\n" +
+                "\n" +
+                "where q.userIdx = ?\n" +
+                "group by questionIdx\n" +
+                "order by created desc limit 1 offset ?";
+        return this.jdbcTemplate.queryForObject(getRecQueQuery2,
+                (rs, rowNum) -> new GetRecQueRes(
+                        rs.getLong("bigCategoryIdx"),
+                        rs.getLong("smallCategoryIdx"),
+                        rs.getString("name"),
+                        rs.getString("created"),
+                        rs.getLong("replies"),
+                        rs.getString("title"),
+                        reply
+                ),
+                getRecQueParam);
+
+    }
+
+
+    //20.
     @Transactional
     public List<GetRecQueRes> getRecQuestions(long userIdx){
 
