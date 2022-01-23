@@ -4,6 +4,7 @@ package com.mumulcom.mumulcom.src.question.provider;
 //import com.example.demo.utils.JwtService;
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
+import com.mumulcom.mumulcom.config.BaseResponseStatus.*;
 import com.mumulcom.mumulcom.src.question.dao.QuestionDao;
 import com.mumulcom.mumulcom.src.question.dto.GetRecQueRes;
 import com.mumulcom.mumulcom.utils.JwtService;
@@ -11,6 +12,8 @@ import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 //import com.example.demo.utils.*;
 //import com.example.demo.config.secret.*;
 
@@ -31,7 +34,7 @@ public class QuestionProvider {
 
 
 
-
+//2.
    public GetRecQueRes getRecentQuestion(long userIdx) throws BaseException {
       try{
          GetRecQueRes getRecQueRes = questionDao.getRecentQuestion(userIdx);
@@ -40,6 +43,16 @@ public class QuestionProvider {
          exception.printStackTrace();
          throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
       }}
+   }
+
+   //20
+   public List<GetRecQueRes> getRecQuestions(long userIdx) throws BaseException{
+      try{
+         List<GetRecQueRes> getRecQueRes = questionDao.getRecQuestions(userIdx);
+         return getRecQueRes;
+      }catch (Exception exception){
+         throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+      }
    }
 
 

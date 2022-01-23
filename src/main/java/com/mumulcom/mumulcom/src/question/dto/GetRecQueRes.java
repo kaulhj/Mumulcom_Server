@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -15,5 +17,5 @@ public class GetRecQueRes {
     private String Created;
     private long Reply;
     private String Title;
-    private long Like;
+    private Long Like;
 }

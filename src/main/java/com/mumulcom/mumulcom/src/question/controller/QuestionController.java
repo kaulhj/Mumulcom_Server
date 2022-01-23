@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 
 @RequestMapping("/mumulcom.shop")
@@ -40,7 +42,7 @@ public class QuestionController {
 
     //2. 유저의 최근(7일 이내)  질문등 조회 .우선적으로 하나 조회(다중은 좀더 고민..)
     @ResponseBody
-    @GetMapping("/questions/{userIdx}")
+    @GetMapping("/questions/my/home/{userIdx}")
     public BaseResponse<GetRecQueRes> getRecentQuestion(@PathVariable("userIdx")long userIdx){
         try{
             GetRecQueRes getRecQueRes = questionProvider.getRecentQuestion(userIdx);
@@ -51,6 +53,17 @@ public class QuestionController {
 
     }
 
+    //20.유저의 최근(7일이내) 질문등 조회
+    @ResponseBody
+    @GetMapping("/questions/my/latest/{userIdx}")
+    public BaseResponse<List<GetRecQueRes>> getRecQuestions(@PathVariable("userIdx")long userIdx){
+        try{
+            List<GetRecQueRes> getRecQueRes = questionProvider.getRecQuestions(userIdx);
+            return new BaseResponse<>(getRecQueRes);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
     //3. 코딩질문하기
     @ResponseBody

@@ -13,8 +13,7 @@ import java.util.List;
 public class ConceptQueReq {
     private long userIdx;
     private List<String> imageUrls;
-    private String currentError;
-    private String myCodingSkill;
+    private String content;
     private long bigCategoryIdx;
     private long smallCategoryIdx;
     private String title;

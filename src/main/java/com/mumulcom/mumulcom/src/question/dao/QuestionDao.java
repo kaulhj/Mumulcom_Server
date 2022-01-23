@@ -13,9 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+
 
 public class QuestionDao {
     private JdbcTemplate jdbcTemplate;
@@ -26,6 +28,7 @@ public class QuestionDao {
     }
 
     //2.
+    @Transactional
     public GetRecQueRes getRecentQuestion(long userIdx){
         //like값 가져오기
         String getRecQueQuery1 = "SELECT\n" +
@@ -37,7 +40,7 @@ public class QuestionDao {
                 "group by Q.questionIdx\n" +
                 "order by Q.questionIdx desc limit 1";
         long getRecQueParam = userIdx;
-        long reply = this.jdbcTemplate.queryForObject(getRecQueQuery1,
+         long reply  = this.jdbcTemplate.queryForObject(getRecQueQuery1,
                 long.class,
                 getRecQueParam);
 
@@ -73,7 +76,78 @@ public class QuestionDao {
 
     }
 
+    @Transactional
+    public List<GetRecQueRes> getRecQuestions(long userIdx){
 
+        String countQuery = "SELECT\n" +
+                "    count(distinct Q.questionIdx)\n" +
+                "    FROM\n" +
+                "Question Q\n" +
+                "INNER JOIN `Like` L ON Q.questionIdx = L.questionIdx\n" +
+                "where Q.userIdx = ?\n" +
+                "#group by Q.questionIdx\n" +
+                "order by Q.questionIdx desc";
+        int countSize = this.jdbcTemplate.queryForObject(countQuery,int.class,userIdx);
+
+
+
+
+
+
+
+            //좋아요 값 배열에 넣기
+        String getRecQueQuery =  "SELECT\n" +
+                "       count(CASE WHEN Q.questionIdx = L.questionIdx then 1 END )as LikeCount\n" +
+                "FROM\n" +
+                "Question Q\n" +
+                "INNER JOIN `Like` L ON Q.questionIdx = L.questionIdx\n" +
+                "where Q.userIdx = ?\n" +
+                "group by Q.questionIdx\n" +
+                "order by Q.questionIdx desc limit 1 offset ?";
+
+        List<Long> reply = new ArrayList<>();
+
+        for(int i=0;i<countSize;i++) {
+            Object[] getReqQueParams = new Object[]{userIdx, i};
+            reply.add(this.jdbcTemplate.queryForObject(getRecQueQuery,
+                    long.class,
+                    getReqQueParams));
+        }
+
+
+        //배열 객체에 매핑
+        String GetListQueQuery = "SELECT q.questionIdx,q.bigCategoryIdx,q.smallCategoryIdx,u.name,\n" +
+        "              concat(MONTH(q.createdAt),'/',day(q.createdAt),',',substring(year(q.createdAt),-2))as created\n" +
+                " ,count(CASE WHEN q.questionIdx = r.questionIdx then 1 END )as replies\n" +
+                ",title \n" +
+                " FROM\n" +
+                "\n" +
+                "      Question q\n" +
+                "          INNER JOIN User u on q.userIdx = u.userIdx\n" +
+                "INNER JOIN BigCategory b on q.bigCategoryIdx = b.bigCategoryIdx\n" +
+                "INNER JOIN SmallCategory s on q.smallCategoryIdx = s.smallCategoryIdx\n" +
+                "\n" +
+                "INNER JOIN Reply r on q.questionIdx = r.questionIdx\n" +
+                "\n" +
+                "\n" +
+                "where q.userIdx = ?\n" +
+                "group by questionIdx\n" +
+                "order by created desc";
+        return this.jdbcTemplate.query(GetListQueQuery,
+                (rs, rowNum) -> new GetRecQueRes(
+                        rs.getLong("bigCategoryIdx"),
+                        rs.getLong("smallCategoryIdx"),
+                        rs.getString("name"),
+                        rs.getString("created"),
+                        rs.getLong("replies"),
+                        rs.getString("title"),
+                        reply.get(rowNum)),
+                userIdx);
+    }
+
+
+
+    //3. 코딩질문하기
     @Transactional
     public String codeQuestion(CodeQuestionReq codeQuestionReq) {
 
@@ -135,6 +209,7 @@ public class QuestionDao {
 
     }
 
+    //4.개념질문
     @Transactional
     public String conceptQuestion(ConceptQueReq conceptQueReq) {
 
@@ -157,10 +232,10 @@ public class QuestionDao {
                 long.class
         );
 
-        String CodQueTabQue = "INSERT INTO ConceptQuestion(questionIdx, currentError,myCodingSkill)\n" +
-                "VALUES (?,?,?)";
-        Object[] CodQueTabParams = new Object[]{lastQueId, conceptQueReq.getCurrentError(),
-                conceptQueReq.getMyCodingSkill()};
+        String CodQueTabQue = "INSERT INTO ConceptQuestion(questionIdx, content)\n" +
+                "VALUES (?,?)";
+        Object[] CodQueTabParams = new Object[]{lastQueId, conceptQueReq.getContent()
+        };
 
         this.jdbcTemplate.update(CodQueTabQue, CodQueTabParams);
 
