@@ -26,7 +26,7 @@ public class ScrapDao {
         postScrapReq.getUserIdx()};
 
         this.jdbcTemplate.update(createScrapQuery,createScrapParams);
-        return new String("스크랩 하였습니다");
+        return new String("해당 글을 스크랩 하였습니다");
     }
 
 
