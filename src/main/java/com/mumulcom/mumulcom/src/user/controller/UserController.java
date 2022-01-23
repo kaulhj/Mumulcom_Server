@@ -1,11 +1,11 @@
 package com.mumulcom.mumulcom.src.user.controller;
 
+import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
-import com.mumulcom.mumulcom.src.user.domain.User;
-import com.mumulcom.mumulcom.src.user.dto.UserJwtData;
-import com.mumulcom.mumulcom.src.user.dto.UserResponseData;
-import com.mumulcom.mumulcom.src.user.dto.UserSignInData;
-import com.mumulcom.mumulcom.src.user.dto.UserSignUpData;
+import com.mumulcom.mumulcom.src.user.dto.UserDto.SignInReq;
+import com.mumulcom.mumulcom.src.user.dto.UserDto.SignInRes;
+import com.mumulcom.mumulcom.src.user.dto.UserDto.SignUpReq;
+import com.mumulcom.mumulcom.src.user.dto.UserDto.SignUpRes;
 import com.mumulcom.mumulcom.src.user.service.UserService;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -30,39 +29,27 @@ public class UserController {
 
     /**
      * 회원가입 API
-     *
-     * @param userSignUpData
-     * @return
      */
     @PostMapping
-    public BaseResponse<UserResponseData> createUser(@RequestBody @Valid UserSignUpData userSignUpData) {
-        User user = userService.join(userSignUpData);
-        UserResponseData userResponseData = getUserResponseData(user);
-        return new BaseResponse<>(userResponseData);
+    public BaseResponse<SignUpRes> createUser(@RequestBody @Valid SignUpReq signUpReq) {
+        try {
+            return new BaseResponse<>(userService.join(signUpReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
     }
 
     /**
      * 로그인 API
-     *
-     * @param userSignInData
-     * @return
      */
     @PostMapping("/login")
-    public BaseResponse<UserJwtData> login(@RequestBody @Valid UserSignInData userSignInData) {
-        Optional<UserJwtData> userJwtData = userService.login(userSignInData);
-        if (userJwtData.isEmpty()) {
-//            return new BaseResponse<>(LOGIN_FAIL);
+    public BaseResponse<SignInRes> login(@RequestBody @Valid SignInReq signInReq) {
+        try {
+            SignInRes signInRes = userService.login(signInReq);
+            return new BaseResponse<>(signInRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
         }
-        return new BaseResponse<>(userJwtData.get());
-       
     }
 
-
-    private UserResponseData getUserResponseData(User user) {
-        //TODO: user null 처리
-
-        return UserResponseData.builder()
-                .userIdx(user.getUserIdx())
-                .build();
-    }
 }
