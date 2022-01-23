@@ -1,6 +1,7 @@
-package com.mumulcom.mumulcom.src.question.domain;
+package com.mumulcom.mumulcom.src.question.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.util.List;
@@ -9,7 +10,9 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
 public class CodeQuestionReq {
+    private long userIdx;
     private List<String> imageUrls;
     private String currentError;
     private String myCodingSkill;
