@@ -3,11 +3,10 @@ package com.mumulcom.mumulcom.src.question.controller;
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.src.question.domain.Question;
-import com.mumulcom.mumulcom.src.question.dto.GetConceptQuestionRes;
-import com.mumulcom.mumulcom.src.question.dto.GetQuestionListRes;
-import com.mumulcom.mumulcom.src.question.dto.GetQuestionRes;
+import com.mumulcom.mumulcom.src.question.dto.*;
+import com.mumulcom.mumulcom.src.question.provider.QuestionProvider;
 import com.mumulcom.mumulcom.src.question.service.QuestionService;
-import com.mumulcom.mumulcom.src.question.dto.GetCodingQuestionRes;
+import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ public class QuestionController {
     @ResponseBody
     @GetMapping("/my/home/{userIdx}")
     public BaseResponse<GetRecQueRes> getRecentQuestion(@PathVariable("userIdx")long userIdx,
-    @RequestParam(required = false) String page){
+                                                        @RequestParam(required = false) String page){
         try{
             if(page !=null){
                 int pages = Integer.parseInt(page)-1;
