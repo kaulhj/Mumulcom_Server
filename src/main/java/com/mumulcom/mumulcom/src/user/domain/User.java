@@ -19,17 +19,17 @@ public class User extends BaseTimeEntity{
     private Long userIdx;
 
     @NotBlank
-    private String userEmail;
+    private String email;
 
     @NotBlank
-    private String userName;
+    private String name;
 
-    private String userBirth;
+    private String birth;
 
     @NotBlank
     private String nickname;
 
-//    private String group;
+    private String group;
 
     @Column(columnDefinition = "varchar(255) default 'Active'")
     private String status;

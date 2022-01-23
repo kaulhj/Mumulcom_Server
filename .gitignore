@@ -39,3 +39,6 @@ out/
 ### application.yml ###
 /src/main/resources/application.yml
 
+### secret ###
+/config/secret/Secret.java
+
