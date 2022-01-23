@@ -3,23 +3,20 @@ package com.mumulcom.mumulcom.src.question.service;
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.question.dao.QuestionDao;
-import com.mumulcom.mumulcom.src.question.dto.CodeQuestionReq;
-import com.mumulcom.mumulcom.src.question.dto.ConceptQueReq;
-import com.mumulcom.mumulcom.src.question.provider.QuestionProvider;
-import com.mumulcom.mumulcom.utils.JwtService;
 import com.mumulcom.mumulcom.src.question.domain.Question;
-import com.mumulcom.mumulcom.src.question.dto.GetCodingQuestionRes;
-import com.mumulcom.mumulcom.src.question.dto.GetConceptQuestionRes;
-import com.mumulcom.mumulcom.src.question.dto.GetQuestionListRes;
-import com.mumulcom.mumulcom.src.question.dto.GetQuestionRes;
+import com.mumulcom.mumulcom.src.question.dto.*;
+import com.mumulcom.mumulcom.src.question.provider.QuestionProvider;
 import com.mumulcom.mumulcom.src.question.repository.QuestionRepository;
-import javax.transaction.Transactional;
-import java.util.List;
-import static com.mumulcom.mumulcom.config.BaseResponseStatus.DATABASE_ERROR;
+import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.List;
+
+import static com.mumulcom.mumulcom.config.BaseResponseStatus.DATABASE_ERROR;
 
 @Service
 @Transactional
@@ -32,7 +29,7 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     @Autowired
-    public QuestionService(QuestionDao questionDao, QuestionProvider questionProvider, QuestionRepository questionRepository
+    public QuestionService(QuestionDao questionDao, QuestionProvider questionProvider, QuestionRepository questionRepository,
                            JwtService jwtService){
         this.questionDao = questionDao;
         this.questionProvider = questionProvider;
