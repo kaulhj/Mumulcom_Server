@@ -40,7 +40,7 @@ public class QuestionController {
     @ResponseBody
     @GetMapping("/my/home/{userIdx}")
     public BaseResponse<GetRecQueRes> getRecentQuestion(@PathVariable("userIdx")long userIdx,
-    @RequestParam(required = false) String page){
+                                                        @RequestParam(required = false) String page){
         try{
             if(page !=null){
                 int pages = Integer.parseInt(page)-1;
