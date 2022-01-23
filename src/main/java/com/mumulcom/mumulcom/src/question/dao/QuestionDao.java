@@ -1,8 +1,6 @@
 package com.mumulcom.mumulcom.src.question.dao;
 
-import com.mumulcom.mumulcom.src.question.dto.CodeQuestionReq;
-import com.mumulcom.mumulcom.src.question.dto.ConceptQueReq;
-import com.mumulcom.mumulcom.src.question.dto.GetRecQueRes;
+import com.mumulcom.mumulcom.src.question.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

@@ -32,7 +32,7 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     @Autowired
-    public QuestionService(QuestionDao questionDao, QuestionProvider questionProvider, QuestionRepository questionRepository
+    public QuestionService(QuestionDao questionDao, QuestionProvider questionProvider, QuestionRepository questionRepository,
                            JwtService jwtService){
         this.questionDao = questionDao;
         this.questionProvider = questionProvider;
