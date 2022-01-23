@@ -1,7 +1,6 @@
-package com.mumulcom.mumulcom.src.question.domain;
+package com.mumulcom.mumulcom.src.reply.domain;
 
 import com.mumulcom.mumulcom.src.BaseTimeEntity;
-import com.mumulcom.mumulcom.src.question.dto.GetCodingQuestionRes;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,18 +8,18 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "Question")
+@Table(name = "Reply")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class Question extends BaseTimeEntity {
+public class Reply extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long replyIdx;
     private Long questionIdx;
     private Long userIdx;
-    private String bigCategoryIdx;
-    private String smallCategoryIdx;
-    private String title;
+    private String content;
 
     @Column(columnDefinition = "varchar(255) default 'Active'")
     private String status;

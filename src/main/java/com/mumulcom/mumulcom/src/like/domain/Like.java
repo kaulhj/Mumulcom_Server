@@ -1,7 +1,6 @@
-package com.mumulcom.mumulcom.src.question.domain;
+package com.mumulcom.mumulcom.src.like.domain;
 
 import com.mumulcom.mumulcom.src.BaseTimeEntity;
-import com.mumulcom.mumulcom.src.question.dto.GetCodingQuestionRes;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,18 +8,17 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "Question")
+@Table(name = "Like")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class Question extends BaseTimeEntity {
+public class Like extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long likeIdx;
     private Long questionIdx;
     private Long userIdx;
-    private String bigCategoryIdx;
-    private String smallCategoryIdx;
-    private String title;
 
     @Column(columnDefinition = "varchar(255) default 'Active'")
     private String status;
