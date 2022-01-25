@@ -59,6 +59,8 @@ public class UserDto {
 
     @Builder
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class PatchReq {
         private Long userIdx;
         private String nickname;
