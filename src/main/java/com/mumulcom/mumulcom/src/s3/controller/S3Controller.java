@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,12 +23,19 @@ public class S3Controller {
     @Autowired
     private S3UploadService s3UploadService;
 
-/*
+    @Autowired
+    private S3Uploader s3Uploader;
+
+
     @PostMapping("/images")
-    public String upload(@RequestParam("images") MultipartFile multipartFile)  {
+    public String upload(@RequestParam("images") MultipartFile[] multipartFile)  {
      try {
-         s3Uploader.upload(multipartFile, "static");
-         return "test";
+         List<MultipartFile> fileNames = new ArrayList<>();
+
+         for(int i=0;i<multipartFile.length;i++) {
+             fileNames.add(multipartFile[i]);
+             s3Uploader.upload(fileNames.get(i), "static");
+         } return "test";
      }catch (IOException exception){
          exception.printStackTrace();
          return new String("이미지 업로드 실패");
@@ -33,7 +43,7 @@ public class S3Controller {
     }
 
 
- */
+
 
 
     @ResponseBody
