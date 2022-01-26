@@ -35,12 +35,17 @@ dependencies {
     //Web
     implementation 'org.springframework.boot:spring-boot-starter-web:2.6.2'
 
+
+
     //Lombok
     compileOnly 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
 
     //MySQL
     runtimeOnly 'mysql:mysql-connector-java:8.0.25'
+
+    //AWS
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE'
 
     //JWT
     implementation  group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
@@ -54,6 +59,8 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.2'
     testImplementation 'org.springframework.security:spring-security-test:5.5.1'
+
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.1.RELEASE'
 }
 
 test {

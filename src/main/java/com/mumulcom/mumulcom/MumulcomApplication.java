@@ -2,6 +2,7 @@ package com.mumulcom.mumulcom;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
@@ -13,9 +14,15 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 // Bean 간단 설명, 스프링 컨테이너가 관리하는 자바 객체
 public class MumulcomApplication {
 
+    public static final String APPLICATION_LOCATIONS = "spring.config.location="
+            + "classpath:application.yml,"
+            + "classpath:aws.yml";
+
     public static void main(String[] args) {
 
-        SpringApplication.run(MumulcomApplication.class, args);
+        new SpringApplicationBuilder(MumulcomApplication.class)
+                .properties(APPLICATION_LOCATIONS)
+                .run(args);
 
         // 메모리 사용량 출력
         long heapSize = Runtime.getRuntime().totalMemory();
