@@ -2,7 +2,7 @@ package com.mumulcom.mumulcom.src.reply.provider;
 
 
 import com.mumulcom.mumulcom.config.BaseException;
-import com.mumulcom.mumulcom.src.reply.dao.MyReplyListDao;
+import com.mumulcom.mumulcom.src.reply.dao.ReplyDao;
 import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
@@ -15,22 +15,22 @@ import java.util.List;
 import static com.mumulcom.mumulcom.config.BaseResponseStatus.DATABASE_ERROR;
 
 @Service
-public class MyReplyProvider {
-    private final MyReplyListDao myReplyListDao;
+public class ReplyProvider {
+    private final ReplyDao replyDao;
     private final JwtService jwtService;
 
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public MyReplyProvider(MyReplyListDao myReplyListDao, JwtService jwtService){
-        this.myReplyListDao = myReplyListDao;
+    public ReplyProvider(ReplyDao replyDao, JwtService jwtService){
+        this.replyDao = replyDao;
         this.jwtService = jwtService;
     }
 
     public List<MyReplyListRes> myReplyListResList (int userIdx) throws BaseException {
         try {
-            List<MyReplyListRes> myReplyListRes = myReplyListDao.myReplyListResList(userIdx);
+            List<MyReplyListRes> myReplyListRes = replyDao.myReplyListResList(userIdx);
             return myReplyListRes;
         } catch (Exception exception){
             exception.printStackTrace();
