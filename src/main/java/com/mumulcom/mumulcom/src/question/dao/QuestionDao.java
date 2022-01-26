@@ -1,11 +1,10 @@
 package com.mumulcom.mumulcom.src.question.dao;
 
-<<<<<<< HEAD
-=======
+
 import com.mumulcom.mumulcom.src.question.domain.MyQuestionListRes;
 import com.mumulcom.mumulcom.src.question.domain.SearchCodingQuestionRes;
 import com.mumulcom.mumulcom.src.question.domain.SearchConceptQuestionRes;
->>>>>>> b8a10444ee28353b5b1cbc7652aa724f8fa3ac8f
+
 import com.mumulcom.mumulcom.src.question.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
