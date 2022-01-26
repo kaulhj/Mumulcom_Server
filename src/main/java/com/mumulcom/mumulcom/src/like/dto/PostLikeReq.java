@@ -10,4 +10,5 @@ import lombok.*;
 public class PostLikeReq {
     private long questionIdx;
     private long userIdx;
+    private long replyIdx;
 }

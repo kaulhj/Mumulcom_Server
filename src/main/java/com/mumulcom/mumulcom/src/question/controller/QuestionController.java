@@ -2,7 +2,13 @@ package com.mumulcom.mumulcom.src.question.controller;
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
+import com.mumulcom.mumulcom.src.question.domain.MyQuestionListRes;
 import com.mumulcom.mumulcom.src.question.domain.Question;
+<<<<<<< HEAD
+=======
+import com.mumulcom.mumulcom.src.question.domain.SearchCodingQuestionRes;
+import com.mumulcom.mumulcom.src.question.domain.SearchConceptQuestionRes;
+>>>>>>> b8a10444ee28353b5b1cbc7652aa724f8fa3ac8f
 import com.mumulcom.mumulcom.src.question.dto.*;
 import com.mumulcom.mumulcom.src.question.provider.QuestionProvider;
 import com.mumulcom.mumulcom.src.question.service.QuestionService;
@@ -15,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/questions")
+@RequestMapping("mumulcom.shop/questions")
 public class QuestionController {
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -173,6 +179,55 @@ public class QuestionController {
             return new BaseResponse<>(questions);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 휘정
+     * 개념 질문 조회 API
+     * [GET] /questions/search/concept/:keyword
+     * */
+    @ResponseBody
+    @GetMapping("/search/concept/{keyword}")
+    public BaseResponse<List<SearchConceptQuestionRes>> searchConceptQuestion(@PathVariable("keyword") String keyword) {
+        try {
+            List<SearchConceptQuestionRes> searchConceptQuestionRes = questionProvider.searchConceptQuestionResList(keyword);
+            return new BaseResponse<>(searchConceptQuestionRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
+    /**
+     * 휘정
+     * 코딩 질문 조회 API
+     * [GET] /questions/search/coding/:keyword
+     * */
+    @ResponseBody
+    @GetMapping("/search/coding/{keyword}")
+    public BaseResponse<List<SearchCodingQuestionRes>> searchCodingQuestion(@PathVariable("keyword") String keyword) {
+        try {
+            List<SearchCodingQuestionRes> searchCodingQuestionRes = questionProvider.searchCodingQuestionResList(keyword);
+            return new BaseResponse<>(searchCodingQuestionRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 휘정
+     * 내가 한 질문 목록 조회 API
+     * [GET] /questions/my/:userIdx
+     * */
+    @ResponseBody
+    @GetMapping("/my/{userIdx}")
+    public BaseResponse<List<MyQuestionListRes>> myQuestion(@PathVariable("userIdx") int userIdx) {
+        try {
+            List<MyQuestionListRes> myQuestionListRes = questionProvider.myQuestionListResList(userIdx);
+            return new BaseResponse<>(myQuestionListRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
         }
     }
 }
