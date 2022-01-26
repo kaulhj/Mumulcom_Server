@@ -4,6 +4,7 @@ package com.mumulcom.mumulcom.src.scrap.controller;
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
+import com.mumulcom.mumulcom.src.scrap.domain.MyScrapListRes;
 import com.mumulcom.mumulcom.src.scrap.dto.PostScrapReq;
 import com.mumulcom.mumulcom.src.scrap.provider.ScrapProvider;
 import com.mumulcom.mumulcom.src.scrap.service.ScrapService;
@@ -14,9 +15,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 
-@RequestMapping("/mumulcom.shop/scrap")
+@RequestMapping("/scraps")
 
 public class ScrapController {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -45,6 +48,30 @@ public class ScrapController {
             String result = scrapService.createScrap(postScrapReq);
             return new BaseResponse<>(result);
         }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    // 스크랩한 목록 모두 보여주기
+    // 카테고리 없을 때
+    // 큰 카테고리만 있을 때
+    // 둘다 있을 때
+    // 큰 x, 작은 o 일때는 벨리데이션처리 해주기
+    @ResponseBody
+    @GetMapping("")
+    public BaseResponse<List<MyScrapListRes>> getMyScrapList (@RequestParam int userIdx, @RequestParam(required = false) String bigCategory, @RequestParam(required = false) String smallCategory) {
+        try {
+            List<MyScrapListRes> myScrapListResList;
+            //카테고리 없을 때 -> 스크랩한 목록 다 보여주기
+            if(bigCategory == null && smallCategory == null) {
+                myScrapListResList = scrapProvider.myScrapListRes(userIdx);
+            } else if (smallCategory == null) { // 큰 카테고리만 있을 때
+                myScrapListResList = scrapProvider.myScrapListRes(userIdx,bigCategory);
+            } else { // 모두 있을 때
+                myScrapListResList = scrapProvider.myScrapListRes(userIdx, bigCategory, smallCategory);
+            }
+            return new BaseResponse<>(myScrapListResList);
+        } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }
