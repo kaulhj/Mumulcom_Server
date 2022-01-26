@@ -4,11 +4,9 @@ import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.src.question.domain.MyQuestionListRes;
 import com.mumulcom.mumulcom.src.question.domain.Question;
-<<<<<<< HEAD
-=======
+
 import com.mumulcom.mumulcom.src.question.domain.SearchCodingQuestionRes;
 import com.mumulcom.mumulcom.src.question.domain.SearchConceptQuestionRes;
->>>>>>> b8a10444ee28353b5b1cbc7652aa724f8fa3ac8f
 import com.mumulcom.mumulcom.src.question.dto.*;
 import com.mumulcom.mumulcom.src.question.provider.QuestionProvider;
 import com.mumulcom.mumulcom.src.question.service.QuestionService;
@@ -21,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("mumulcom.shop/questions")
+@RequestMapping("/questions")
 public class QuestionController {
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
