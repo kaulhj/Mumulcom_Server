@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("mumulcom.shop/questions")
+@RequestMapping("/questions")
 public class QuestionController {
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -139,9 +139,9 @@ public class QuestionController {
      */
     @ResponseBody
     @GetMapping("")
-    public BaseResponse<List<GetQuestionListRes>> getQuestionsList(@RequestParam int sort, @RequestParam int bigCategoryIdx, @RequestParam(required = false, defaultValue = "0") int smallCategoryIdx) {
+    public BaseResponse<List<GetQuestionListRes>> getQuestionsList(@RequestParam int sort, @RequestParam int bigCategoryIdx, @RequestParam(required = false, defaultValue = "0") int smallCategoryIdx, @RequestParam(defaultValue = "true") boolean isReplied) {
         try {
-            List<GetQuestionListRes> getQuestionListRes = questionService.getQuestionsByCategory(sort, bigCategoryIdx, smallCategoryIdx);
+            List<GetQuestionListRes> getQuestionListRes = questionService.getQuestionsByCategory(sort, bigCategoryIdx, smallCategoryIdx, isReplied);
             return new BaseResponse<>(getQuestionListRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));

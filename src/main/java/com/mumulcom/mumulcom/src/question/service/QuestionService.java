@@ -99,9 +99,9 @@ public class QuestionService {
      * 7번 API
      * 카테고리별 질문 목록 조회 API
      */
-    public List<GetQuestionListRes> getQuestionsByCategory(int sort, int bigCategoryIdx, int smallCategoryIdx) throws BaseException {
+    public List<GetQuestionListRes> getQuestionsByCategory(int sort, int bigCategoryIdx, int smallCategoryIdx, boolean isReplied) throws BaseException {
         try {
-            List<GetQuestionListRes> getQuestionListRes = questionDao.getQuestionsByCategory(sort, bigCategoryIdx, smallCategoryIdx);
+            List<GetQuestionListRes> getQuestionListRes = questionDao.getQuestionsByCategory(sort, bigCategoryIdx, smallCategoryIdx, isReplied);
             return getQuestionListRes;
         } catch (Exception exception) {
             exception.printStackTrace();
