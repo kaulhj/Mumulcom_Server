@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("mumulcom.shop/questions")
+@RequestMapping("/questions")
 public class QuestionController {
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
