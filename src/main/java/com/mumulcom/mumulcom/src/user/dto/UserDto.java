@@ -22,24 +22,27 @@ public class UserDto {
     @Builder
     public static class SignInRes {
         private final String jwt;
+        private Long userIdx;
+        private String email;
+        private String name;
+        private String nickname;
     }
 
     @Getter
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class SignUpReq {
-        @NotBlank(message = "이메일을 입력해주세요.")
+        @NotBlank
         @Email
         @Mapping("email")
         private String email;
 
-        @NotBlank(message = "이름을 입력해주세요.")
+        @NotBlank
         @Mapping("name")
         private String name;
 
-        @Mapping("birth")
-        private String birth;
-
-        @NotBlank(message = "닉네임을 입력해주세요.")
+        @NotBlank
         @Mapping("nickname")
         @Size(max = 8)
         private String nickname;
@@ -52,5 +55,22 @@ public class UserDto {
     @Getter
     public static class SignUpRes {
         private Long userIdx;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PatchReq {
+        private Long userIdx;
+        private String nickname;
+    }
+
+    @Builder
+    @Getter
+    public static class UserRes {
+        private String email;
+        private String name;
+        private String nickname;
     }
 }
