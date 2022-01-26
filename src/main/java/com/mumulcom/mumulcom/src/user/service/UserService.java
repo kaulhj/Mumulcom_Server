@@ -98,4 +98,11 @@ public class UserService {
                 .nickname(user.getNickname())
                 .build();
     }
+
+    /**
+     * 닉네임 중복 여부 확인
+     */
+    public boolean existsByNickname(String nickname) {
+        return userRepository.existsUserByNickname(nickname);
+    }
 }

@@ -80,4 +80,13 @@ public class UserController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    /**
+     * 닉네임 중복 여부 확인 API
+     */
+    @GetMapping("/exists")
+    public BaseResponse<Boolean> checkNickname(@RequestParam String nickname) {
+        boolean result = userService.existsByNickname(nickname);
+        return new BaseResponse<>(result);
+    }
 }
