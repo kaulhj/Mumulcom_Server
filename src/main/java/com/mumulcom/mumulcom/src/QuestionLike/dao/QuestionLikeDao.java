@@ -1,7 +1,7 @@
-package com.mumulcom.mumulcom.src.like.dao;
+package com.mumulcom.mumulcom.src.QuestionLike.dao;
 
 
-import com.mumulcom.mumulcom.src.like.dto.PostLikeReq;
+import com.mumulcom.mumulcom.src.QuestionLike.dto.PostLikeReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Repository
 
-public class LikeDao {
+public class QuestionLikeDao {
 
     private JdbcTemplate jdbcTemplate;
 

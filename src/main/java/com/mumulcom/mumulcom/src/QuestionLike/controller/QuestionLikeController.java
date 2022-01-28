@@ -1,10 +1,10 @@
-package com.mumulcom.mumulcom.src.like.controller;
+package com.mumulcom.mumulcom.src.QuestionLike.controller;
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
-import com.mumulcom.mumulcom.src.like.dto.PostLikeReq;
-import com.mumulcom.mumulcom.src.like.provider.LikeProvider;
-import com.mumulcom.mumulcom.src.like.service.LikeService;
+import com.mumulcom.mumulcom.src.QuestionLike.dto.PostLikeReq;
+import com.mumulcom.mumulcom.src.QuestionLike.provider.QuestionLikeProvider;
+import com.mumulcom.mumulcom.src.QuestionLike.service.QuestionLikeService;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,21 +15,21 @@ import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/mumulcom.shop/like")
 
-public class LikeController {
+public class QuestionLikeController {
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private final LikeProvider likeProvider;
+    private final QuestionLikeProvider questionLikeProvider;
     @Autowired
-    private final LikeService likeService;
+    private final QuestionLikeService questionLikeService;
     @Autowired
     private final JwtService jwtService;
 
-    public LikeController(LikeProvider likeProvider, LikeService likeService,
-                          JwtService jwtService){
-        this.likeProvider = likeProvider;
-        this.likeService = likeService;
+    public QuestionLikeController(QuestionLikeProvider questionLikeProvider, QuestionLikeService questionLikeService,
+                                  JwtService jwtService){
+        this.questionLikeProvider = questionLikeProvider;
+        this.questionLikeService = questionLikeService;
         this.jwtService = jwtService;
     }
 
@@ -40,7 +40,7 @@ public class LikeController {
     public BaseResponse<String> createLike(@RequestBody PostLikeReq postLikeReq){
 
         try{
-            String result = likeService.createLike(postLikeReq);
+            String result = questionLikeService.createLike(postLikeReq);
             return new BaseResponse<>(result);
         }catch (BaseException exception){
             exception.printStackTrace();
