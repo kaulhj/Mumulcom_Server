@@ -299,7 +299,7 @@ public class QuestionDao {
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
                         "INNER JOIN CodeQuestion CQ on q.questionIdx = CQ.questionIdx\n" +
-                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` WHERE questionIdx = ?) l\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` WHERE questionIdx = ?) l\n" +
                         "ON q.questionIdx = l.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
                         "ON q.questionIdx = r.questionIdx\n" +
@@ -332,7 +332,7 @@ public class QuestionDao {
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
                         "INNER JOIN ConceptQuestion CQ on q.questionIdx = CQ.questionIdx\n" +
-                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` WHERE questionIdx = ?) l\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` WHERE questionIdx = ?) l\n" +
                         "ON q.questionIdx = l.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
                         "ON q.questionIdx = r.questionIdx\n" +
@@ -374,7 +374,7 @@ public class QuestionDao {
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
-                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` group by questionIdx) l\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` group by questionIdx) l\n" +
                         "ON q.questionIdx = l.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply group by questionIdx) r\n" +
                         "ON q.questionIdx = r.questionIdx\n" +
@@ -386,7 +386,7 @@ public class QuestionDao {
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
-                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` group by questionIdx) l\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` group by questionIdx) l\n" +
                         "ON q.questionIdx = l.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply group by questionIdx) r\n" +
                         "ON q.questionIdx = r.questionIdx\n" +
@@ -400,7 +400,7 @@ public class QuestionDao {
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
-                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` group by questionIdx) l\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` group by questionIdx) l\n" +
                         "ON q.questionIdx = l.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply group by questionIdx) r\n" +
                         "ON q.questionIdx = r.questionIdx\n" +
@@ -412,7 +412,7 @@ public class QuestionDao {
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
-                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` group by questionIdx) l\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` group by questionIdx) l\n" +
                         "ON q.questionIdx = l.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply group by questionIdx) r\n" +
                         "ON q.questionIdx = r.questionIdx\n" +
