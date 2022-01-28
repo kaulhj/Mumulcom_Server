@@ -5,7 +5,7 @@ import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Pattern;
 
 public class UserDto {
 
@@ -30,7 +30,7 @@ public class UserDto {
 
     @Getter
     @Builder
-    @NoArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class SignUpReq {
         @NotBlank
@@ -44,9 +44,10 @@ public class UserDto {
 
         @NotBlank
         @Mapping("nickname")
-        @Size(max = 8)
+        @Pattern(regexp = "^[가-힣a-z0-9]{2,8}$")
         private String nickname;
 
+        @NotBlank
         @Mapping("group")
         private String group;
     }
@@ -59,7 +60,7 @@ public class UserDto {
 
     @Builder
     @Getter
-    @NoArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class PatchReq {
         private Long userIdx;
