@@ -14,43 +14,35 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+
+
 @RequiredArgsConstructor
 @RestController
-
-@RequestMapping("/mumulcom.shop")
-
 public class S3Controller {
 
     @Autowired
-    private S3UploadService s3UploadService;
-
-    @Autowired
-    private S3Uploader s3Uploader;
-
+    private final S3Uploader s3Uploader;
 
     @PostMapping("/images")
-    public BaseResponse<List<String>> upload(@RequestParam("images") MultipartFile[] multipartFile)  {
-     try {
-         List<MultipartFile> fileNames = new ArrayList<>();
-        List<String> urlList = new ArrayList<>();
-         for(int i=0;i<multipartFile.length;i++) {
-             fileNames.add(multipartFile[i]);
-             String imagePath1 = s3Uploader.upload(fileNames.get(i), "static");
-             urlList.add(imagePath1);
-         }
-         return new BaseResponse<>(urlList);
-     }catch (IOException exception){
-         exception.printStackTrace();
-         List<String> mylist = Collections.singletonList("이미지 전송 실패");
-         return new BaseResponse<>(mylist);
-     }
+    public BaseResponse<List<String>> upload(@RequestParam("images") MultipartFile[] multipartFile) {
+        try {
+            List<MultipartFile> fileNames = new ArrayList<>();
+            List<String> urlList = new ArrayList<>();
+            for (int i = 0; i < multipartFile.length; i++) {
+                fileNames.add(multipartFile[i]);
+                String imagePath1 = s3Uploader.upload(multipartFile[i], "static");
+                urlList.add(imagePath1);
+            }
+            return new BaseResponse<>(urlList);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            List<String> mylist = Collections.singletonList("이미지 전송 실패");
+            return new BaseResponse<>(mylist);
+        }
 
     }
 
-
-
-
-
+    /*
     @ResponseBody
     @GetMapping("/find")
     public BaseResponse<String> findImg() {
@@ -59,4 +51,6 @@ public class S3Controller {
         //log.info(imgPath);
         //Assertions.assertThat(imgPath).isNotNull();
     }
+
+     */
 }

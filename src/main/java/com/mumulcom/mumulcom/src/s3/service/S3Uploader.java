@@ -25,8 +25,8 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     public String bucket;  // S3 버킷 이름
 
-    public String upload(MultipartFile multipartFile, String dirName) throws IOException{
-        File uploadFile = convert(multipartFile)  // 파일 변환할 수 없으면 에러
+    public String upload(MultipartFile multip, String dirName) throws IOException {
+        File uploadFile = convert(multip)  // 파일 변환할 수 없으면 에러
                 .orElseThrow(() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
 
         return upload(uploadFile, dirName);
@@ -34,12 +34,10 @@ public class S3Uploader {
 
     // S3로 파일 업로드하기
     private String upload(File uploadFile, String dirName) {
-
-            String fileName = dirName + "/" + UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름
-            String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
-            removeNewFile(uploadFile);
-            return uploadImageUrl;
-
+        String fileName = dirName + "/" + UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름
+        String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
+        removeNewFile(uploadFile);
+        return uploadImageUrl;
     }
 
     // S3로 업로드
