@@ -105,7 +105,7 @@ public class QuestionController {
     }
 
     /**
-     * 5번 API 코딩 질문 조회
+     * yeji 5번 API 코딩 질문 조회
      * [GET] /questions/coding/:questionIdx
      */
     @ResponseBody
@@ -120,7 +120,7 @@ public class QuestionController {
     }
 
     /**
-     * 6번 API 개념 질문 조회
+     * yeji 6번 API 개념 질문 조회
      * [GET] /questions/concept/:questionIdx
      */
     @ResponseBody
@@ -135,14 +135,15 @@ public class QuestionController {
     }
 
     /**
-     * 7번 API 카테고리별 질문 목록 조회
-     * [GET] /questions/?sort=&?bigCategory=&?smallCategory
+     * yeji 7번 API 카테고리별 질문 목록 조회
+     * [GET] /questions/?sort=&?bigCategory=&?smallCategory=?lastQuestionIdx=?page=
      */
     @ResponseBody
     @GetMapping("")
-    public BaseResponse<List<GetQuestionListRes>> getQuestionsList(@RequestParam int sort, @RequestParam int bigCategoryIdx, @RequestParam(required = false, defaultValue = "0") int smallCategoryIdx, @RequestParam(defaultValue = "true") boolean isReplied) {
+    public BaseResponse<List<GetQuestionListRes>> getQuestionsList(@RequestParam int sort, @RequestParam int bigCategoryIdx, @RequestParam(required = false, defaultValue = "0") int smallCategoryIdx, @RequestParam(defaultValue = "true") boolean isReplied,
+                                                                    @RequestParam int lastQuestionIdx, @RequestParam int perPage) {
         try {
-            List<GetQuestionListRes> getQuestionListRes = questionService.getQuestionsByCategory(sort, bigCategoryIdx, smallCategoryIdx, isReplied);
+            List<GetQuestionListRes> getQuestionListRes = questionService.getQuestionsByCategory(sort, bigCategoryIdx, smallCategoryIdx, isReplied, lastQuestionIdx, perPage);
             return new BaseResponse<>(getQuestionListRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
