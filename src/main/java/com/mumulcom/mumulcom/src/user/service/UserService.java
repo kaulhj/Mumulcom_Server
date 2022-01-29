@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
-import static com.mumulcom.mumulcom.config.BaseResponseStatus.FAILED_TO_LOGIN;
 import static com.mumulcom.mumulcom.src.user.dto.UserDto.SignInReq;
 import static com.mumulcom.mumulcom.src.user.dto.UserDto.SignInRes;
 
@@ -43,6 +42,9 @@ public class UserService {
         User user = userRepository.save(mapper.map(signUpReq, User.class));
         return SignUpRes.builder()
                 .userIdx(user.getUserIdx())
+                .email(user.getEmail())
+                .name(user.getName())
+                .nickname(user.getNickname())
                 .build();
     }
 
@@ -53,7 +55,7 @@ public class UserService {
         String email = signInReq.getEmail();
         Optional<User> userOptional = userRepository.findUserByEmail(email);
         if (userOptional.isEmpty()) {
-            throw new BaseException(FAILED_TO_LOGIN);
+            throw new BaseException(BaseResponseStatus.FAILED_TO_LOGIN);
         }
         User user = userOptional.get();
         String jwt = jwtService.createJwt(user.getUserIdx());
@@ -97,5 +99,29 @@ public class UserService {
                 .name(user.getName())
                 .nickname(user.getNickname())
                 .build();
+    }
+
+    /**
+     * 회원 탈퇴
+     */
+    public UserDto.UserRes deleteUser(Long userIdx) throws BaseException{
+        Optional<User> userOptional = userRepository.findById(userIdx);
+        if (userOptional.isEmpty()) {
+            throw new BaseException(BaseResponseStatus.RESPONSE_ERROR);
+        }
+        User user = userOptional.get();
+        user.deleteUser();
+        return UserDto.UserRes.builder()
+                .email(user.getEmail())
+                .name(user.getName())
+                .nickname(user.getNickname())
+                .build();
+    }
+
+    /**
+     * 닉네임 중복 여부 확인
+     */
+    public boolean existsByNickname(String nickname) {
+        return userRepository.existsUserByNickname(nickname);
     }
 }

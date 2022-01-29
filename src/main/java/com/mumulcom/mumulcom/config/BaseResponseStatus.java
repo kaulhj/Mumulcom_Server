@@ -20,17 +20,20 @@ public enum BaseResponseStatus {
     REQUEST_ERROR(false, 2000, "입력값을 확인해주세요."),
     EMPTY_JWT(false, 2001, "JWT를 입력해주세요."),
     INVALID_JWT(false, 2002, "유효하지 않은 JWT입니다."),
-    INVALID_USER_JWT(false,2003,"권한이 없는 유저의 접근입니다."),
+    INVALID_USER_JWT(false, 2003, "권한이 없는 유저의 접근입니다."),
 
     // users
     USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),
 
     // [POST] /users
     POST_USERS_EMPTY_EMAIL(false, 2015, "이메일을 입력해주세요."),
-    POST_USERS_INVALID_EMAIL(false, 2016, "이메일 형식을 확인해주세요."),
-    POST_USERS_EXISTS_EMAIL(false,2017,"중복된 이메일입니다."),
-    POST_USERS_EXISTS_NICKNAME(false, 2018, "중복된 닉네임입니다."),
-
+    POST_USERS_EMPTY_NAME(false, 2016, "이름을 입력해주세요."),
+    POST_USERS_EMPTY_GROUP(false, 2017, "소속을 입력해주세요."),
+    POST_USERS_INVALID_EMAIL(false, 2018, "이메일 형식을 확인해주세요."),
+    POST_USERS_INVALID_NICKNAME(false, 2019, "닉네임 형식을 확인해주세요."),
+    POST_USERS_SIZE_NICKNAME(false, 2020, "닉네임은 2글자 이상 8글자 이하여야 합니다."),
+    POST_USERS_EXISTS_EMAIL(false, 2021, "이미 가입된 이메일입니다."),
+    POST_USERS_EXISTS_NICKNAME(false, 2022, "이미 사용중인 닉네임입니다."),
 
 
     /**
@@ -41,8 +44,7 @@ public enum BaseResponseStatus {
 
     // [POST] /users
     DUPLICATED_EMAIL(false, 3013, "중복된 이메일입니다."),
-    FAILED_TO_LOGIN(false,3014,"없는 아이디거나 비밀번호가 틀렸습니다."),
-
+    FAILED_TO_LOGIN(false, 3014, "가입된 이메일이 아닙니다."),
 
     // [PATCH] /replies/adoption/:userIdx/:replyIdx
     PATCH_ADOPT_NOT_SAME(false,3600,"해당 답변을 채택할 권한이 없습니다."),
@@ -55,7 +57,7 @@ public enum BaseResponseStatus {
     SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),
 
     //[PATCH] /users/{userIdx}
-    MODIFY_FAIL_USERNAME(false,4014,"유저네임 수정 실패"),
+    MODIFY_FAIL_USERNAME(false, 4014, "유저네임 수정 실패"),
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");
@@ -69,7 +71,7 @@ public enum BaseResponseStatus {
     private final int code;
     private final String message;
 
-    private BaseResponseStatus(boolean isSuccess, int code, String message) { //BaseResponseStatus 에서 각 해당하는 코드를 생성자로 맵핑
+    BaseResponseStatus(boolean isSuccess, int code, String message) { //BaseResponseStatus 에서 각 해당하는 코드를 생성자로 맵핑
         this.isSuccess = isSuccess;
         this.code = code;
         this.message = message;
