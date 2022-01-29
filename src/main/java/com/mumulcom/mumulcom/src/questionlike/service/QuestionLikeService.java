@@ -1,12 +1,12 @@
-package com.mumulcom.mumulcom.src.like.service;
+package com.mumulcom.mumulcom.src.questionlike.service;
 
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
-import com.mumulcom.mumulcom.src.like.dao.LikeDao;
-import com.mumulcom.mumulcom.src.like.dto.PostQueLikeReq;
-import com.mumulcom.mumulcom.src.like.dto.PostReplyLikeReq;
-import com.mumulcom.mumulcom.src.like.provider.LikeProvider;
+import com.mumulcom.mumulcom.src.questionlike.dao.QuestionLikeDao;
+import com.mumulcom.mumulcom.src.questionlike.dto.PostQueLikeReq;
+import com.mumulcom.mumulcom.src.questionlike.dto.PostReplyLikeReq;
+import com.mumulcom.mumulcom.src.questionlike.provider.QuestionLikeProvider;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,24 +14,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LikeService {
+public class QuestionLikeService {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final LikeDao likeDao;
-    private final LikeProvider likeProvider;
+    private final QuestionLikeDao questionLikeDao;
+    private final QuestionLikeProvider questionLikeProvider;
     private final JwtService jwtService;
 
     @Autowired
-    public LikeService(LikeDao likeDao, LikeProvider likeProvider, JwtService jwtService){
-        this.likeDao = likeDao;
-        this.likeProvider = likeProvider;
+    public QuestionLikeService(QuestionLikeDao questionLikeDao, QuestionLikeProvider questionLikeProvider, JwtService jwtService){
+        this.questionLikeDao = questionLikeDao;
+        this.questionLikeProvider = questionLikeProvider;
         this.jwtService = jwtService;
     }
 
 
     public String createLike(PostQueLikeReq postQueLikeReq)throws BaseException{
         try{
-            String result = likeDao.createLike(postQueLikeReq);
+            String result = questionLikeDao.createLike(postQueLikeReq);
             return new String(result);
         }catch (Exception exception){
             exception.printStackTrace();
@@ -41,7 +41,7 @@ public class LikeService {
 
     public String createReplyLike(PostReplyLikeReq postReplyLikeReq)throws BaseException{
         try{
-            String result = likeDao.createReplyLike(postReplyLikeReq);
+            String result = questionLikeDao.createReplyLike(postReplyLikeReq);
             return new String(result);
         }catch (Exception exception){
             exception.printStackTrace();
