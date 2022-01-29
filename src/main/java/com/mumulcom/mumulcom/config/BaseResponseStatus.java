@@ -46,6 +46,9 @@ public enum BaseResponseStatus {
     DUPLICATED_EMAIL(false, 3013, "중복된 이메일입니다."),
     FAILED_TO_LOGIN(false, 3014, "가입된 이메일이 아닙니다."),
 
+    // [PATCH] /replies/adoption/:userIdx/:replyIdx
+    PATCH_ADOPT_NOT_SAME(false,3600,"해당 답변을 채택할 권한이 없습니다."),
+    FAILED_ADOPT_REPLY(false,3601,"답변 채택에 실패하였습니다."),
 
     /**
      * 4000 : Database, Server 오류

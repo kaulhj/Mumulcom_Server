@@ -2,7 +2,8 @@ package com.mumulcom.mumulcom.src.like.controller;
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
-import com.mumulcom.mumulcom.src.like.dto.PostLikeReq;
+import com.mumulcom.mumulcom.src.like.dto.PostQueLikeReq;
+import com.mumulcom.mumulcom.src.like.dto.PostReplyLikeReq;
 import com.mumulcom.mumulcom.src.like.provider.LikeProvider;
 import com.mumulcom.mumulcom.src.like.service.LikeService;
 import com.mumulcom.mumulcom.utils.JwtService;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 
-@RequestMapping("/mumulcom.shop/like")
+@RequestMapping("/likes")
 
 public class LikeController {
 
@@ -33,14 +34,27 @@ public class LikeController {
         this.jwtService = jwtService;
     }
 
-    //18.좋아요하기
+    //23.질문에 좋아요하기
 
     @ResponseBody
-    @PostMapping("/creation")
-    public BaseResponse<String> createLike(@RequestBody PostLikeReq postLikeReq){
+    @PostMapping("/questions/creation")
+    public BaseResponse<String> createQueLike(@RequestBody PostQueLikeReq postQueLikeReq){
 
         try{
-            String result = likeService.createLike(postLikeReq);
+            String result = likeService.createLike(postQueLikeReq);
+            return new BaseResponse<>(result);
+        }catch (BaseException exception){
+            exception.printStackTrace();
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @PostMapping("/replies/creation")
+    public BaseResponse<String> createReplyLike(@RequestBody PostReplyLikeReq postReplyLikeReq){
+
+        try{
+            String result = likeService.createReplyLike(postReplyLikeReq);
             return new BaseResponse<>(result);
         }catch (BaseException exception){
             exception.printStackTrace();
