@@ -4,6 +4,7 @@ import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.src.question.domain.MyQuestionListRes;
 import com.mumulcom.mumulcom.src.question.domain.Question;
+
 import com.mumulcom.mumulcom.src.question.domain.SearchCodingQuestionRes;
 import com.mumulcom.mumulcom.src.question.domain.SearchConceptQuestionRes;
 import com.mumulcom.mumulcom.src.question.dto.*;
@@ -62,9 +63,9 @@ public class QuestionController {
 
     }
 
-    //20.유저의 최근(7일이내) 질문등 조회 /
+    //25.유저의 답변달린 질문 조회 /
     @ResponseBody
-    @GetMapping("/my/latest/{userIdx}")
+    @GetMapping("/my/reply/{userIdx}")
     public BaseResponse<List<GetRecQueRes>> getRecQuestions(@PathVariable("userIdx")long userIdx
                                                        ){
         try{

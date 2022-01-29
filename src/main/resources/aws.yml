@@ -1,10 +1,11 @@
 cloud:
   aws:
     credentials:
-      accessKey: AKIAXPTOFAQJ55H3XPEM
-      secretKey: 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
+      accessKey: AKIAV357HWRCLYASQCNA
+      secretKey: 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
+      instanceProfile: true
     s3:
-      bucket: mumulc-bucket
+      bucket: mumulcom-bucket
     region:
       static: ap-northeast-2
     stack:
