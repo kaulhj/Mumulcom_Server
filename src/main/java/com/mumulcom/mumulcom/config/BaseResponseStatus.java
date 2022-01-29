@@ -28,10 +28,10 @@ public enum BaseResponseStatus {
     // [POST] /users
     POST_USERS_EMPTY_EMAIL(false, 2015, "이메일을 입력해주세요."),
     POST_USERS_EMPTY_NAME(false, 2016, "이름을 입력해주세요."),
-    POST_USERS_EMPTY_NICKNAME(false, 2017, "닉네임을 입력해주세요."),
-    POST_USERS_EMPTY_GROUP(false, 2018, "소속을 입력해주세요."),
-    POST_USERS_INVALID_EMAIL(false, 2019, "이메일 형식을 확인해주세요."),
-    POST_USERS_INVALID_NICKNAME(false, 2020, "닉네임 형식을 확인해주세요."),
+    POST_USERS_EMPTY_GROUP(false, 2017, "소속을 입력해주세요."),
+    POST_USERS_INVALID_EMAIL(false, 2018, "이메일 형식을 확인해주세요."),
+    POST_USERS_INVALID_NICKNAME(false, 2019, "닉네임 형식을 확인해주세요."),
+    POST_USERS_SIZE_NICKNAME(false, 2020, "닉네임은 2글자 이상 8글자 이하여야 합니다."),
     POST_USERS_EXISTS_EMAIL(false, 2021, "이미 가입된 이메일입니다."),
     POST_USERS_EXISTS_NICKNAME(false, 2022, "이미 사용중인 닉네임입니다."),
 
