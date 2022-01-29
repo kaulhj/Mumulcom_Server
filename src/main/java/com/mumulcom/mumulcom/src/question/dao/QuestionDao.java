@@ -433,7 +433,7 @@ public class QuestionDao {
                 "from (select q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt as updatedAt, content, likeCount, replyCount\n" +
                 "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
                 "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                "from Question q left join (select questionIdx, count(*) likeCount from `Like` group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                 "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                 "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                 "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
@@ -465,7 +465,7 @@ public class QuestionDao {
                 "from (select q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt as updatedAt, c.currentError, c.myCodingSkill, likeCount, replyCount\n" +
                 "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
                 "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                "from Question q left join (select questionIdx, count(*) likeCount from `Like` group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                 "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                 "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                 "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
@@ -500,7 +500,7 @@ public class QuestionDao {
                 "(select u.userIdx, q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt as updatedAt, likeCount, replyCount\n" +
                 "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
                 "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                "from Question q left join (select questionIdx, count(*) likeCount from `Like` group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                 "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                 "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                 "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
@@ -509,7 +509,7 @@ public class QuestionDao {
                 "select u.userIdx, q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt as updatedAt, likeCount, replyCount\n" +
                 "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
                 "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                "from Question q left join (select questionIdx, count(*) likeCount from `Like` group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                 "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                 "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                 "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +

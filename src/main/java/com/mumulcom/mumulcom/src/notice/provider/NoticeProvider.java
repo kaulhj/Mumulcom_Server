@@ -1,9 +1,8 @@
-package com.mumulcom.mumulcom.src.reply.provider;
-
+package com.mumulcom.mumulcom.src.notice.provider;
 
 import com.mumulcom.mumulcom.config.BaseException;
-import com.mumulcom.mumulcom.src.reply.dao.MyReplyListDao;
-import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
+import com.mumulcom.mumulcom.src.notice.dao.NoticeDao;
+import com.mumulcom.mumulcom.src.notice.repository.GetNoticeRes;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,23 +14,23 @@ import java.util.List;
 import static com.mumulcom.mumulcom.config.BaseResponseStatus.DATABASE_ERROR;
 
 @Service
-public class MyReplyProvider {
-    private final MyReplyListDao myReplyListDao;
+public class NoticeProvider {
+    private final NoticeDao noticeDao;
     private final JwtService jwtService;
 
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public MyReplyProvider(MyReplyListDao myReplyListDao, JwtService jwtService){
-        this.myReplyListDao = myReplyListDao;
+    public NoticeProvider( NoticeDao noticeDao, JwtService jwtService){
+        this.noticeDao = noticeDao;
         this.jwtService = jwtService;
     }
 
-    public List<MyReplyListRes> myReplyListResList (int userIdx) throws BaseException {
+    public List<GetNoticeRes> getNoticeResList(int userIcx) throws BaseException {
         try {
-            List<MyReplyListRes> myReplyListRes = myReplyListDao.myReplyListResList(userIdx);
-            return myReplyListRes;
+            List<GetNoticeRes> getNoticeList = noticeDao.noticeList(userIcx);
+            return getNoticeList;
         } catch (Exception exception){
             exception.printStackTrace();
             throw new BaseException(DATABASE_ERROR);
