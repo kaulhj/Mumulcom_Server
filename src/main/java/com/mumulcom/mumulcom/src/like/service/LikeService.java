@@ -2,13 +2,11 @@ package com.mumulcom.mumulcom.src.like.service;
 
 
 import com.mumulcom.mumulcom.config.BaseException;
-import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.like.dao.LikeDao;
-import com.mumulcom.mumulcom.src.like.dto.PostLikeReq;
+import com.mumulcom.mumulcom.src.like.dto.PostQueLikeReq;
+import com.mumulcom.mumulcom.src.like.dto.PostReplyLikeReq;
 import com.mumulcom.mumulcom.src.like.provider.LikeProvider;
-import com.mumulcom.mumulcom.src.scrap.provider.ScrapProvider;
-import com.mumulcom.mumulcom.src.scrap.service.ScrapService;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,9 +29,19 @@ public class LikeService {
     }
 
 
-    public String createLike(PostLikeReq postLikeReq)throws BaseException{
+    public String createLike(PostQueLikeReq postQueLikeReq)throws BaseException{
         try{
-            String result = likeDao.createLike(postLikeReq);
+            String result = likeDao.createLike(postQueLikeReq);
+            return new String(result);
+        }catch (Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    public String createReplyLike(PostReplyLikeReq postReplyLikeReq)throws BaseException{
+        try{
+            String result = likeDao.createReplyLike(postReplyLikeReq);
             return new String(result);
         }catch (Exception exception){
             exception.printStackTrace();
