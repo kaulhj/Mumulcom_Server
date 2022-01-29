@@ -92,4 +92,20 @@ public class ReplyDao {
                 ), userIdx);
     }
 
+    // 해당 답변 idx를 가지고 질문자 알아내기
+    public int getQuestionWriter (int replyIdx) {
+        String getQuestionWriterQuery = "select q.userIdx as writer\n" +
+                "from Reply r join Question q on r.questionIdx = q.questionIdx\n" +
+                "where replyIdx = ?";
+        return this.jdbcTemplate.queryForObject(getQuestionWriterQuery,int.class,replyIdx);
+    }
+
+    /**
+     * 휘정 채택하기 API
+     * 채택된 답변의 status는 adopted
+     * */
+    public int adoptReply (int replyIdx) {
+        String adoptReplyQuery = "update Reply set status = 'adopted' where replyIdx = ?";
+        return this.jdbcTemplate.update(adoptReplyQuery,replyIdx); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
+    }
 }

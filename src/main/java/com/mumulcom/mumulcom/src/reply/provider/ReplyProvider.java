@@ -37,4 +37,14 @@ public class ReplyProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public int getQuestionWriter (int replyIdx) throws BaseException {
+        try {
+            int questionWriter = replyDao.getQuestionWriter(replyIdx);
+            return questionWriter;
+        }  catch (Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
