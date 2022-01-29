@@ -30,8 +30,8 @@ public class ValidationHandler {
                 }
                 break;
             case "nickname":
-                if (code.equals("NotBlank")) {
-                    return new BaseResponse<>(BaseResponseStatus.POST_USERS_EMPTY_NICKNAME);
+                if (code.equals("Size")) {
+                    return new BaseResponse<>(BaseResponseStatus.POST_USERS_SIZE_NICKNAME);
                 } else if (code.equals("Pattern")) {
                     return new BaseResponse<>(BaseResponseStatus.POST_USERS_INVALID_NICKNAME);
                 }
