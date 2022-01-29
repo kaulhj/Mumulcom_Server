@@ -32,7 +32,7 @@ public class QuestionDao {
                 "       count(CASE WHEN Q.questionIdx = L.questionIdx then 1 END )as LikeCount\n" +
                 "FROM\n" +
                 "Question Q\n" +
-                "INNER JOIN `Like` L ON Q.questionIdx = L.questionIdx\n" +
+                "INNER JOIN `QuestionLike` L ON Q.questionIdx = L.questionIdx\n" +
                 "where Q.userIdx = ?\n" +
                 "group by Q.questionIdx\n" +
                 "order by Q.questionIdx desc limit 1";
@@ -79,7 +79,7 @@ public class QuestionDao {
                 "       count(CASE WHEN Q.questionIdx = L.questionIdx then 1 END )as LikeCount\n" +
                 "FROM\n" +
                 "Question Q\n" +
-                "INNER JOIN `Like` L ON Q.questionIdx = L.questionIdx\n" +
+                "INNER JOIN `QuestionLike` L ON Q.questionIdx = L.questionIdx\n" +
                 "where Q.userIdx = ?\n" +
                 "group by Q.questionIdx\n" +
                 "order by Q.questionIdx desc limit 1 offset ?";
@@ -130,7 +130,7 @@ public class QuestionDao {
                 "    count(distinct Q.questionIdx)\n" +
                 "    FROM\n" +
                 "Question Q\n" +
-                "INNER JOIN `Like` L ON Q.questionIdx = L.questionIdx\n" +
+                "INNER JOIN `QuestionLike` L ON Q.questionIdx = L.questionIdx\n" +
                 "where Q.userIdx = ?\n" +
                 "#group by Q.questionIdx\n" +
                 "order by Q.questionIdx desc";
@@ -142,7 +142,7 @@ public class QuestionDao {
                 "       count(CASE WHEN Q.questionIdx = L.questionIdx then 1 END )as LikeCount\n" +
                 "FROM\n" +
                 "Question Q\n" +
-                "INNER JOIN `Like` L ON Q.questionIdx = L.questionIdx\n" +
+                "INNER JOIN `QuestionLike` L ON Q.questionIdx = L.questionIdx\n" +
                 "where Q.userIdx = ?\n" +
                 "group by Q.questionIdx\n" +
                 "order by Q.questionIdx desc limit 1 offset ?";

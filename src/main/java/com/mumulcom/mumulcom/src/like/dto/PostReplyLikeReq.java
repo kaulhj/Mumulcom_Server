@@ -7,8 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 
-public class PostLikeReq {
-    private long questionIdx;
-    private long userIdx;
+public class PostReplyLikeReq {
     private long replyIdx;
+    private long userIdx;
 }
