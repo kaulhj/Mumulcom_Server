@@ -14,33 +14,35 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-
-
-@RequiredArgsConstructor
 @RestController
+@RequestMapping("/s3")
+@RequiredArgsConstructor
 public class S3Controller {
 
     @Autowired
-    private final S3Uploader s3Uploader;
+    private S3Uploader s3Uploader;
+
 
     @PostMapping("/images")
-    public BaseResponse<List<String>> upload(@RequestParam("images") MultipartFile[] multipartFile) {
+    public BaseResponse<List<String>> upload(@RequestParam("images") MultipartFile[] multipartFile)  {
         try {
             List<MultipartFile> fileNames = new ArrayList<>();
             List<String> urlList = new ArrayList<>();
-            for (int i = 0; i < multipartFile.length; i++) {
+            for(int i=0;i<multipartFile.length;i++) {
                 fileNames.add(multipartFile[i]);
-                String imagePath1 = s3Uploader.upload(multipartFile[i], "static");
+                String imagePath1 = s3Uploader.upload(fileNames.get(i), "static");
                 urlList.add(imagePath1);
             }
             return new BaseResponse<>(urlList);
-        } catch (IOException exception) {
+        }catch(Exception exception){
             exception.printStackTrace();
             List<String> mylist = Collections.singletonList("이미지 전송 실패");
             return new BaseResponse<>(mylist);
         }
 
     }
+
+
 
     /*
     @ResponseBody
