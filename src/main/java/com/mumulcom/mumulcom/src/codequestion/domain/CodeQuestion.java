@@ -1,4 +1,4 @@
-package com.mumulcom.mumulcom.src.codeQuestion.domain;
+package com.mumulcom.mumulcom.src.codequestion.domain;
 
 import com.mumulcom.mumulcom.src.BaseTimeEntity;
 import lombok.*;

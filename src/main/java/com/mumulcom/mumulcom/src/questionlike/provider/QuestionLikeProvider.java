@@ -1,7 +1,7 @@
-package com.mumulcom.mumulcom.src.QuestionLike.provider;
+package com.mumulcom.mumulcom.src.questionlike.provider;
 
 
-import com.mumulcom.mumulcom.src.QuestionLike.dao.QuestionLikeDao;
+import com.mumulcom.mumulcom.src.questionlike.dao.QuestionLikeDao;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
