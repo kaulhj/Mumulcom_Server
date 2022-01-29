@@ -32,7 +32,8 @@ public class UserController {
     @PostMapping
     public BaseResponse<SignUpRes> createUser(@RequestBody @Valid SignUpReq signUpReq) {
         try {
-            return new BaseResponse<>(userService.join(signUpReq));
+            SignUpRes result = userService.join(signUpReq);
+            return new BaseResponse<>(result);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -44,8 +45,8 @@ public class UserController {
     @PostMapping("/login")
     public BaseResponse<SignInRes> login(@RequestBody @Valid SignInReq signInReq) {
         try {
-            SignInRes signInRes = userService.login(signInReq);
-            return new BaseResponse<>(signInRes);
+            SignInRes result = userService.login(signInReq);
+            return new BaseResponse<>(result);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -57,8 +58,8 @@ public class UserController {
     @GetMapping("/{userIdx}")
     public BaseResponse<UserDto.UserRes> getUser(@PathVariable Long userIdx) {
         try {
-            UserDto.UserRes user = userService.getUser(userIdx);
-            return new BaseResponse<>(user);
+            UserDto.UserRes result = userService.getUser(userIdx);
+            return new BaseResponse<>(result);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -68,14 +69,31 @@ public class UserController {
      * 회원정보 수정 API
      */
     @PatchMapping("/{userIdx}")
-    public BaseResponse<UserDto.UserRes> modifyUser(@PathVariable Long userIdx, @RequestBody UserDto.PatchReq patchReq) {
+    public BaseResponse<UserDto.UserRes> modifyUser(@PathVariable Long userIdx, @RequestBody @Valid UserDto.PatchReq patchReq) {
         try {
             Long userIdxByJwt = jwtService.getUserIdx();
             if (!userIdxByJwt.equals(userIdx)) {
                 throw new BaseException(BaseResponseStatus.INVALID_JWT);
             }
-            UserDto.UserRes user = userService.updateUser(patchReq);
-            return new BaseResponse<>(user);
+            UserDto.UserRes result = userService.updateUser(patchReq);
+            return new BaseResponse<>(result);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 회원 탈퇴
+     */
+    @PatchMapping("/deletion/{userIdx}")
+    public BaseResponse<UserDto.UserRes> deleteUser(@PathVariable Long userIdx) {
+        try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
+            UserDto.UserRes result = userService.deleteUser(userIdx);
+            return new BaseResponse<>(result);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
