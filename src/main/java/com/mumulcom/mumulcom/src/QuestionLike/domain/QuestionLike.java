@@ -1,4 +1,4 @@
-package com.mumulcom.mumulcom.src.like.domain;
+package com.mumulcom.mumulcom.src.QuestionLike.domain;
 
 import com.mumulcom.mumulcom.src.BaseTimeEntity;
 import lombok.*;
@@ -8,15 +8,15 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "Like")
+@Table(name = "QuestionLike")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class Like extends BaseTimeEntity {
+public class QuestionLike extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long likeIdx;
+    private Long questionLikeIdx;
     private Long questionIdx;
     private Long userIdx;
 

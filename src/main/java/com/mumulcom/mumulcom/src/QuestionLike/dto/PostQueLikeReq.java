@@ -1,4 +1,4 @@
-package com.mumulcom.mumulcom.src.like.dto;
+package com.mumulcom.mumulcom.src.QuestionLike.dto;
 
 import lombok.*;
 

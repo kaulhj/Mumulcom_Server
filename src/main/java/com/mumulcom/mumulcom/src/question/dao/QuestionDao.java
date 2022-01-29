@@ -289,7 +289,7 @@ public class QuestionDao {
     }
     
     /**
-     * 5번 API
+     * yeji 5번 API
      * 코딩 질문 조회
      */
     public List<GetCodingQuestionRes> getCodingQuestions(int questionIdx) {
@@ -299,7 +299,7 @@ public class QuestionDao {
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
                         "INNER JOIN CodeQuestion CQ on q.questionIdx = CQ.questionIdx\n" +
-                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` WHERE questionIdx = ?) l\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` WHERE questionIdx = ?) l\n" +
                         "ON q.questionIdx = l.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
                         "ON q.questionIdx = r.questionIdx\n" +
@@ -322,7 +322,7 @@ public class QuestionDao {
     }
 
     /**
-     * 6번 API
+     * yeji 6번 API
      * 개념 질문 조회
      */
     public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx) {
@@ -332,7 +332,7 @@ public class QuestionDao {
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
                         "INNER JOIN ConceptQuestion CQ on q.questionIdx = CQ.questionIdx\n" +
-                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` WHERE questionIdx = ?) l\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` WHERE questionIdx = ?) l\n" +
                         "ON q.questionIdx = l.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
                         "ON q.questionIdx = r.questionIdx\n" +
@@ -357,10 +357,10 @@ public class QuestionDao {
      * yeji 7번 API
      * 카테고리별 질문 목록 조회 API (최신순, 핫한순 정렬)
      */
-    public List<GetQuestionListRes> getQuestionsByCategory(int sort, int bigCategoryIdx, int smallCategoryIdx) {
+    public List<GetQuestionListRes> getQuestionsByCategory(int sort, int bigCategoryIdx, int smallCategoryIdx, boolean isReplied, int lastQuestionIdx, int perPage) {
         String getQuestionsQuery;
         String orderBy = "";
-        int getQuestionsParams;
+        Object[] getQuestionsParams;
 
         if (sort == 1) {
             orderBy = "q.createdAt";
@@ -369,29 +369,57 @@ public class QuestionDao {
         }
 
         if(smallCategoryIdx == 0) {
-            getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, q.bigCategoryIdx, q.smallCategoryIdx, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
-                    "FROM User u\n" +
-                    "INNER JOIN Question q\n" +
-                    "on u.userIdx = q.userIdx\n" +
-                    "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` group by questionIdx) l\n" +
-                    "ON q.questionIdx = l.questionIdx\n" +
-                    "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply group by questionIdx) r\n" +
-                    "ON q.questionIdx = r.questionIdx\n" +
-                    "where q.bigCategoryIdx = ?\n" +
-                    "order by "+ orderBy +" desc";
-            getQuestionsParams = bigCategoryIdx;
+            if(isReplied == true) {
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, q.bigCategoryIdx, q.smallCategoryIdx, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                        "FROM User u\n" +
+                        "INNER JOIN Question q\n" +
+                        "on u.userIdx = q.userIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` group by questionIdx) l\n" +
+                        "ON q.questionIdx = l.questionIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply group by questionIdx) r\n" +
+                        "ON q.questionIdx = r.questionIdx\n" +
+                        "where q.bigCategoryIdx = ?\n and exists(select * from Reply r where(r.questionIdx=q.questionIdx))" +
+                        "order by "+ orderBy +" desc\n" +
+                        "limit ?, ?";
+            } else {
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, q.bigCategoryIdx, q.smallCategoryIdx, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                        "FROM User u\n" +
+                        "INNER JOIN Question q\n" +
+                        "on u.userIdx = q.userIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` group by questionIdx) l\n" +
+                        "ON q.questionIdx = l.questionIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply group by questionIdx) r\n" +
+                        "ON q.questionIdx = r.questionIdx\n" +
+                        "where q.bigCategoryIdx = ?\n" +
+                        "order by "+ orderBy +" desc\n" +
+                        "limit ?, ?";
+            } getQuestionsParams = new Object[]{bigCategoryIdx, lastQuestionIdx, perPage};
         } else {
-            getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, q.bigCategoryIdx, q.smallCategoryIdx, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
-                    "FROM User u\n" +
-                    "INNER JOIN Question q\n" +
-                    "on u.userIdx = q.userIdx\n" +
-                    "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `Like` group by questionIdx) l\n" +
-                    "ON q.questionIdx = l.questionIdx\n" +
-                    "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply group by questionIdx) r\n" +
-                    "ON q.questionIdx = r.questionIdx\n" +
-                    "where q.smallCategoryIdx = ?\n" +
-                    "order by "+ orderBy +" desc";
-            getQuestionsParams = smallCategoryIdx;
+            if(isReplied == true) {
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, q.bigCategoryIdx, q.smallCategoryIdx, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                        "FROM User u\n" +
+                        "INNER JOIN Question q\n" +
+                        "on u.userIdx = q.userIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` group by questionIdx) l\n" +
+                        "ON q.questionIdx = l.questionIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply group by questionIdx) r\n" +
+                        "ON q.questionIdx = r.questionIdx\n" +
+                        "where q.smallCategoryIdx = ?\n and exists(select * from Reply r where(r.questionIdx=q.questionIdx))" +
+                        "order by "+ orderBy +" desc\n" +
+                        "limit ?, ?";
+            } else {
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, q.bigCategoryIdx, q.smallCategoryIdx, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                        "FROM User u\n" +
+                        "INNER JOIN Question q\n" +
+                        "on u.userIdx = q.userIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` group by questionIdx) l\n" +
+                        "ON q.questionIdx = l.questionIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply group by questionIdx) r\n" +
+                        "ON q.questionIdx = r.questionIdx\n" +
+                        "where q.smallCategoryIdx = ?\n" +
+                        "order by "+ orderBy +" desc\n" +
+                        "limit ?, ?";
+            } getQuestionsParams = new Object[]{smallCategoryIdx, lastQuestionIdx, perPage};
         }
 
         return this.jdbcTemplate.query(getQuestionsQuery,
