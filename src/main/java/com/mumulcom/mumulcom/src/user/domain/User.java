@@ -37,4 +37,8 @@ public class User extends BaseTimeEntity {
     public void updateUserInfo(UserDto.PatchReq patchReq) {
         this.nickname = patchReq.getNickname();
     }
+
+    public void deleteUser() {
+        this.status = "Inactive";
+    }
 }
