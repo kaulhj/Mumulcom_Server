@@ -191,7 +191,7 @@ public class QuestionDao {
 
     //3. 코딩질문하기
     @Transactional
-    public String codeQuestion(CodeQuestionReq codeQuestionReq) {
+    public String codeQuestion(List<String> imgUrls, CodeQuestionReq codeQuestionReq) {
 
         String InsertQueQuery = "INSERT INTO Question(userIdx,bigCategoryIdx,\n" +
                 "                     smallCategoryIdx,title)\n" +
@@ -218,9 +218,11 @@ public class QuestionDao {
 
         //String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
         //Object[] InsImgTabParams = new Object[]{lastQueId, codeQuestionReq.getImageUrls()};
+
+        //이미지에 넣기
         String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
-        for (int i = 0; i < codeQuestionReq.getImageUrls().size(); i++) {
-            Object[] InsImgTabParams = new Object[]{lastQueId, codeQuestionReq.getImageUrls().get(i)};
+        for (String img : imgUrls) {
+            Object[] InsImgTabParams = new Object[]{lastQueId, img};
             this.jdbcTemplate.update(InsImgTabQuery, InsImgTabParams);
         }
         return new String("코딩질문이 등록되었습니다");
