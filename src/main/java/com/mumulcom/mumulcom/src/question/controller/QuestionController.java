@@ -79,7 +79,7 @@ public class QuestionController {
 
     //3. 코딩질문하기
     @ResponseBody
-    @PostMapping("/create/coding") //임시로 바꾸기
+    @PostMapping("/coding") //임시로 바꾸기
     public BaseResponse<String> codeQuestion(
             @RequestPart(value = "images", required = false) List<MultipartFile> multipartFile,
             @RequestPart(value = "codeQuestionReq") CodeQuestionReq codeQuestionReq){
