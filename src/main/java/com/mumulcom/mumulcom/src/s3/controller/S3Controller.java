@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
+/*
 @RestController
 @RequestMapping("/s3")
 @RequiredArgsConstructor
@@ -44,7 +44,7 @@ public class S3Controller {
 
 
 
-    /*
+
     @ResponseBody
     @GetMapping("/find")
     public BaseResponse<String> findImg() {
@@ -54,5 +54,6 @@ public class S3Controller {
         //Assertions.assertThat(imgPath).isNotNull();
     }
 
-     */
-}
+
+
+*/

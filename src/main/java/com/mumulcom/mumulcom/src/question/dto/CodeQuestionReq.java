@@ -10,14 +10,14 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+@Data
 public class CodeQuestionReq {
     private long userIdx;
-    private List<String> imageUrls;
+ //   private List<String> imageUrls;
     private String currentError;
     private String myCodingSkill;
     private long bigCategoryIdx;
     private long smallCategoryIdx;
-    private String title;
+    private String title;// 코드 퀘스천 url?
 
 }
