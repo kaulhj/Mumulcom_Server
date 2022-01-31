@@ -41,24 +41,16 @@ public class QuestionController {
 
 
 
-    //2.21 유저의 최근(7일 이내)  질문등 조회/....옆으로 스크롤 시 그 이전 질문 보이기(4개까지)
+    //9. 나의 최근 질문 최대 4개(로그인 시 메인 화면 스크롤 기능)
     @ResponseBody
-    @GetMapping("/my/home/{userIdx}")
-    public BaseResponse<GetRecQueRes> getRecentQuestion(@PathVariable("userIdx")long userIdx,
-                                                        @RequestParam(required = false) String page){
+    @GetMapping("/latest/{userIdx}")
+    public BaseResponse<List<GetRecQueRes>> getRecQuestion(@PathVariable("userIdx")long userIdx
+    ){
         try{
-            if(page !=null){
-                int pages = Integer.parseInt(page)-1;
-                GetRecQueRes getRecQueRes = questionProvider.getRecQueByPage(userIdx, pages);
-                return new BaseResponse<>(getRecQueRes);
-            }
-        }catch (BaseException exception){
-            return new BaseResponse<>(exception.getStatus());
-        }
-        try{
-            GetRecQueRes getRecQueRes = questionProvider.getRecentQuestion(userIdx);
+            List<GetRecQueRes> getRecQueRes = questionProvider.getRecQuestion(userIdx);
             return new BaseResponse<>(getRecQueRes);
         }catch (BaseException exception){
+            exception.printStackTrace();
             return new BaseResponse<>(exception.getStatus());
         }
 

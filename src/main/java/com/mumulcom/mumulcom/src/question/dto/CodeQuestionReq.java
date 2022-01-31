@@ -19,5 +19,6 @@ public class CodeQuestionReq {
     private long bigCategoryIdx;
     private long smallCategoryIdx;
     private String title;// 코드 퀘스천 url?
+    private String codeQuestionUrl;
 
 }

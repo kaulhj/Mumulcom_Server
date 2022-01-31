@@ -39,27 +39,19 @@ public class QuestionProvider {
 
 
 
-//2.
-   public GetRecQueRes getRecentQuestion(long userIdx) throws BaseException {
-      try{
-         GetRecQueRes getRecQueRes = questionDao.getRecentQuestion(userIdx);
-         return getRecQueRes;
-      }catch (Exception exception){{
-         exception.printStackTrace();
-         throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
-      }}
+//학준 9. 최근질문 최대 4개 조회
+public List<GetRecQueRes> getRecQuestion(long userIdx) throws BaseException{
+   try{
+      List<GetRecQueRes> getRecQueRes = questionDao.getRecQuestion(userIdx);
+      return getRecQueRes;
+   }catch (Exception exception){
+      exception.printStackTrace();
+      throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
    }
+}
 
-   //21.
-   public GetRecQueRes getRecQueByPage(long userIdx, int pages) throws BaseException {
-      try{
-         GetRecQueRes getRecQueRes = questionDao.getRecQueByPage(userIdx,pages);
-         return getRecQueRes;
-      }catch (Exception exception){{
-         exception.printStackTrace();
-         throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
-      }}
-   }
+
+
 
    //20
    public List<GetRecQueRes> getRecQuestions(long userIdx) throws BaseException{

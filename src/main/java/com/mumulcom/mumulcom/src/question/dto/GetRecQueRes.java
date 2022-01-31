@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 
 public class GetRecQueRes {
+    private long questionIdx;   //최근질문 순서, 가장최근 : 1
     private long BigCategory;
     private long SmallCategory;
     private String Name;

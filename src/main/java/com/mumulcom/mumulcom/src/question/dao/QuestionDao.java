@@ -24,73 +24,46 @@ public class QuestionDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    //2.
+
+
+    //학준 9. 최근질문(최대4개 및 전체 개수 반환)
     @Transactional
-    public GetRecQueRes getRecentQuestion(long userIdx){
-        //like값 가져오기
-        String getRecQueQuery1 = "SELECT\n" +
-                "       count(CASE WHEN Q.questionIdx = L.questionIdx then 1 END )as LikeCount\n" +
-                "FROM\n" +
+    public List<GetRecQueRes> getRecQuestion(long userIdx){
+
+        //데이터 갯수 구하기
+        String countQuery = "SELECT\n" +
+                "    count(distinct Q.questionIdx)\n" +
+                "    FROM\n" +
                 "Question Q\n" +
-                "INNER JOIN `QuestionLike` L ON Q.questionIdx = L.questionIdx\n" +
+                "LEFT JOIN `QuestionLike` L ON Q.questionIdx = L.questionIdx\n" +
                 "where Q.userIdx = ?\n" +
-                "group by Q.questionIdx\n" +
-                "order by Q.questionIdx desc limit 1";
-        long getRecQueParam = userIdx;
-         long reply  = this.jdbcTemplate.queryForObject(getRecQueQuery1,
-                long.class,
-                getRecQueParam);
+                "#group by Q.questionIdx\n" +
+                "order by Q.questionIdx desc limit 4";
+        int countSize = this.jdbcTemplate.queryForObject(countQuery,int.class,userIdx);
 
-        //나머지 값들 조회
-        String getRecQueQuery2 = "SELECT q.questionIdx,q.bigCategoryIdx,q.smallCategoryIdx,u.name,\n" +
-                "              concat(MONTH(q.createdAt),'/',day(q.createdAt),',',substring(year(q.createdAt),-2))as created\n" +
-                " ,count(CASE WHEN q.questionIdx = r.questionIdx then 1 END )as replies\n" +
-                ",title \n" +
-                " FROM\n" +
-                "\n" +
-                "      Question q\n" +
-                "          INNER JOIN User u on q.userIdx = u.userIdx\n" +
-                "INNER JOIN BigCategory b on q.bigCategoryIdx = b.bigCategoryIdx\n" +
-                "INNER JOIN SmallCategory s on q.smallCategoryIdx = s.smallCategoryIdx\n" +
-                "\n" +
-                "INNER JOIN Reply r on q.questionIdx = r.questionIdx\n" +
-                "\n" +
-                "\n" +
-                "where q.userIdx = ?\n" +
-                "group by questionIdx\n" +
-                "order by created desc limit 1";
-        return this.jdbcTemplate.queryForObject(getRecQueQuery2,
-                (rs, rowNum) -> new GetRecQueRes(
-                        rs.getLong("bigCategoryIdx"),
-                        rs.getLong("smallCategoryIdx"),
-                        rs.getString("name"),
-                        rs.getString("created"),
-                        rs.getLong("replies"),
-                        rs.getString("title"),
-                        reply
-                ),
-                getRecQueParam);
 
-    }
-
-    //21. 홈화면 최근질문 페이징조회
-    public GetRecQueRes getRecQueByPage(long userIdx, int pages) {
-        String getRecQueQuery1 = "SELECT\n" +
+        //좋아요 값 배열에 넣기
+        String getRecQueQuery =  "SELECT\n" +
                 "       count(CASE WHEN Q.questionIdx = L.questionIdx then 1 END )as LikeCount\n" +
                 "FROM\n" +
                 "Question Q\n" +
-                "INNER JOIN `QuestionLike` L ON Q.questionIdx = L.questionIdx\n" +
+                "LEFT JOIN `QuestionLike` L ON Q.questionIdx = L.questionIdx\n" +
                 "where Q.userIdx = ?\n" +
                 "group by Q.questionIdx\n" +
                 "order by Q.questionIdx desc limit 1 offset ?";
 
-        Object[] getRecQueParam = new Object[]{userIdx, pages};
-        long reply = this.jdbcTemplate.queryForObject(getRecQueQuery1,
-                long.class,
-                getRecQueParam);
+        List<Long> reply = new ArrayList<>();
 
-        //나머지 값들 조회
-        String getRecQueQuery2 = "SELECT q.questionIdx,q.bigCategoryIdx,q.smallCategoryIdx,u.name,\n" +
+        for(int i=0;i<countSize;i++) {
+            Object[] getReqQueParams = new Object[]{userIdx, i};
+            reply.add(this.jdbcTemplate.queryForObject(getRecQueQuery,
+                    long.class,
+                    getReqQueParams));
+        }
+
+
+        //배열 객체에 매핑
+        String GetListQueQuery = "SELECT q.questionIdx,q.bigCategoryIdx,q.smallCategoryIdx,u.name,\n" +
                 "              concat(MONTH(q.createdAt),'/',day(q.createdAt),',',substring(year(q.createdAt),-2))as created\n" +
                 " ,count(CASE WHEN q.questionIdx = r.questionIdx then 1 END )as replies\n" +
                 ",title \n" +
@@ -101,28 +74,27 @@ public class QuestionDao {
                 "INNER JOIN BigCategory b on q.bigCategoryIdx = b.bigCategoryIdx\n" +
                 "INNER JOIN SmallCategory s on q.smallCategoryIdx = s.smallCategoryIdx\n" +
                 "\n" +
-                "INNER JOIN Reply r on q.questionIdx = r.questionIdx\n" +
+                "LEFT JOIN Reply r on q.questionIdx = r.questionIdx\n" +
                 "\n" +
                 "\n" +
                 "where q.userIdx = ?\n" +
                 "group by questionIdx\n" +
-                "order by created desc limit 1 offset ?";
-        return this.jdbcTemplate.queryForObject(getRecQueQuery2,
+                "order by created desc limit 4";
+        return this.jdbcTemplate.query(GetListQueQuery,
                 (rs, rowNum) -> new GetRecQueRes(
+                        rowNum+1,
                         rs.getLong("bigCategoryIdx"),
                         rs.getLong("smallCategoryIdx"),
                         rs.getString("name"),
                         rs.getString("created"),
                         rs.getLong("replies"),
                         rs.getString("title"),
-                        reply
-                ),
-                getRecQueParam);
-
+                        reply.get(rowNum)),
+                userIdx);
     }
 
 
-    //20.
+    //16
     @Transactional
     public List<GetRecQueRes> getRecQuestions(long userIdx){
 
@@ -177,6 +149,7 @@ public class QuestionDao {
                 "order by created desc";
         return this.jdbcTemplate.query(GetListQueQuery,
                 (rs, rowNum) -> new GetRecQueRes(
+                        rs.getLong(rowNum),
                         rs.getLong("bigCategoryIdx"),
                         rs.getLong("smallCategoryIdx"),
                         rs.getString("name"),
@@ -192,14 +165,16 @@ public class QuestionDao {
     //3. 코딩질문하기
     @Transactional
     public String codeQuestion(List<String> imgUrls, CodeQuestionReq codeQuestionReq) {
-
+        //Question 테이블에 데이터 주입
         String InsertQueQuery = "INSERT INTO Question(userIdx,bigCategoryIdx,\n" +
-                "                     smallCategoryIdx,title)\n" +
+                "                     smallCategoryIdx,title )\n" +
                 "                     VALUES (?,?,?,?)";
         Object[] InsertQueParams = new Object[]{codeQuestionReq.getUserIdx(), codeQuestionReq.getBigCategoryIdx(),
                 codeQuestionReq.getSmallCategoryIdx(), codeQuestionReq.getTitle()};
         this.jdbcTemplate.update(InsertQueQuery, InsertQueParams);
 
+
+        //마지막 퀘스천인덱스 값 가져오기
         String lastQueIdQuery = " SELECT questionIdx\n" +
                 " FROM\n" +
                 "     Question\n" +
@@ -209,10 +184,12 @@ public class QuestionDao {
                 long.class
         );
 
-        String CodQueTabQue = "INSERT INTO CodeQuestion(questionIdx, currentError,myCodingSkill)\n" +
-                "VALUES (?,?,?)";
+
+        //코딩질문 테이블에 데이터 주입
+        String CodQueTabQue = "INSERT INTO CodeQuestion(questionIdx, currentError,myCodingSkill,codeQuestionUrl)\n" +
+                "VALUES (?,?,?,?)";
         Object[] CodQueTabParams = new Object[]{lastQueId, codeQuestionReq.getCurrentError(),
-                codeQuestionReq.getMyCodingSkill()};
+                codeQuestionReq.getMyCodingSkill(),codeQuestionReq.getCodeQuestionUrl()};
 
         this.jdbcTemplate.update(CodQueTabQue, CodQueTabParams);
 
