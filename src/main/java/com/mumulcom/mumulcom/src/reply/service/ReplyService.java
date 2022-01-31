@@ -2,6 +2,7 @@ package com.mumulcom.mumulcom.src.reply.service;
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.src.reply.dao.ReplyDao;
+import com.mumulcom.mumulcom.src.reply.dto.GetReplyRes;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
 import com.mumulcom.mumulcom.utils.JwtService;
@@ -10,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+
+import java.util.List;
 
 import static com.mumulcom.mumulcom.config.BaseResponseStatus.DATABASE_ERROR;
 import static com.mumulcom.mumulcom.config.BaseResponseStatus.FAILED_ADOPT_REPLY;
@@ -28,12 +31,27 @@ public class ReplyService {
     }
 
     /**
-     * yeji 8번 API
+     * yeji
+     * 답변 생성 API
      */
     public PostReplyRes createReply(PostReplyReq postReplyReq) throws BaseException {
         try {
             PostReplyRes postReplyRes = replyDao.creatReply(postReplyReq);
             return postReplyRes;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    /**
+     * yeji
+     * 전체 답변 조회 API
+     */
+    public List<GetReplyRes> getReplyList(int questionIdx) throws BaseException {
+        try {
+            List<GetReplyRes> getReplyRes = replyDao.getReplyList(questionIdx);
+            return getReplyRes;
         } catch (Exception exception) {
             exception.printStackTrace();
             throw new BaseException(DATABASE_ERROR);

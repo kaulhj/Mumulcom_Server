@@ -309,6 +309,7 @@ public class QuestionDao {
                         "ON q.questionIdx = r.questionIdx\n" +
                         "WHERE q.questionIdx = ?";
         int getCodingQuestionParams = questionIdx;
+
         return this.jdbcTemplate.query(getCodingQuestionQuery,
                 (rs, rowNum) -> new GetCodingQuestionRes(
                         rs.getLong("questionIdx"),
@@ -344,6 +345,7 @@ public class QuestionDao {
                         "ON q.questionIdx = r.questionIdx\n" +
                         "WHERE q.questionIdx = ?";
         int getConceptQuestionParams = questionIdx;
+        
         return this.jdbcTemplate.query(getConceptQuestionQuery,
                 (rs, rowNum) -> new GetConceptQuestionRes(
                         rs.getLong("questionIdx"),
