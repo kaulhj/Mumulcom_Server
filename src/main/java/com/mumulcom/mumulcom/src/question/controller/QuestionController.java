@@ -41,7 +41,42 @@ public class QuestionController {
 
 
 
-    //9. 나의 최근 질문 최대 4개(로그인 시 메인 화면 스크롤 기능)
+
+
+    //학준 7. 코딩질문하기
+    @ResponseBody
+    @PostMapping("/coding")
+    public BaseResponse<String> codeQuestion(
+            @RequestPart(value = "images", required = false) List<MultipartFile> multipartFile,
+            @RequestPart(value = "codeQuestionReq") CodeQuestionReq codeQuestionReq){
+        try{
+            List<String> imageUrls = questionService.uploadS3image(multipartFile, codeQuestionReq.getUserIdx()); //s3에서 반환된 이미지 url값들
+            String result = questionService.codeQuestion( imageUrls, codeQuestionReq);
+
+            return new BaseResponse<>(result);
+        }catch (BaseException exception){
+            exception.printStackTrace();
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    //학준 8.개념질문하기
+    @ResponseBody
+    @PostMapping("/concept")
+    public BaseResponse<String> conceptQuestion(
+            @RequestPart(value = "images", required = false ) List<MultipartFile> multipartFile,
+            @RequestPart(value = "conceptQueReq") ConceptQueReq conceptQueReq){
+        try{
+            List<String> imageUrls = questionService.uploadS3image(multipartFile, conceptQueReq.getUserIdx());
+            String result = questionService.conceptQuestion(imageUrls, conceptQueReq);
+
+            return new BaseResponse<>(result);
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    //학준 9. 나의 최근 질문 최대 4개(전체 개수만큼 반환, 로그인 시 메인 화면 스크롤 기능)
     @ResponseBody
     @GetMapping("/latest/{userIdx}")
     public BaseResponse<List<GetRecQueRes>> getRecQuestion(@PathVariable("userIdx")long userIdx
@@ -56,11 +91,11 @@ public class QuestionController {
 
     }
 
-    //25.유저의 답변달린 질문 조회 /
+    //학준 16.나의 답변달린 질문 전체 조회
     @ResponseBody
     @GetMapping("/my/reply/{userIdx}")
     public BaseResponse<List<GetRecQueRes>> getRecQuestions(@PathVariable("userIdx")long userIdx
-                                                       ){
+    ){
         try{
             List<GetRecQueRes> getRecQueRes = questionProvider.getRecQuestions(userIdx);
             return new BaseResponse<>(getRecQueRes);
@@ -69,36 +104,6 @@ public class QuestionController {
         }
     }
 
-    //3. 코딩질문하기
-    @ResponseBody
-    @PostMapping("/coding") //임시로 바꾸기
-    public BaseResponse<String> codeQuestion(
-            @RequestPart(value = "images", required = false) List<MultipartFile> multipartFile,
-            @RequestPart(value = "codeQuestionReq") CodeQuestionReq codeQuestionReq){
-        try{
-            List<String> imageUrls = questionService.uploadS3image(multipartFile); //s3에서 반환된 이미지 url값들
-            String result = questionService.codeQuestion( imageUrls, codeQuestionReq);
-
-            return new BaseResponse<>(result);
-        }catch (BaseException exception){
-            exception.printStackTrace();
-            return new BaseResponse<>(exception.getStatus());
-        }
-    }
-
-    //4.개념질문하기
-    @ResponseBody
-    @PostMapping("/concept")
-    public BaseResponse<String> conceptQuestion(@RequestBody ConceptQueReq conceptQuestion){
-
-        try{
-            String result = questionService.conceptQuestion(conceptQuestion);
-
-            return new BaseResponse<>(result);
-        }catch (BaseException exception){
-            return new BaseResponse<>(exception.getStatus());
-        }
-    }
 
     /**
      * yeji 5번 API 코딩 질문 조회

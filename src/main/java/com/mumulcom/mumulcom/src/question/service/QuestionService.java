@@ -37,7 +37,7 @@ public class QuestionService {
     private final S3Uploader s3Uploader;
 
 
-
+// 7. 코딩질문
     public String codeQuestion(List<String> imgUrls, CodeQuestionReq codeQuestionReq)throws BaseException{
         try{
             String result = questionDao.codeQuestion(imgUrls, codeQuestionReq);
@@ -48,9 +48,9 @@ public class QuestionService {
         }
     }
 
-    public String conceptQuestion(ConceptQueReq conceptQueReq)throws BaseException{
+    public String conceptQuestion(List<String> imgUrls, ConceptQueReq conceptQueReq)throws BaseException{
         try{
-            String result = questionDao.conceptQuestion(conceptQueReq);
+            String result = questionDao.conceptQuestion(imgUrls, conceptQueReq);
             return result;
         }catch (Exception exception){
             exception.printStackTrace();
@@ -122,10 +122,12 @@ public class QuestionService {
         }
     }
 
-    public List<String> uploadS3image(List<MultipartFile> multipartFileList) {
+
+    //7-1. S3이미지업로드
+    public List<String> uploadS3image(List<MultipartFile> multipartFileList, Long userIdx) {
         try {
 
-            List<String> imagePath1 = s3Uploader.upload(multipartFileList, "static");
+            List<String> imagePath1 = s3Uploader.upload(multipartFileList, "userIdx"+ String.valueOf(userIdx));
             return imagePath1;
         }catch(Exception exception){
             exception.printStackTrace();

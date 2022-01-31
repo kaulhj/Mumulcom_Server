@@ -33,7 +33,7 @@ public class QuestionLikeController {
         this.jwtService = jwtService;
     }
 
-    //23.질문에 좋아요하기
+    //학준 25.질문에 좋아요하기+알림넣기
 
     @ResponseBody
     @PostMapping("/questions/creation")
@@ -48,6 +48,7 @@ public class QuestionLikeController {
         }
     }
 
+    //학준 26. 답변좋아요+ 알림넣기
     @ResponseBody
     @PostMapping("/replies/creation")
     public BaseResponse<String> createReplyLike(@RequestBody PostReplyLikeReq postReplyLikeReq){

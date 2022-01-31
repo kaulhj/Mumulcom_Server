@@ -26,7 +26,7 @@ public class QuestionDao {
 
 
 
-    //학준 9. 최근질문(최대4개 및 전체 개수 반환)
+    //9.
     @Transactional
     public List<GetRecQueRes> getRecQuestion(long userIdx){
 
@@ -63,7 +63,7 @@ public class QuestionDao {
 
 
         //배열 객체에 매핑
-        String GetListQueQuery = "SELECT q.questionIdx,q.bigCategoryIdx,q.smallCategoryIdx,u.name,\n" +
+        String GetListQueQuery = "SELECT q.questionIdx,b.bigCategoryName,s.smallCategoryName,u.name,\n" +
                 "              concat(MONTH(q.createdAt),'/',day(q.createdAt),',',substring(year(q.createdAt),-2))as created\n" +
                 " ,count(CASE WHEN q.questionIdx = r.questionIdx then 1 END )as replies\n" +
                 ",title \n" +
@@ -83,12 +83,12 @@ public class QuestionDao {
         return this.jdbcTemplate.query(GetListQueQuery,
                 (rs, rowNum) -> new GetRecQueRes(
                         rowNum+1,
-                        rs.getLong("bigCategoryIdx"),
-                        rs.getLong("smallCategoryIdx"),
+                        rs.getString("bigCategoryName"),
+                        rs.getString("smallCategoryName"),
                         rs.getString("name"),
                         rs.getString("created"),
-                        rs.getLong("replies"),
                         rs.getString("title"),
+                        rs.getLong("replies"),
                         reply.get(rowNum)),
                 userIdx);
     }
@@ -98,6 +98,8 @@ public class QuestionDao {
     @Transactional
     public List<GetRecQueRes> getRecQuestions(long userIdx){
 
+
+        //배열 사이즈 추출
         String countQuery = "SELECT\n" +
                 "    count(distinct Q.questionIdx)\n" +
                 "    FROM\n" +
@@ -130,7 +132,7 @@ public class QuestionDao {
 
 
         //배열 객체에 매핑
-        String GetListQueQuery = "SELECT q.questionIdx,q.bigCategoryIdx,q.smallCategoryIdx,u.name,\n" +
+        String GetListQueQuery = "SELECT q.questionIdx,b.bigCategoryName,s.smallCategoryName,u.name,\n" +
         "              concat(MONTH(q.createdAt),'/',day(q.createdAt),',',substring(year(q.createdAt),-2))as created\n" +
                 " ,count(CASE WHEN q.questionIdx = r.questionIdx then 1 END )as replies\n" +
                 ",title \n" +
@@ -149,13 +151,13 @@ public class QuestionDao {
                 "order by created desc";
         return this.jdbcTemplate.query(GetListQueQuery,
                 (rs, rowNum) -> new GetRecQueRes(
-                        rs.getLong(rowNum),
-                        rs.getLong("bigCategoryIdx"),
-                        rs.getLong("smallCategoryIdx"),
+                        rowNum+1,
+                        rs.getString("bigCategoryName"),
+                        rs.getString("smallCategoryName"),
                         rs.getString("name"),
                         rs.getString("created"),
-                        rs.getLong("replies"),
                         rs.getString("title"),
+                        rs.getLong("replies"),
                         reply.get(rowNum)),
                 userIdx);
     }
@@ -193,8 +195,7 @@ public class QuestionDao {
 
         this.jdbcTemplate.update(CodQueTabQue, CodQueTabParams);
 
-        //String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
-        //Object[] InsImgTabParams = new Object[]{lastQueId, codeQuestionReq.getImageUrls()};
+
 
         //이미지에 넣기
         String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
@@ -204,36 +205,14 @@ public class QuestionDao {
         }
         return new String("코딩질문이 등록되었습니다");
 
-        /*
-        public int[] batchInsert(codeQuestionReq.getImageUrls() image)
-        this.jdbcTemplate.batchUpdate(InsImgTabQuery,
-                new BatchPreparedStatementSetter() {
-
-                   // List<String> images = codeQuestionReq.getImageUrls();
-                    @Override
-                    public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        ps.setLong(1,lastQueId);
-                        ps.setString(2,images.get(i));
-                    }
-
-                    @Override
-                    public int getBatchSize() {
-                        return images.size();
-                    }
-                });
-
-         */
-
 
     }
 
-    //4.개념질문
+    //8.개념질문
     @Transactional
-    public String conceptQuestion(ConceptQueReq conceptQueReq) {
+    public String conceptQuestion(List<String> imgUrls, ConceptQueReq conceptQueReq) {
 
-
-
-
+        //큰질문 테이블에 값 넣기
         String InsertQueQuery = "INSERT INTO Question(userIdx,bigCategoryIdx,\n" +
                 "                     smallCategoryIdx,title)\n" +
                 "                     VALUES (?,?,?,?)";
@@ -241,6 +220,7 @@ public class QuestionDao {
                 conceptQueReq.getSmallCategoryIdx(), conceptQueReq.getTitle()};
         this.jdbcTemplate.update(InsertQueQuery, InsertQueParams);
 
+        //마지막 퀘스천 인덱스 추출
         String lastQueIdQuery = " SELECT questionIdx\n" +
                 " FROM\n" +
                 "     Question\n" +
@@ -250,18 +230,20 @@ public class QuestionDao {
                 long.class
         );
 
-        String CodQueTabQue = "INSERT INTO ConceptQuestion(questionIdx, content)\n" +
+        //개념질문 테이블에 값 넣기기
+        String ConceptQueTabQue = "INSERT INTO ConceptQuestion(questionIdx, content)\n" +
                 "VALUES (?,?)";
         Object[] CodQueTabParams = new Object[]{lastQueId, conceptQueReq.getContent()
         };
 
-        this.jdbcTemplate.update(CodQueTabQue, CodQueTabParams);
+        this.jdbcTemplate.update(ConceptQueTabQue, CodQueTabParams);
 
         //String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
         //Object[] InsImgTabParams = new Object[]{lastQueId, codeQuestionReq.getImageUrls()};
+
         String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
-        for (int i = 0; i < conceptQueReq.getImageUrls().size(); i++) {
-            Object[] InsImgTabParams = new Object[]{lastQueId, conceptQueReq.getImageUrls().get(i)};
+        for (String img : imgUrls) {
+            Object[] InsImgTabParams = new Object[]{lastQueId, img};
             this.jdbcTemplate.update(InsImgTabQuery, InsImgTabParams);
         }
         return new String("개념질문이 등록되었습니다");

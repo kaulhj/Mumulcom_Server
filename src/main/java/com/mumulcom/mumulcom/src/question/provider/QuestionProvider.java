@@ -59,6 +59,7 @@ public List<GetRecQueRes> getRecQuestion(long userIdx) throws BaseException{
          List<GetRecQueRes> getRecQueRes = questionDao.getRecQuestions(userIdx);
          return getRecQueRes;
       }catch (Exception exception){
+         exception.printStackTrace();
          throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
       }
    }
