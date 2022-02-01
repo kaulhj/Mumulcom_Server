@@ -4,8 +4,12 @@ import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.src.reply.dao.ReplyDao;
 
+import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
+
+
 import com.mumulcom.mumulcom.src.reply.dto.GetReplyRes;
 import com.mumulcom.mumulcom.src.reply.dto.PostReReplReq;
+
 
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
@@ -82,6 +86,17 @@ public class ReplyService {
         }
     }
 
+
+    @Transactional
+    public void addAdoptionNotice(ReplyInfoRes replyInfoRes, String content) throws BaseException {
+        try {
+            int result = replyDao.addAdoptionNotice(replyInfoRes,content);
+        } catch (Exception exception) { // DB에 이상이 있는 경우 에러 메시지를 보냅니다.
+          exception.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     //29
     public String Rereply(PostReReplReq postReReplReq) throws BaseException{
 
@@ -91,10 +106,8 @@ public class ReplyService {
             String result = replyDao.rereply(postReReplReq);
             return result;
         }catch (Exception exception){
-            exception.printStackTrace();
+          exception.printStackTrace();
             throw new BaseException(DATABASE_ERROR);
         }
     }
-
-
 }

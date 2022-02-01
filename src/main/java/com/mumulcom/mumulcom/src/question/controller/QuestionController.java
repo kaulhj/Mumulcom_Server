@@ -209,7 +209,7 @@ public class QuestionController {
 
     /**
      * 휘정
-     * 개념 질문 조회 API
+     * 개념 질문 검색 API
      * [GET] /questions/search/concept/:keyword
      * */
     @ResponseBody
@@ -226,7 +226,7 @@ public class QuestionController {
 
     /**
      * 휘정
-     * 코딩 질문 조회 API
+     * 코딩 질문 검색 API
      * [GET] /questions/search/coding/:keyword
      * */
     @ResponseBody
@@ -242,7 +242,7 @@ public class QuestionController {
 
     /**
      * 휘정
-     * 내가 한 질문 목록 조회 API
+     * 내가 한 질문 조회 API
      * [GET] /questions/my/:userIdx
      * */
     @ResponseBody

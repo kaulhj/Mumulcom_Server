@@ -3,9 +3,12 @@ package com.mumulcom.mumulcom.src.reply.controller;
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
+import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
+
 
 import com.mumulcom.mumulcom.src.reply.dto.GetReplyRes;
 import com.mumulcom.mumulcom.src.reply.dto.PostReReplReq;
+
 
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
@@ -15,7 +18,6 @@ import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -95,18 +97,19 @@ public class ReplyController {
      * 현재 사용자와 질문 작성자가 같으면 할 수 있게끔
      * */
     @ResponseBody
-    @Transactional
     @PatchMapping("/adoption/{userIdx}/{replyIdx}")
     public BaseResponse<String> adoptReply(@PathVariable("replyIdx") int replyIdx, @PathVariable("userIdx") int userIdx) {
         try {
-            int questionWriterIdx = replyProvider.getQuestionWriter(replyIdx);
+            ReplyInfoRes replyInfo = replyProvider.getReplyInfo(replyIdx);
 
-            if(userIdx != questionWriterIdx) {
+            if(userIdx != replyInfo.getWriter()) {
                 return new BaseResponse<>(PATCH_ADOPT_NOT_SAME);
             }
 
             replyService.adoptReply(replyIdx);
             String result = replyIdx+"번째 답변이 채택되었습니다.";
+            String content = "회원님의 답변이 채택되었습니다.";
+            replyService.addAdoptionNotice(replyInfo, content);
             return new BaseResponse<>(result);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
