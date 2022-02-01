@@ -37,9 +37,10 @@ public class QuestionService {
     private final S3Uploader s3Uploader;
 
 
-
+// 7.1 코딩질문
     public String codeQuestion(List<String> imgUrls, CodeQuestionReq codeQuestionReq)throws BaseException{
         try{
+
             String result = questionDao.codeQuestion(imgUrls, codeQuestionReq);
             return result;
         }catch (Exception exception){
@@ -48,15 +49,36 @@ public class QuestionService {
         }
     }
 
-    public String conceptQuestion(ConceptQueReq conceptQueReq)throws BaseException{
+    //7.2 S3이미지업로드
+    public List<String> uploadS3image(List<MultipartFile> multipartFileList, Long userIdx) {
+        try {
+
+            List<String> imagePath1 = s3Uploader.upload(multipartFileList, "userIdx"+ String.valueOf(userIdx));
+            return imagePath1;
+        }catch (NullPointerException nullPointerException) {
+            return new ArrayList<>();
+        }catch(Exception exception){
+            exception.printStackTrace();
+            List<String> mylist = Collections.singletonList("이미지 전송 실패");
+            return mylist;
+        }
+
+
+    }
+
+    //학준 8. 개념질문
+    public String conceptQuestion(List<String> imgUrls, ConceptQueReq conceptQueReq)throws BaseException{
         try{
-            String result = questionDao.conceptQuestion(conceptQueReq);
+
+            String result = questionDao.conceptQuestion(imgUrls, conceptQueReq);
             return result;
         }catch (Exception exception){
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
+
+
 
     /**
      * qustions 전체 조회
@@ -122,17 +144,6 @@ public class QuestionService {
         }
     }
 
-    public List<String> uploadS3image(List<MultipartFile> multipartFileList) {
-        try {
-
-            List<String> imagePath1 = s3Uploader.upload(multipartFileList, "static");
-            return imagePath1;
-        }catch(Exception exception){
-            exception.printStackTrace();
-            List<String> mylist = Collections.singletonList("이미지 전송 실패");
-            return mylist;
-        }
 
 
-    }
 }

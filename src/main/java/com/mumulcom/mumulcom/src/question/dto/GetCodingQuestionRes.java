@@ -13,8 +13,8 @@ public class GetCodingQuestionRes {
     private String title;
     private String currentError;
     private String myCodingSkill;
-    private String bigCategoryIdx;
-    private String smallCategoryIdx;
+    private String bigCategoryName;
+    private String smallCategoryName;
     private int likeCount;
     private int replyCount;
 

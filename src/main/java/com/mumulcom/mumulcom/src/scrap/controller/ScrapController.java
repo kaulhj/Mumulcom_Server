@@ -39,12 +39,14 @@ public class ScrapController {
     }
 
 
-    //17. 스크랩하기 / 내글은 스크랩 못하게 밸리데이션
+    //학준 24. 스크랩하기 / 내글은 스크랩 못하게 밸리데이션
     @ResponseBody
     @PostMapping("/creation")
     public BaseResponse<String> createScrap(@RequestBody PostScrapReq postScrapReq){
 
         try{
+            if(postScrapReq.getQuestionIdx() == 0 && postScrapReq.getUserIdx() == 0)
+                throw new BaseException(BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY);
             String result = scrapService.createScrap(postScrapReq);
             return new BaseResponse<>(result);
         }catch (BaseException exception){

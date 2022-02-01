@@ -27,8 +27,11 @@ public class ScrapService {
         this.jwtService = jwtService;
     }
 
-    public String createScrap(PostScrapReq postScrapReq) throws BaseException{
 
+    //24.
+    public String createScrap(PostScrapReq postScrapReq) throws BaseException{
+        if(!scrapProvider.scrapAuth(postScrapReq))
+            throw new BaseException(BaseResponseStatus.POST_INVALID_SCRAP_AUTH);
         try{
             String result = scrapDao.createScrap(postScrapReq);
             return new String(result);

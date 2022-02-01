@@ -2,11 +2,18 @@ package com.mumulcom.mumulcom.src.reply.dao;
 
 import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
 import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
+
+
+import com.mumulcom.mumulcom.src.reply.dto.GetReplyRes;
+import com.mumulcom.mumulcom.src.reply.dto.PostReReplReq;
+
+
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -40,12 +47,12 @@ public class ReplyDao {
         Long replyIdx = this.jdbcTemplate.queryForObject(lastInsertIdQuery, Long.class);
         replyImgResult = "해당 답변은 첨부된 이미지가 없습니다.";
 
-        if(postReplyReq.getUrl() != null) {
+        if (postReplyReq.getUrl() != null) {
 
             // ReplyImg table insert
             String createReplyImgQuery = "insert into ReplyImage(replyIdx, url) value (?, ?)";
             Long replyImgIdx;
-            for(String url : postReplyReq.getUrl()) {
+            for (String url : postReplyReq.getUrl()) {
                 Object[] createReplyImgParams = new Object[]{replyIdx, url};
                 this.jdbcTemplate.update(createReplyImgQuery, createReplyImgParams);
             }
@@ -58,7 +65,7 @@ public class ReplyDao {
     /**
      * 휘정
      * 내가 답변한 질문 리스트 조회 API
-     * */
+     */
     public List<MyReplyListRes> myReplyListResList(int userIdx) {
         String myReplyListQuery = "select  questionList.questionIdx, nickname, bigCategoryName, smallCategoryName, title, questionList.createdAt, likeCount, replyCount\n" +
                 "from\n" +
@@ -81,7 +88,7 @@ public class ReplyDao {
                 "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) questionList join Reply r on questionList.questionIdx = r.questionIdx\n" +
                 "where r.userIdx = ?";
         return this.jdbcTemplate.query(myReplyListQuery,
-                (rs,rowNum) -> new MyReplyListRes(
+                (rs, rowNum) -> new MyReplyListRes(
                         rs.getLong("questionIdx"),
                         rs.getString("nickname"),
                         rs.getString("bigCategoryName"),
@@ -94,6 +101,7 @@ public class ReplyDao {
     }
 
     // 해당 답변 idx를 가지고 질문자 알아내기
+
     public ReplyInfoRes getReplyInfo(int replyIdx) {
         String getQuestionWriterQuery = "select q.userIdx as writer, q.questionIdx\n" +
                 "from Reply r join Question q on r.questionIdx = q.questionIdx\n" +
@@ -109,10 +117,74 @@ public class ReplyDao {
     /**
      * 휘정 채택하기 API
      * 채택된 답변의 status는 adopted
-     * */
-    public int adoptReply (int replyIdx) {
+     */
+    public int adoptReply(int replyIdx) {
         String adoptReplyQuery = "update Reply set status = 'adopted' where replyIdx = ?";
-        return this.jdbcTemplate.update(adoptReplyQuery,replyIdx); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
+        return this.jdbcTemplate.update(adoptReplyQuery, replyIdx); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
+    }
+
+    //학준 29.
+
+    @Transactional
+    public String rereply(PostReReplReq postReReplReq) {
+        String RereplQuery = "INSERT INTO Rereply(replyIdx, userIdx, content, imageUrl )\n" +
+                " VALUES (?, ?, ?, ?)";
+        Object[] RereplParams = new Object[]{postReReplReq.getReplyIdx(), postReReplReq.getUserIdx(),
+                postReReplReq.getContent(), postReReplReq.getImageUrl()};
+        this.jdbcTemplate.update(RereplQuery, RereplParams);
+
+        String ReReplNotQuery = "INSERT INTO Notice(NOTICECATEGORYIDX, QUESTIONIDX, USERIDX, " +
+                "NOTICECONTENT) VALUES (?, ?, ?, ?)";
+        Object[] ReReplyNotParams = new Object[]{4, 0, postReReplReq.getUserIdx(), new String("회원님이 답변한 글에 댓글이 달렸습니다.")};
+        this.jdbcTemplate.update(ReReplNotQuery, ReReplyNotParams);
+        return new String("답변에 답글을 달았습니다");
+
+
+    }
+
+    //29.
+    public int reReplyAuth(PostReReplReq postReReplReq){
+        String reRepAuthQuery = "SELECT EXISTS (SELECT userIdx from Rereply where replyIdx = ?)";
+               long result =  this.jdbcTemplate.queryForObject(reRepAuthQuery,
+                long.class,postReReplReq.getReplyIdx());
+        if(result == 1){
+            return 1;
+        }else
+            return 0;
+    }
+
+    /**
+     * yeji
+     * 전체 답변 조회 API (명세서 20번)
+     */
+    public List<GetReplyRes> getReplyList(int questionIdx) {
+        String getReplyListQuery =
+                "SELECT r.replyIdx, r.questionIdx, r.userIdx, U.nickname, DATE_FORMAT(r.createdAt, '%m-%d, %y') AS createdAt, r.replyUrl, r.content, img.url AS replyImgUrl, IFNULL(likeCount.lcount, 0) likeCount, IFNULL(reCount.rcount, 0) reReplyCount, CASE r.status WHEN 'active' THEN 'N' WHEN 'adopted' THEN 'Y' END AS status\n" +
+                "FROM Reply r\n" +
+                "INNER JOIN User U on r.userIdx = U.userIdx\n" +
+                "LEFT JOIN (SELECT replyIdx, GROUP_CONCAT(url) url FROM ReplyImage GROUP BY replyIdx) img\n" +
+                "on r.replyIdx = img.replyIdx\n" +
+                "LEFT JOIN (SELECT replyIdx, count(replyIdx) AS lcount FROM ReplyLike group by replyIdx) likeCount\n" +
+                "ON r.replyIdx = likeCount.replyIdx\n" +
+                "LEFT JOIN (SELECT replyIdx, count(replyIdx) AS rcount FROM Rereply group by replyIdx) reCount\n" +
+                "on r.replyIdx = reCount.replyIdx\n" +
+                "WHERE r.questionIdx = ?\n" +
+                "ORDER BY r.createdAt";
+
+        return this.jdbcTemplate.query(getReplyListQuery,
+                (rs, rowNum) -> new GetReplyRes(
+                        rs.getLong("replyIdx"),
+                        rs.getLong("questionIdx"),
+                        rs.getLong("userIdx"),
+                        rs.getString("nickname"),
+                        rs.getString("createdAt"),
+                        rs.getString("replyUrl"),
+                        rs.getString("content"),
+                        rs.getString("replyImgUrl"),
+                        rs.getInt("likeCount"),
+                        rs.getInt("reReplyCount"),
+                        rs.getString("status")),
+                questionIdx);
     }
 
     /**
@@ -129,3 +201,4 @@ public class ReplyDao {
 
     }
 }
+

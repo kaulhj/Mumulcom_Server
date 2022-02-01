@@ -207,5 +207,26 @@ public class ScrapDao {
                 ), myScrapParams);
     }
 
+    //24.-2
+    public boolean scrapAuth(PostScrapReq postScrapReq){
+        String scrapAuthQuery = "select userIdx\n" +
+                "from Question\n" +
+                "where questionIdx = ?";
+         if(postScrapReq.getUserIdx() == this.jdbcTemplate.queryForObject(scrapAuthQuery, long.class,
+                postScrapReq.getQuestionIdx())){
+             return false;
+         }else
+             return true;
+    }
+
+    //24-3
+    public int queIdExist(Long getQuestionIdx){
+        String checkQueQuery = "SELECT EXISTS(SELECT questionIdx from Question where  " +
+                "questionIdx =?)";
+
+        return this.jdbcTemplate.queryForObject(checkQueQuery, int.class,
+                getQuestionIdx);
+    }
+
 
 }

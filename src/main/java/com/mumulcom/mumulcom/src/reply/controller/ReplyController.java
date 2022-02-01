@@ -4,6 +4,12 @@ import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
 import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
+
+
+import com.mumulcom.mumulcom.src.reply.dto.GetReplyRes;
+import com.mumulcom.mumulcom.src.reply.dto.PostReReplReq;
+
+
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
 import com.mumulcom.mumulcom.src.reply.provider.ReplyProvider;
@@ -17,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.mumulcom.mumulcom.config.BaseResponseStatus.PATCH_ADOPT_NOT_SAME;
+import static com.mumulcom.mumulcom.config.BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY;
 
 @RestController
 @RequestMapping("/replies")
@@ -47,6 +54,21 @@ public class ReplyController {
         try {
             PostReplyRes postReplyRes = replyService.createReply(postReplyReq);
             return new BaseResponse<>(postReplyRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * yeji
+     * 전체 답변 조회 API
+     */
+    @ResponseBody
+    @GetMapping("/{questionIdx}")
+    public BaseResponse<List<GetReplyRes>> getReplyList(@PathVariable("questionIdx") int questionIdx) {
+        try {
+            List<GetReplyRes> getReplyRes = replyService.getReplyList(questionIdx);
+            return new BaseResponse<>(getReplyRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
@@ -93,5 +115,25 @@ public class ReplyController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+
+    //학준 29. 대답변하기 + 알림넣기
+    @ResponseBody
+    @PostMapping("/reply")
+    public BaseResponse<String> Rereply(@RequestBody PostReReplReq postReReplReq){
+        try{
+            if(postReReplReq.getReplyIdx() == 0 || postReReplReq.getUserIdx() == 0
+            || postReReplReq.getContent() == null){
+                throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
+            }
+            String result = replyService.Rereply(postReReplReq);
+            return new BaseResponse<>(result);
+        }catch (BaseException exception){
+            exception.printStackTrace();
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
 
 }

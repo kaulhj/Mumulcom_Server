@@ -15,8 +15,8 @@ public class GetConceptQuestionRes {
     private String createdAt;
     private String title;
     private String content;
-    private String bigCategoryIdx;
-    private String smallCategoryIdx;
+    private String bigCategoryName;
+    private String smallCategoryName;
     private int like;
     private int replyCount;
 }
