@@ -3,7 +3,10 @@ package com.mumulcom.mumulcom.src.reply.controller;
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
+
+import com.mumulcom.mumulcom.src.reply.dto.GetReplyRes;
 import com.mumulcom.mumulcom.src.reply.dto.PostReReplReq;
+
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
 import com.mumulcom.mumulcom.src.reply.provider.ReplyProvider;
@@ -49,6 +52,21 @@ public class ReplyController {
         try {
             PostReplyRes postReplyRes = replyService.createReply(postReplyReq);
             return new BaseResponse<>(postReplyRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * yeji
+     * 전체 답변 조회 API
+     */
+    @ResponseBody
+    @GetMapping("/{questionIdx}")
+    public BaseResponse<List<GetReplyRes>> getReplyList(@PathVariable("questionIdx") int questionIdx) {
+        try {
+            List<GetReplyRes> getReplyRes = replyService.getReplyList(questionIdx);
+            return new BaseResponse<>(getReplyRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

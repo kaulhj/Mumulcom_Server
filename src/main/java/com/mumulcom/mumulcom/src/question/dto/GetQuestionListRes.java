@@ -14,8 +14,8 @@ public class GetQuestionListRes {
     private String nickname;
     private String createdAt;
     private String title;
-    private String bigCategory;
-    private String smallCategoryIdx;
+    private String bigCategoryName;
+    private String smallCategoryName;
     private int likeCount;
     private int replyCount;
 }

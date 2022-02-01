@@ -1,7 +1,10 @@
 package com.mumulcom.mumulcom.src.reply.dao;
 
 import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
+
+import com.mumulcom.mumulcom.src.reply.dto.GetReplyRes;
 import com.mumulcom.mumulcom.src.reply.dto.PostReReplReq;
+
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,6 +142,40 @@ public class ReplyDao {
             return 1;
         }else
             return 0;
+    }
+
+    /**
+     * yeji
+     * 전체 답변 조회 API (명세서 20번)
+     */
+    public List<GetReplyRes> getReplyList(int questionIdx) {
+        String getReplyListQuery =
+                "SELECT r.replyIdx, r.questionIdx, r.userIdx, U.nickname, DATE_FORMAT(r.createdAt, '%m-%d, %y') AS createdAt, r.replyUrl, r.content, img.url AS replyImgUrl, IFNULL(likeCount.lcount, 0) likeCount, IFNULL(reCount.rcount, 0) reReplyCount, CASE r.status WHEN 'active' THEN 'N' WHEN 'adopted' THEN 'Y' END AS status\n" +
+                "FROM Reply r\n" +
+                "INNER JOIN User U on r.userIdx = U.userIdx\n" +
+                "LEFT JOIN (SELECT replyIdx, GROUP_CONCAT(url) url FROM ReplyImage GROUP BY replyIdx) img\n" +
+                "on r.replyIdx = img.replyIdx\n" +
+                "LEFT JOIN (SELECT replyIdx, count(replyIdx) AS lcount FROM ReplyLike group by replyIdx) likeCount\n" +
+                "ON r.replyIdx = likeCount.replyIdx\n" +
+                "LEFT JOIN (SELECT replyIdx, count(replyIdx) AS rcount FROM Rereply group by replyIdx) reCount\n" +
+                "on r.replyIdx = reCount.replyIdx\n" +
+                "WHERE r.questionIdx = ?\n" +
+                "ORDER BY r.createdAt";
+
+        return this.jdbcTemplate.query(getReplyListQuery,
+                (rs, rowNum) -> new GetReplyRes(
+                        rs.getLong("replyIdx"),
+                        rs.getLong("questionIdx"),
+                        rs.getLong("userIdx"),
+                        rs.getString("nickname"),
+                        rs.getString("createdAt"),
+                        rs.getString("replyUrl"),
+                        rs.getString("content"),
+                        rs.getString("replyImgUrl"),
+                        rs.getInt("likeCount"),
+                        rs.getInt("reReplyCount"),
+                        rs.getString("status")),
+                questionIdx);
     }
 }
 
