@@ -37,7 +37,7 @@ public class NoticeDao {
                 "    when((select updatedAt between date_add(now(),interval -3 month ) and date_add(now(),interval -2 month))) then '2달전'\n" +
                 "    when((select updatedAt between date_add(now(),interval -4 month ) and date_add(now(),interval -3 month))) then '3달전'\n" +
                 "    else '3달 넘은 오래된 게시물' \n" +
-                "end) as diffTime from Notice where userIdx = ?";
+                "end) as diffTime from Notice where userIdx = ? order by updatedAt desc";
         return jdbcTemplate.query(noticeListQuery,
                 (rs,rowNum) -> new GetNoticeRes(
                         rs.getLong("questionIdx"),
