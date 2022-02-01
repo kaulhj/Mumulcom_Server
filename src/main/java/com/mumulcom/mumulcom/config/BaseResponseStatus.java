@@ -34,6 +34,35 @@ public enum BaseResponseStatus {
     POST_USERS_SIZE_NICKNAME(false, 2020, "닉네임은 2글자 이상 8글자 이하여야 합니다."),
     POST_USERS_EXISTS_EMAIL(false, 2021, "이미 가입된 이메일입니다."),
     POST_USERS_EXISTS_NICKNAME(false, 2022, "이미 사용중인 닉네임입니다."),
+    GET_USERS_EMPTY_DATA(false, 2023, "유저에 관한 정보가 없습니다"),
+
+    /**
+     * 2500 : Questions 오류
+     */
+
+    //questions
+    POST_EMPTY_ESSENTIAL_BODY(false,2500, "필수정보들을 모두 입력해주세요"),
+    POST_QUESTIONS_INVALID_CATEGORY_RANGE(false,2501, "카테고리를 범위안에 입력해주세요"),
+    GET_QUESTIONS_EMPTY_DATA(false, 2502, "존재하지 않는 질문입니다"),
+
+    /**
+     * 2600 : Scrap 오류
+     */
+    //scrap
+    POST_INVALID_SCRAP_AUTH(false, 2600, "자신의 글은 스크랩할 수 없습니다."),
+
+
+
+    /**
+     * 2700 : Like 오류
+     */
+    //like
+    POST_INVALID_LIKE_AUTH(false,2700,"자신의 글은 좋아요 할 수 없습니다."),
+
+    /**
+     * 2800 : Reply 오류
+     */
+    POST_INVALID_REREPLY_AUTH(false, 2800, "자신의 답변은 답변할 수 없습니다."),
 
 
     /**

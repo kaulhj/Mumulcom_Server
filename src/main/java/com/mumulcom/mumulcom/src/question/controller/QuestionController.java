@@ -2,6 +2,7 @@ package com.mumulcom.mumulcom.src.question.controller;
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
+import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.question.domain.MyQuestionListRes;
 import com.mumulcom.mumulcom.src.question.domain.Question;
 
@@ -11,6 +12,7 @@ import com.mumulcom.mumulcom.src.question.dto.*;
 import com.mumulcom.mumulcom.src.question.provider.QuestionProvider;
 import com.mumulcom.mumulcom.src.question.service.QuestionService;
 import com.mumulcom.mumulcom.utils.JwtService;
+import com.mumulcom.mumulcom.utils.ValidationRegex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/questions")
@@ -41,51 +44,54 @@ public class QuestionController {
 
 
 
-    //2.21 유저의 최근(7일 이내)  질문등 조회/....옆으로 스크롤 시 그 이전 질문 보이기(4개까지)
-    @ResponseBody
-    @GetMapping("/my/home/{userIdx}")
-    public BaseResponse<GetRecQueRes> getRecentQuestion(@PathVariable("userIdx")long userIdx,
-                                                        @RequestParam(required = false) String page){
-        try{
-            if(page !=null){
-                int pages = Integer.parseInt(page)-1;
-                GetRecQueRes getRecQueRes = questionProvider.getRecQueByPage(userIdx, pages);
-                return new BaseResponse<>(getRecQueRes);
-            }
-        }catch (BaseException exception){
-            return new BaseResponse<>(exception.getStatus());
-        }
-        try{
-            GetRecQueRes getRecQueRes = questionProvider.getRecentQuestion(userIdx);
-            return new BaseResponse<>(getRecQueRes);
-        }catch (BaseException exception){
-            return new BaseResponse<>(exception.getStatus());
-        }
 
-    }
 
-    //25.유저의 답변달린 질문 조회 /
+    //학준 7. 코딩질문하기
     @ResponseBody
-    @GetMapping("/my/reply/{userIdx}")
-    public BaseResponse<List<GetRecQueRes>> getRecQuestions(@PathVariable("userIdx")long userIdx
-                                                       ){
-        try{
-            List<GetRecQueRes> getRecQueRes = questionProvider.getRecQuestions(userIdx);
-            return new BaseResponse<>(getRecQueRes);
-        }catch (BaseException exception){
-            return new BaseResponse<>(exception.getStatus());
-        }
-    }
-
-    //3. 코딩질문하기
-    @ResponseBody
-    @PostMapping("/coding") //임시로 바꾸기
+    @PostMapping("/coding")
     public BaseResponse<String> codeQuestion(
             @RequestPart(value = "images", required = false) List<MultipartFile> multipartFile,
             @RequestPart(value = "codeQuestionReq") CodeQuestionReq codeQuestionReq){
+        //s3이미지 저장하고 url반환값
+        try {
+                if(codeQuestionReq.getUserIdx() == 0 || codeQuestionReq.getCurrentError() == null
+                        || codeQuestionReq.getMyCodingSkill() == null || codeQuestionReq.getBigCategoryIdx() == 0
+                        || codeQuestionReq.getSmallCategoryIdx() == 0 || codeQuestionReq.getTitle() == null) {
+                    throw new BaseException(BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY);
+                }
+
+                //카테고리 범위 검사(1~3,1~8)
+                if(!ValidationRegex.bigCategoryRange(Long.toString(codeQuestionReq.getBigCategoryIdx()))
+                || !ValidationRegex.smallCategoryRange(Long.toString(codeQuestionReq.getSmallCategoryIdx()))) {
+                    throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
+                }
+                List<String> imageUrls = questionService.uploadS3image(multipartFile, codeQuestionReq.getUserIdx());
+                String result = questionService.codeQuestion(imageUrls, codeQuestionReq);return new BaseResponse<>(result);
+                }catch (BaseException exception) {
+                    exception.printStackTrace();
+                    return new BaseResponse<>(exception.getStatus());
+            }
+        }
+
+
+    //학준 8.개념질문하기
+    @ResponseBody
+    @PostMapping("/concept")
+    public BaseResponse<String> conceptQuestion(
+            @RequestPart(value = "images", required = false ) List<MultipartFile> multipartFile,
+            @RequestPart(value = "conceptQueReq") ConceptQueReq conceptQueReq){
         try{
-            List<String> imageUrls = questionService.uploadS3image(multipartFile); //s3에서 반환된 이미지 url값들
-            String result = questionService.codeQuestion( imageUrls, codeQuestionReq);
+            if(conceptQueReq.getUserIdx() == 0 || conceptQueReq.getContent() == null
+                    || conceptQueReq.getBigCategoryIdx() == 0
+                    || conceptQueReq.getSmallCategoryIdx() == 0 || conceptQueReq.getTitle() == null) {
+                throw new BaseException(BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY);
+            }
+            if(!ValidationRegex.bigCategoryRange(Long.toString(conceptQueReq.getBigCategoryIdx()))
+                    || !ValidationRegex.smallCategoryRange(Long.toString(conceptQueReq.getSmallCategoryIdx()))){
+                throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
+            }
+            List<String> imageUrls = questionService.uploadS3image(multipartFile, conceptQueReq.getUserIdx());
+            String result = questionService.conceptQuestion(imageUrls, conceptQueReq);
 
             return new BaseResponse<>(result);
         }catch (BaseException exception){
@@ -94,19 +100,35 @@ public class QuestionController {
         }
     }
 
-    //4.개념질문하기
+    //학준 9. 나의 최근 질문 최대 4개(전체 개수만큼 반환, 로그인 시 메인 화면 스크롤 기능)
     @ResponseBody
-    @PostMapping("/concept")
-    public BaseResponse<String> conceptQuestion(@RequestBody ConceptQueReq conceptQuestion){
-
+    @GetMapping("/latest/{userIdx}")    //유저인덱스 유효성은 jwt로
+    public BaseResponse<List<GetRecQueRes>> getRecQuestion(@PathVariable("userIdx")long userIdx
+    ){
         try{
-            String result = questionService.conceptQuestion(conceptQuestion);
 
-            return new BaseResponse<>(result);
+            List<GetRecQueRes> getRecQueRes = questionProvider.getRecQuestion(userIdx);
+            return new BaseResponse<>(getRecQueRes);
+        }catch (BaseException exception){
+            exception.printStackTrace();
+            return new BaseResponse<>(exception.getStatus());
+        }
+
+    }
+
+    //학준 16.나의 답변달린 질문 전체 조회
+    @ResponseBody
+    @GetMapping("/my/reply/{userIdx}")
+    public BaseResponse<List<GetRecQueRes>> getRecQuestions(@PathVariable("userIdx")long userIdx
+    ){
+        try{
+            List<GetRecQueRes> getRecQueRes = questionProvider.getRecQuestions(userIdx);
+            return new BaseResponse<>(getRecQueRes);
         }catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
 
     /**
      * yeji 5번 API 코딩 질문 조회
