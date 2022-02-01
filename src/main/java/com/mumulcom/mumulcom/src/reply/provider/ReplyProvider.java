@@ -4,6 +4,7 @@ package com.mumulcom.mumulcom.src.reply.provider;
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.src.reply.dao.ReplyDao;
 import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
+import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,10 +39,10 @@ public class ReplyProvider {
         }
     }
 
-    public int getQuestionWriter (int replyIdx) throws BaseException {
+    public ReplyInfoRes getReplyInfo (int replyIdx) throws BaseException {
         try {
-            int questionWriter = replyDao.getQuestionWriter(replyIdx);
-            return questionWriter;
+            ReplyInfoRes replyInfo = replyDao.getReplyInfo(replyIdx);
+            return replyInfo;
         }  catch (Exception exception){
             exception.printStackTrace();
             throw new BaseException(DATABASE_ERROR);

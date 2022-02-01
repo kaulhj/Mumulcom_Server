@@ -1,6 +1,7 @@
 package com.mumulcom.mumulcom.src.reply.dao;
 
 import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
+import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,11 +94,16 @@ public class ReplyDao {
     }
 
     // 해당 답변 idx를 가지고 질문자 알아내기
-    public int getQuestionWriter (int replyIdx) {
-        String getQuestionWriterQuery = "select q.userIdx as writer\n" +
+    public ReplyInfoRes getReplyInfo(int replyIdx) {
+        String getQuestionWriterQuery = "select q.userIdx as writer, q.questionIdx\n" +
                 "from Reply r join Question q on r.questionIdx = q.questionIdx\n" +
                 "where replyIdx = ?";
-        return this.jdbcTemplate.queryForObject(getQuestionWriterQuery,int.class,replyIdx);
+        return this.jdbcTemplate.queryForObject(getQuestionWriterQuery,
+                (rs,rowNum) -> new ReplyInfoRes(
+                        rs.getLong("writer"),
+                        rs.getLong("questionIdx")
+                )
+                ,replyIdx);
     }
 
     /**
@@ -107,5 +113,19 @@ public class ReplyDao {
     public int adoptReply (int replyIdx) {
         String adoptReplyQuery = "update Reply set status = 'adopted' where replyIdx = ?";
         return this.jdbcTemplate.update(adoptReplyQuery,replyIdx); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
+    }
+
+    /**
+     * 휘정
+     * 채택된 답변에 대한 알림 생성
+     * "회원님이 한 답변이 채택되었습니다."
+     * */
+    public int addAdoptionNotice (ReplyInfoRes replyInfoRes, String content) {
+        String adoptionNoticeQuery = "insert into Notice (NoticeCategoryIdx, questionIdx, userIdx, noticeContent) values (7,?,?,?)";
+        Object[] adoptionNoticeParams = new Object[] {replyInfoRes.getQuestionIdx(), replyInfoRes.getWriter(), content};
+        this.jdbcTemplate.update(adoptionNoticeQuery, adoptionNoticeParams);
+        String lastInsertNoticeIdx = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertNoticeIdx, int.class); // 해당 쿼리문의 결과 마지막으로 삽인된 유저의 userIdx번호를 반환한다.
+
     }
 }

@@ -2,6 +2,7 @@ package com.mumulcom.mumulcom.src.reply.service;
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.src.reply.dao.ReplyDao;
+import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
 import com.mumulcom.mumulcom.utils.JwtService;
@@ -50,6 +51,16 @@ public class ReplyService {
             if(result == 0) {
                 throw new BaseException(FAILED_ADOPT_REPLY);
             }
+        } catch (Exception exception) { // DB에 이상이 있는 경우 에러 메시지를 보냅니다.
+            exception.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    @Transactional
+    public void addAdoptionNotice(ReplyInfoRes replyInfoRes, String content) throws BaseException {
+        try {
+            int result = replyDao.addAdoptionNotice(replyInfoRes,content);
         } catch (Exception exception) { // DB에 이상이 있는 경우 에러 메시지를 보냅니다.
             exception.printStackTrace();
             throw new BaseException(DATABASE_ERROR);
