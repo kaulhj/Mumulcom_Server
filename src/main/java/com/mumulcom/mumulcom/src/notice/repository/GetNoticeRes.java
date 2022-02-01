@@ -10,4 +10,5 @@ import lombok.Setter;
 public class GetNoticeRes {
     private long questionIdx;
     private String noticeContent;
+    private String diffTime;
 }
