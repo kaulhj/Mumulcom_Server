@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,13 +31,17 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     public String bucket;  // S3 버킷 이름
 
-    public String upload(MultipartFile uploadFile, String dirName) {
-        String fileType = uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().lastIndexOf("."));
-        String randomName = UUID.randomUUID().toString() + fileType; // 파일 중복되지 않게 고유식별자 생성
+    public List<String> upload(List<MultipartFile> uploadFile, String dirName) {
+        List<String> imageUrls = new ArrayList<>();
+        for(MultipartFile file : uploadFile ) {
+            String fileType = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+            String randomName = UUID.randomUUID().toString() + fileType; // 파일 중복되지 않게 고유식별자 생성
 
-        String fileName = dirName + "/" + randomName;
-        String uploadImageUrl = putS3(uploadFile, fileName);
-        return uploadImageUrl;
+            String fileName = dirName + "/" + randomName;
+            imageUrls.add(putS3(file, fileName));
+
+        }
+        return imageUrls;
     }
     public void deleteFileFromS3(String key) {
         //key는 경로, 파일이름 풀로 ex) static/test.txt

@@ -1,25 +1,32 @@
 package com.mumulcom.mumulcom.src.question.service;
 
 import com.mumulcom.mumulcom.config.BaseException;
+import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.question.dao.QuestionDao;
 import com.mumulcom.mumulcom.src.question.domain.Question;
 import com.mumulcom.mumulcom.src.question.dto.*;
 import com.mumulcom.mumulcom.src.question.provider.QuestionProvider;
 import com.mumulcom.mumulcom.src.question.repository.QuestionRepository;
+import com.mumulcom.mumulcom.src.s3.service.S3Uploader;
 import com.mumulcom.mumulcom.utils.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.mumulcom.mumulcom.config.BaseResponseStatus.DATABASE_ERROR;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class QuestionService {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -27,19 +34,13 @@ public class QuestionService {
     private final QuestionProvider questionProvider;
     private final JwtService jwtService;
     private final QuestionRepository questionRepository;
+    private final S3Uploader s3Uploader;
 
-    @Autowired
-    public QuestionService(QuestionDao questionDao, QuestionProvider questionProvider, QuestionRepository questionRepository,
-                           JwtService jwtService){
-        this.questionDao = questionDao;
-        this.questionProvider = questionProvider;
-        this.questionRepository = questionRepository;
-        this.jwtService = jwtService;
-    }
 
-    public String codeQuestion(CodeQuestionReq codeQuestionReq)throws BaseException{
+
+    public String codeQuestion(List<String> imgUrls, CodeQuestionReq codeQuestionReq)throws BaseException{
         try{
-            String result = questionDao.codeQuestion(codeQuestionReq);
+            String result = questionDao.codeQuestion(imgUrls, codeQuestionReq);
             return result;
         }catch (Exception exception){
             exception.printStackTrace();
@@ -119,5 +120,19 @@ public class QuestionService {
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
+    }
+
+    public List<String> uploadS3image(List<MultipartFile> multipartFileList) {
+        try {
+
+            List<String> imagePath1 = s3Uploader.upload(multipartFileList, "static");
+            return imagePath1;
+        }catch(Exception exception){
+            exception.printStackTrace();
+            List<String> mylist = Collections.singletonList("이미지 전송 실패");
+            return mylist;
+        }
+
+
     }
 }
