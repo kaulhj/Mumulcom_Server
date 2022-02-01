@@ -1,9 +1,11 @@
 package com.mumulcom.mumulcom.src.scrap.provider;
 
 import com.mumulcom.mumulcom.config.BaseException;
+import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.scrap.dao.ScrapDao;
 import com.mumulcom.mumulcom.src.scrap.domain.MyScrapListRes;
+import com.mumulcom.mumulcom.src.scrap.dto.PostScrapReq;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +59,26 @@ public class ScrapProvider {
             exception.printStackTrace();
             throw new BaseException(DATABASE_ERROR);
         }}
+    }
+
+    //24. 자신의 스크랩 질문인지 확인
+    public boolean scrapAuth(PostScrapReq postScrapReq)throws BaseException{
+        try{
+            boolean scrapAuth = scrapDao.scrapAuth(postScrapReq);
+            return scrapAuth;
+        }catch (Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+    public int queIdxExist(Long getQuestionIdx)throws BaseException{
+        try{
+            int queId = scrapDao.queIdExist(getQuestionIdx);
+            return queId;
+        }catch (Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 
 }

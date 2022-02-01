@@ -3,6 +3,7 @@ package com.mumulcom.mumulcom.src.questionlike.dao;
 
 import com.mumulcom.mumulcom.src.questionlike.dto.PostQueLikeReq;
 import com.mumulcom.mumulcom.src.questionlike.dto.PostReplyLikeReq;
+import com.mumulcom.mumulcom.src.scrap.dto.PostScrapReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -22,6 +23,7 @@ public class QuestionLikeDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+//25.
     public String createLike(PostQueLikeReq postQueLikeReq){
 
             String createLikeQuery = "INSERT INTO QuestionLike(QUESTIONIDX, USERIDX) VALUES (?, ?)";
@@ -61,7 +63,7 @@ public class QuestionLikeDao {
     }
 
 
-    //답변 좋아요
+    //26.
     public String createReplyLike(PostReplyLikeReq postReplyLikeReq){
 
         String createLikeQuery = "INSERT INTO ReplyLike(ReplyIdx, USERIDX) VALUES (?, ?)";
@@ -101,6 +103,39 @@ public class QuestionLikeDao {
         this.jdbcTemplate.update(creLikNotQuery,creLikeNotParams);
         return nContent;
 
+    }
+
+    //25.2
+    public boolean LikeAuth(PostQueLikeReq postQueLikeReq){
+        String queLikeAuthQuery = "select userIdx\n" +
+                "from Question\n" +
+                "where questionIdx = ?";
+        if(postQueLikeReq.getUserIdx() == this.jdbcTemplate.queryForObject(queLikeAuthQuery, long.class,
+                postQueLikeReq.getQuestionIdx())){
+            return false;
+        }else
+            return true;
+    }
+
+    //25.3
+    public boolean likeQueIdExist(Long getQuestionIdx){
+        String checkLikeQueQuery = "SELECT EXISTS(SELECT questionIdx from Question where " +
+                "questionIdx =?)";
+
+        return this.jdbcTemplate.queryForObject(checkLikeQueQuery, boolean.class,
+                getQuestionIdx);
+    }
+
+    //26.2
+    public boolean LikeAuth(PostReplyLikeReq postReplyLikeReq){
+        String queLikeAuthQuery = "select userIdx\n" +
+                "from Question\n" +
+                "where questionIdx = ?";
+        if(postReplyLikeReq.getUserIdx() == this.jdbcTemplate.queryForObject(queLikeAuthQuery, int.class,
+                postReplyLikeReq.getReplyIdx())){
+            return false;
+        }else
+            return true;
     }
 
 

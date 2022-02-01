@@ -39,34 +39,35 @@ public class QuestionProvider {
 
 
 
-//2.
-   public GetRecQueRes getRecentQuestion(long userIdx) throws BaseException {
+//학준 9. 최근질문 최대 4개 조회
+public List<GetRecQueRes> getRecQuestion(long userIdx) throws BaseException{
+      int countSize = questionDao.countSize(userIdx);
+      if(countSize == 0)
+         throw new BaseException(BaseResponseStatus.GET_USERS_EMPTY_DATA);
       try{
-         GetRecQueRes getRecQueRes = questionDao.getRecentQuestion(userIdx);
-         return getRecQueRes;
-      }catch (Exception exception){{
-         exception.printStackTrace();
-         throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
-      }}
+      List<GetRecQueRes> getRecQueRes = questionDao.getRecQuestion(countSize, userIdx);
+      return getRecQueRes;
+   }catch (Exception exception){
+      exception.printStackTrace();
+      throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
    }
+}
 
-   //21.
-   public GetRecQueRes getRecQueByPage(long userIdx, int pages) throws BaseException {
-      try{
-         GetRecQueRes getRecQueRes = questionDao.getRecQueByPage(userIdx,pages);
-         return getRecQueRes;
-      }catch (Exception exception){{
-         exception.printStackTrace();
-         throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
-      }}
-   }
 
-   //20
+
+
+   //학준 16
    public List<GetRecQueRes> getRecQuestions(long userIdx) throws BaseException{
+
+         int countSize = questionDao.getRecQueSize(userIdx);
+         //유저에 관한 정보가 0개일때
+         if(countSize == 0)
+            throw new BaseException(BaseResponseStatus.GET_USERS_EMPTY_DATA);
       try{
-         List<GetRecQueRes> getRecQueRes = questionDao.getRecQuestions(userIdx);
+         List<GetRecQueRes> getRecQueRes = questionDao.getRecQuestions(countSize, userIdx);
          return getRecQueRes;
       }catch (Exception exception){
+         exception.printStackTrace();
          throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
       }
    }

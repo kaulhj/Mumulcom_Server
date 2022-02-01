@@ -2,6 +2,7 @@ package com.mumulcom.mumulcom.src.questionlike.controller;
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
+import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.questionlike.provider.QuestionLikeProvider;
 import com.mumulcom.mumulcom.src.questionlike.dto.PostQueLikeReq;
 import com.mumulcom.mumulcom.src.questionlike.dto.PostReplyLikeReq;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import static com.mumulcom.mumulcom.config.BaseResponseStatus.*;
 
 @RestController
 
@@ -33,14 +35,16 @@ public class QuestionLikeController {
         this.jwtService = jwtService;
     }
 
-    //23.질문에 좋아요하기
+    //학준 25.질문에 좋아요하기+알림넣기
 
     @ResponseBody
     @PostMapping("/questions/creation")
     public BaseResponse<String> createQueLike(@RequestBody PostQueLikeReq postQueLikeReq){
 
         try{
-            String result = questionLikeService.createLike(postQueLikeReq);
+            if(postQueLikeReq.getQuestionIdx() == 0 || postQueLikeReq.getUserIdx() == 0 )
+                throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
+            String result = questionLikeService.createQuestionLike(postQueLikeReq);
             return new BaseResponse<>(result);
         }catch (BaseException exception){
             exception.printStackTrace();
@@ -48,11 +52,14 @@ public class QuestionLikeController {
         }
     }
 
+    //학준 26. 답변좋아요+ 알림넣기
     @ResponseBody
     @PostMapping("/replies/creation")
     public BaseResponse<String> createReplyLike(@RequestBody PostReplyLikeReq postReplyLikeReq){
 
         try{
+            if(postReplyLikeReq.getReplyIdx() == 0 || postReplyLikeReq.getUserIdx() == 0 )
+                throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
             String result = questionLikeService.createReplyLike(postReplyLikeReq);
             return new BaseResponse<>(result);
         }catch (BaseException exception){

@@ -11,11 +11,12 @@ import java.util.List;
 @AllArgsConstructor
 
 public class GetRecQueRes {
-    private long BigCategory;
-    private long SmallCategory;
+    private long questionIdx;   //최근질문 순서, 가장최근 : 1
+    private String BigCategory;
+    private String SmallCategory;
     private String Name;
     private String Created;
-    private long Reply;
     private String Title;
+    private long Reply;
     private Long Like;
 }

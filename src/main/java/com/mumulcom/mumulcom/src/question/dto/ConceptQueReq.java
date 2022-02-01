@@ -9,10 +9,9 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+@Data
 public class ConceptQueReq {
     private long userIdx;
-    private List<String> imageUrls;
     private String content;
     private long bigCategoryIdx;
     private long smallCategoryIdx;
