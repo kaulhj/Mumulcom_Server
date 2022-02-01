@@ -1,7 +1,9 @@
 package com.mumulcom.mumulcom.src.reply.service;
 
 import com.mumulcom.mumulcom.config.BaseException;
+import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.src.reply.dao.ReplyDao;
+import com.mumulcom.mumulcom.src.reply.dto.PostReReplReq;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
 import com.mumulcom.mumulcom.utils.JwtService;
@@ -55,4 +57,17 @@ public class ReplyService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    //29
+    public String Rereply(PostReReplReq postReReplReq) throws BaseException{
+        try{
+            String result = replyDao.rereply(postReReplReq);
+            return result;
+        }catch (Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
 }

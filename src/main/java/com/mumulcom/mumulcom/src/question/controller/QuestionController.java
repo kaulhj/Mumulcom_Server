@@ -2,6 +2,7 @@ package com.mumulcom.mumulcom.src.question.controller;
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
+import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.question.domain.MyQuestionListRes;
 import com.mumulcom.mumulcom.src.question.domain.Question;
 
@@ -11,6 +12,7 @@ import com.mumulcom.mumulcom.src.question.dto.*;
 import com.mumulcom.mumulcom.src.question.provider.QuestionProvider;
 import com.mumulcom.mumulcom.src.question.service.QuestionService;
 import com.mumulcom.mumulcom.utils.JwtService;
+import com.mumulcom.mumulcom.utils.ValidationRegex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/questions")
@@ -49,16 +52,23 @@ public class QuestionController {
     public BaseResponse<String> codeQuestion(
             @RequestPart(value = "images", required = false) List<MultipartFile> multipartFile,
             @RequestPart(value = "codeQuestionReq") CodeQuestionReq codeQuestionReq){
-        try{
-            List<String> imageUrls = questionService.uploadS3image(multipartFile, codeQuestionReq.getUserIdx()); //s3에서 반환된 이미지 url값들
-            String result = questionService.codeQuestion( imageUrls, codeQuestionReq);
-
-            return new BaseResponse<>(result);
-        }catch (BaseException exception){
-            exception.printStackTrace();
-            return new BaseResponse<>(exception.getStatus());
+        //s3이미지 저장하고 url반환값
+        try {
+                if(codeQuestionReq.getUserIdx() == 0 || codeQuestionReq.getCurrentError() == null
+                        || codeQuestionReq.getMyCodingSkill() == null || codeQuestionReq.getBigCategoryIdx() == 0
+                        || codeQuestionReq.getSmallCategoryIdx() == 0 || codeQuestionReq.getTitle() == null) {
+                    throw new BaseException(BaseResponseStatus.POST_QUESTIONS_EMPTY_ESSENTIAL_BODY);
+                }
+                if(!ValidationRegex.isNumeric(Long.toString(codeQuestionReq.getBigCategoryIdx())))
+                    throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
+                List<String> imageUrls = questionService.uploadS3image(multipartFile, codeQuestionReq.getUserIdx());
+                String result = questionService.codeQuestion(imageUrls, codeQuestionReq);return new BaseResponse<>(result);
+                }catch (BaseException exception) {
+                    exception.printStackTrace();
+                    return new BaseResponse<>(exception.getStatus());
+            }
         }
-    }
+
 
     //학준 8.개념질문하기
     @ResponseBody

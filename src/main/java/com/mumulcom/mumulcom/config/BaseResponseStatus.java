@@ -37,6 +37,17 @@ public enum BaseResponseStatus {
 
 
     /**
+     * 2500 : Questions 오류
+     */
+
+    //questions
+    POST_QUESTIONS_EMPTY_ESSENTIAL_BODY(false,2500, "필수정보들을 모두 입력해주세요"),
+    POST_QUESTIONS_INVALID_CATEGORY_RANGE(false,2501, "카테고리를 범위안에 입력해주세요"),
+
+
+
+
+    /**
      * 3000 : Response 오류
      */
     // Common

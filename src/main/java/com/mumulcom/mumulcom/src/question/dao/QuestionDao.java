@@ -191,22 +191,25 @@ public class QuestionDao {
         String CodQueTabQue = "INSERT INTO CodeQuestion(questionIdx, currentError,myCodingSkill,codeQuestionUrl)\n" +
                 "VALUES (?,?,?,?)";
         Object[] CodQueTabParams = new Object[]{lastQueId, codeQuestionReq.getCurrentError(),
-                codeQuestionReq.getMyCodingSkill(),codeQuestionReq.getCodeQuestionUrl()};
+                codeQuestionReq.getMyCodingSkill(), codeQuestionReq.getCodeQuestionUrl()};
 
         this.jdbcTemplate.update(CodQueTabQue, CodQueTabParams);
 
 
+        if (imgUrls.size() != 0) {
+            //이미지에 넣기
+            String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
+            for (String img : imgUrls) {
+                Object[] InsImgTabParams = new Object[]{lastQueId, img};
+                this.jdbcTemplate.update(InsImgTabQuery, InsImgTabParams);
+            }
 
-        //이미지에 넣기
-        String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
-        for (String img : imgUrls) {
-            Object[] InsImgTabParams = new Object[]{lastQueId, img};
-            this.jdbcTemplate.update(InsImgTabQuery, InsImgTabParams);
         }
         return new String("코딩질문이 등록되었습니다");
-
-
     }
+
+    //이미지 업을경우 오버로딩
+
 
     //8.개념질문
     @Transactional

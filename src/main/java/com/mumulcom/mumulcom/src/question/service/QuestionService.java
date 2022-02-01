@@ -40,6 +40,7 @@ public class QuestionService {
 // 7. 코딩질문
     public String codeQuestion(List<String> imgUrls, CodeQuestionReq codeQuestionReq)throws BaseException{
         try{
+
             String result = questionDao.codeQuestion(imgUrls, codeQuestionReq);
             return result;
         }catch (Exception exception){
@@ -47,6 +48,10 @@ public class QuestionService {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
+
+
+
+    //이미지 없을 경우 오버로딩
 
     public String conceptQuestion(List<String> imgUrls, ConceptQueReq conceptQueReq)throws BaseException{
         try{
@@ -129,10 +134,12 @@ public class QuestionService {
 
             List<String> imagePath1 = s3Uploader.upload(multipartFileList, "userIdx"+ String.valueOf(userIdx));
             return imagePath1;
+        }catch (NullPointerException nullPointerException) {
+            return new ArrayList<>();
         }catch(Exception exception){
-            exception.printStackTrace();
-            List<String> mylist = Collections.singletonList("이미지 전송 실패");
-            return mylist;
+                exception.printStackTrace();
+                List<String> mylist = Collections.singletonList("이미지 전송 실패");
+                return mylist;
         }
 
 
