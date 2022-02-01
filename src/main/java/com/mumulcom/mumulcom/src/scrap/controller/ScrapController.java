@@ -58,17 +58,41 @@ public class ScrapController {
     // 둘다 있을 때
     // 큰 x, 작은 o 일때는 벨리데이션처리 해주기
     @ResponseBody
-    @GetMapping("")
-    public BaseResponse<List<MyScrapListRes>> getMyScrapList (@RequestParam int userIdx, @RequestParam(required = false) String bigCategory, @RequestParam(required = false) String smallCategory) {
+    @GetMapping("/coding")
+    public BaseResponse<List<MyScrapListRes>> getMyCodingScrapList (@RequestParam int userIdx, @RequestParam(required = false) String bigCategory, @RequestParam(required = false) String smallCategory) {
         try {
             List<MyScrapListRes> myScrapListResList;
             //카테고리 없을 때 -> 스크랩한 목록 다 보여주기
             if(bigCategory == null && smallCategory == null) {
-                myScrapListResList = scrapProvider.myScrapListRes(userIdx);
+                myScrapListResList = scrapProvider.myCodingScrapListRes(userIdx);
             } else if (smallCategory == null) { // 큰 카테고리만 있을 때
-                myScrapListResList = scrapProvider.myScrapListRes(userIdx,bigCategory);
+                myScrapListResList = scrapProvider.myCodingScrapListRes(userIdx,bigCategory);
             } else { // 모두 있을 때
-                myScrapListResList = scrapProvider.myScrapListRes(userIdx, bigCategory, smallCategory);
+                myScrapListResList = scrapProvider.myCodingScrapListRes(userIdx, bigCategory, smallCategory);
+            }
+            return new BaseResponse<>(myScrapListResList);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    // 스크랩한 목록 모두 보여주기
+    // 카테고리 없을 때
+    // 큰 카테고리만 있을 때
+    // 둘다 있을 때
+    // 큰 x, 작은 o 일때는 벨리데이션처리 해주기
+    @ResponseBody
+    @GetMapping("/concept")
+    public BaseResponse<List<MyScrapListRes>> getMyConceptScrapList (@RequestParam int userIdx, @RequestParam(required = false) String bigCategory, @RequestParam(required = false) String smallCategory) {
+        try {
+            List<MyScrapListRes> myScrapListResList;
+            //카테고리 없을 때 -> 스크랩한 목록 다 보여주기
+            if(bigCategory == null && smallCategory == null) {
+                myScrapListResList = scrapProvider.myConceptScrapListRes(userIdx);
+            } else if (smallCategory == null) { // 큰 카테고리만 있을 때
+                myScrapListResList = scrapProvider.myConceptScrapListRes(userIdx,bigCategory);
+            } else { // 모두 있을 때
+                myScrapListResList = scrapProvider.myConceptScrapListRes(userIdx, bigCategory, smallCategory);
             }
             return new BaseResponse<>(myScrapListResList);
         } catch (BaseException exception) {
