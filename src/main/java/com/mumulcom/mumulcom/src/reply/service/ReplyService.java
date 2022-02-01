@@ -6,6 +6,7 @@ import com.mumulcom.mumulcom.src.reply.dao.ReplyDao;
 import com.mumulcom.mumulcom.src.reply.dto.PostReReplReq;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
+import com.mumulcom.mumulcom.src.reply.provider.ReplyProvider;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-import static com.mumulcom.mumulcom.config.BaseResponseStatus.DATABASE_ERROR;
-import static com.mumulcom.mumulcom.config.BaseResponseStatus.FAILED_ADOPT_REPLY;
+import static com.mumulcom.mumulcom.config.BaseResponseStatus.*;
 
 @Service
 @Transactional
@@ -23,10 +23,12 @@ public class ReplyService {
 
     private final ReplyDao replyDao;
     private final JwtService jwtService;
+    private final ReplyProvider replyProvider;
 
-    public ReplyService(ReplyDao replyDao, JwtService jwtService) {
+    public ReplyService(ReplyDao replyDao, JwtService jwtService, ReplyProvider replyProvider) {
         this.replyDao = replyDao;
         this.jwtService = jwtService;
+        this.replyProvider = replyProvider;
     }
 
     /**
@@ -60,6 +62,9 @@ public class ReplyService {
 
     //29
     public String Rereply(PostReReplReq postReReplReq) throws BaseException{
+
+        if(replyProvider.reReplyAuth(postReReplReq) == 0)
+                throw new BaseException(POST_INVALID_REREPLY_AUTH);
         try{
             String result = replyDao.rereply(postReReplReq);
             return result;

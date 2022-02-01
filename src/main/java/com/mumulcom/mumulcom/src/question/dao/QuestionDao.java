@@ -24,13 +24,8 @@ public class QuestionDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-
-
-    //9.
-    @Transactional
-    public List<GetRecQueRes> getRecQuestion(long userIdx){
-
-        //데이터 갯수 구하기
+    //  9.1좋아요 데이터 갯수 구하기
+    public int countSize(long userIdx) {
         String countQuery = "SELECT\n" +
                 "    count(distinct Q.questionIdx)\n" +
                 "    FROM\n" +
@@ -39,7 +34,14 @@ public class QuestionDao {
                 "where Q.userIdx = ?\n" +
                 "#group by Q.questionIdx\n" +
                 "order by Q.questionIdx desc limit 4";
-        int countSize = this.jdbcTemplate.queryForObject(countQuery,int.class,userIdx);
+        return this.jdbcTemplate.queryForObject(countQuery, int.class, userIdx);
+    }
+
+    //9.
+    @Transactional
+    public List<GetRecQueRes> getRecQuestion(int countSize, long userIdx){
+
+
 
 
         //좋아요 값 배열에 넣기
@@ -94,12 +96,8 @@ public class QuestionDao {
     }
 
 
-    //16
-    @Transactional
-    public List<GetRecQueRes> getRecQuestions(long userIdx){
-
-
-        //배열 사이즈 추출
+    //16-1 배열 사이즈 추출
+    public int getRecQueSize(long userIdx){
         String countQuery = "SELECT\n" +
                 "    count(distinct Q.questionIdx)\n" +
                 "    FROM\n" +
@@ -108,7 +106,13 @@ public class QuestionDao {
                 "where Q.userIdx = ?\n" +
                 "#group by Q.questionIdx\n" +
                 "order by Q.questionIdx desc";
-        int countSize = this.jdbcTemplate.queryForObject(countQuery,int.class,userIdx);
+        return this.jdbcTemplate.queryForObject(countQuery,int.class,userIdx);
+    }
+    //16-2
+    @Transactional
+    public List<GetRecQueRes> getRecQuestions(int countSize, long userIdx){
+
+
 
 
             //좋아요 값 배열에 넣기

@@ -42,7 +42,9 @@ public class QuestionLikeController {
     public BaseResponse<String> createQueLike(@RequestBody PostQueLikeReq postQueLikeReq){
 
         try{
-            String result = questionLikeService.createLike(postQueLikeReq);
+            if(postQueLikeReq.getQuestionIdx() == 0 || postQueLikeReq.getUserIdx() == 0 )
+                throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
+            String result = questionLikeService.createQuestionLike(postQueLikeReq);
             return new BaseResponse<>(result);
         }catch (BaseException exception){
             exception.printStackTrace();
@@ -56,6 +58,8 @@ public class QuestionLikeController {
     public BaseResponse<String> createReplyLike(@RequestBody PostReplyLikeReq postReplyLikeReq){
 
         try{
+            if(postReplyLikeReq.getReplyIdx() == 0 || postReplyLikeReq.getUserIdx() == 0 )
+                throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
             String result = questionLikeService.createReplyLike(postReplyLikeReq);
             return new BaseResponse<>(result);
         }catch (BaseException exception){

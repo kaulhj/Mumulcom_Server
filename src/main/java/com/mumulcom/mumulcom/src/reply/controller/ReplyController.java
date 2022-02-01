@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.mumulcom.mumulcom.config.BaseResponseStatus.PATCH_ADOPT_NOT_SAME;
+import static com.mumulcom.mumulcom.config.BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY;
 
 @RestController
 @RequestMapping("/replies")
@@ -100,6 +101,10 @@ public class ReplyController {
     @PostMapping("/reply")
     public BaseResponse<String> Rereply(@RequestBody PostReReplReq postReReplReq){
         try{
+            if(postReReplReq.getReplyIdx() == 0 || postReReplReq.getUserIdx() == 0
+            || postReReplReq.getContent() == null){
+                throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
+            }
             String result = replyService.Rereply(postReReplReq);
             return new BaseResponse<>(result);
         }catch (BaseException exception){

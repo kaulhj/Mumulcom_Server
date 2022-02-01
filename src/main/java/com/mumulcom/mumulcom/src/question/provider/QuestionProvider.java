@@ -41,8 +41,11 @@ public class QuestionProvider {
 
 //학준 9. 최근질문 최대 4개 조회
 public List<GetRecQueRes> getRecQuestion(long userIdx) throws BaseException{
-   try{
-      List<GetRecQueRes> getRecQueRes = questionDao.getRecQuestion(userIdx);
+      int countSize = questionDao.countSize(userIdx);
+      if(countSize == 0)
+         throw new BaseException(BaseResponseStatus.GET_USERS_EMPTY_DATA);
+      try{
+      List<GetRecQueRes> getRecQueRes = questionDao.getRecQuestion(countSize, userIdx);
       return getRecQueRes;
    }catch (Exception exception){
       exception.printStackTrace();
@@ -53,10 +56,15 @@ public List<GetRecQueRes> getRecQuestion(long userIdx) throws BaseException{
 
 
 
-   //20
+   //학준 16
    public List<GetRecQueRes> getRecQuestions(long userIdx) throws BaseException{
+
+         int countSize = questionDao.getRecQueSize(userIdx);
+         //유저에 관한 정보가 0개일때
+         if(countSize == 0)
+            throw new BaseException(BaseResponseStatus.GET_USERS_EMPTY_DATA);
       try{
-         List<GetRecQueRes> getRecQueRes = questionDao.getRecQuestions(userIdx);
+         List<GetRecQueRes> getRecQueRes = questionDao.getRecQuestions(countSize, userIdx);
          return getRecQueRes;
       }catch (Exception exception){
          exception.printStackTrace();

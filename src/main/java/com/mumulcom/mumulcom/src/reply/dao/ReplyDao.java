@@ -129,5 +129,16 @@ public class ReplyDao {
 
 
     }
+
+    //29.
+    public int reReplyAuth(PostReReplReq postReReplReq){
+        String reRepAuthQuery = "SELECT EXISTS (SELECT userIdx from Rereply where replyIdx = ?)";
+               long result =  this.jdbcTemplate.queryForObject(reRepAuthQuery,
+                long.class,postReReplReq.getReplyIdx());
+        if(result == 1){
+            return 1;
+        }else
+            return 0;
+    }
 }
 

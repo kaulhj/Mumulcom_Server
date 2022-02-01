@@ -57,10 +57,14 @@ public class QuestionController {
                 if(codeQuestionReq.getUserIdx() == 0 || codeQuestionReq.getCurrentError() == null
                         || codeQuestionReq.getMyCodingSkill() == null || codeQuestionReq.getBigCategoryIdx() == 0
                         || codeQuestionReq.getSmallCategoryIdx() == 0 || codeQuestionReq.getTitle() == null) {
-                    throw new BaseException(BaseResponseStatus.POST_QUESTIONS_EMPTY_ESSENTIAL_BODY);
+                    throw new BaseException(BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY);
                 }
-                if(!ValidationRegex.isNumeric(Long.toString(codeQuestionReq.getBigCategoryIdx())))
+
+                //카테고리 범위 검사(1~3,1~8)
+                if(!ValidationRegex.bigCategoryRange(Long.toString(codeQuestionReq.getBigCategoryIdx()))
+                || !ValidationRegex.smallCategoryRange(Long.toString(codeQuestionReq.getSmallCategoryIdx()))) {
                     throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
+                }
                 List<String> imageUrls = questionService.uploadS3image(multipartFile, codeQuestionReq.getUserIdx());
                 String result = questionService.codeQuestion(imageUrls, codeQuestionReq);return new BaseResponse<>(result);
                 }catch (BaseException exception) {
@@ -77,21 +81,32 @@ public class QuestionController {
             @RequestPart(value = "images", required = false ) List<MultipartFile> multipartFile,
             @RequestPart(value = "conceptQueReq") ConceptQueReq conceptQueReq){
         try{
+            if(conceptQueReq.getUserIdx() == 0 || conceptQueReq.getContent() == null
+                    || conceptQueReq.getBigCategoryIdx() == 0
+                    || conceptQueReq.getSmallCategoryIdx() == 0 || conceptQueReq.getTitle() == null) {
+                throw new BaseException(BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY);
+            }
+            if(!ValidationRegex.bigCategoryRange(Long.toString(conceptQueReq.getBigCategoryIdx()))
+                    || !ValidationRegex.smallCategoryRange(Long.toString(conceptQueReq.getSmallCategoryIdx()))){
+                throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
+            }
             List<String> imageUrls = questionService.uploadS3image(multipartFile, conceptQueReq.getUserIdx());
             String result = questionService.conceptQuestion(imageUrls, conceptQueReq);
 
             return new BaseResponse<>(result);
         }catch (BaseException exception){
+            exception.printStackTrace();
             return new BaseResponse<>(exception.getStatus());
         }
     }
 
     //학준 9. 나의 최근 질문 최대 4개(전체 개수만큼 반환, 로그인 시 메인 화면 스크롤 기능)
     @ResponseBody
-    @GetMapping("/latest/{userIdx}")
+    @GetMapping("/latest/{userIdx}")    //유저인덱스 유효성은 jwt로
     public BaseResponse<List<GetRecQueRes>> getRecQuestion(@PathVariable("userIdx")long userIdx
     ){
         try{
+
             List<GetRecQueRes> getRecQueRes = questionProvider.getRecQuestion(userIdx);
             return new BaseResponse<>(getRecQueRes);
         }catch (BaseException exception){

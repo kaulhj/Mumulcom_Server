@@ -29,8 +29,12 @@ public class QuestionLikeService {
     }
 
 
-    public String createLike(PostQueLikeReq postQueLikeReq)throws BaseException{
+    public String createQuestionLike(PostQueLikeReq postQueLikeReq)throws BaseException{
         try{
+            if(!questionLikeProvider.likeAuth(postQueLikeReq))
+                throw new BaseException(BaseResponseStatus.POST_INVALID_LIKE_AUTH);
+            if(!questionLikeProvider.likeQueIdxExist(postQueLikeReq.getQuestionIdx()))
+                throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
             String result = questionLikeDao.createLike(postQueLikeReq);
             return new String(result);
         }catch (Exception exception){
@@ -41,6 +45,10 @@ public class QuestionLikeService {
 
     public String createReplyLike(PostReplyLikeReq postReplyLikeReq)throws BaseException{
         try{
+            if(!questionLikeProvider.likeAuth(postReplyLikeReq))
+                throw new BaseException(BaseResponseStatus.POST_INVALID_LIKE_AUTH);
+            if(!questionLikeProvider.likeQueIdxExist(postReplyLikeReq.getReplyIdx()))
+                throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
             String result = questionLikeDao.createReplyLike(postReplyLikeReq);
             return new String(result);
         }catch (Exception exception){
