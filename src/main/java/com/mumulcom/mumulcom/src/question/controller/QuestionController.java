@@ -162,7 +162,7 @@ public class QuestionController {
 
     /**
      * yeji 7번 API 카테고리별 질문 목록 조회
-     * [GET] /questions/?sort=&?bigCategory=&?smallCategory=?lastQuestionIdx=?page=
+     * [GET] /questions/?sort=&?bigCategory=&?smallCategory=?isReplied=?lastQuestionIdx=?page=
      */
     @ResponseBody
     @GetMapping("")
