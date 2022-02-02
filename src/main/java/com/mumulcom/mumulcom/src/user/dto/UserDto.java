@@ -28,6 +28,8 @@ public class UserDto {
         private String email;
         private String name;
         private String nickname;
+        private String group;
+        private String profileImgUrl;
     }
 
     @Getter
@@ -62,6 +64,7 @@ public class UserDto {
         private String email;
         private String name;
         private String nickname;
+        private String profileImgUrl;
     }
 
     @Builder
@@ -75,6 +78,10 @@ public class UserDto {
         @Pattern(regexp = "^[가-힣a-z0-9]+$")
         @Size(min = 2, max = 8)
         private String nickname;
+
+        private String group;
+
+        private String profileImgUrl;
     }
 
     @Builder
@@ -83,5 +90,7 @@ public class UserDto {
         private String email;
         private String name;
         private String nickname;
+        private String group;
+        private String profileImgUrl;
     }
 }
