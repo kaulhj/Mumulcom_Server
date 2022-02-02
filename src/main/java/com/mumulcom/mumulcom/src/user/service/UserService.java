@@ -5,8 +5,6 @@ import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.user.domain.User;
 import com.mumulcom.mumulcom.src.user.dto.UserDto;
-import com.mumulcom.mumulcom.src.user.dto.UserDto.SignUpReq;
-import com.mumulcom.mumulcom.src.user.dto.UserDto.SignUpRes;
 import com.mumulcom.mumulcom.src.user.repository.UserRepository;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.springframework.stereotype.Service;
@@ -14,8 +12,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
-import static com.mumulcom.mumulcom.src.user.dto.UserDto.SignInReq;
-import static com.mumulcom.mumulcom.src.user.dto.UserDto.SignInRes;
 
 @Service
 @Transactional
@@ -33,25 +29,28 @@ public class UserService {
     /**
      * 회원가입
      */
-    public SignUpRes join(SignUpReq signUpReq) throws BaseException {
+    public UserDto.SignUpRes join(UserDto.SignUpReq signUpReq) throws BaseException {
         if (userRepository.existsUserByEmail(signUpReq.getEmail())) {
             throw new BaseException(BaseResponseStatus.POST_USERS_EXISTS_EMAIL);
         } else if (userRepository.existsUserByNickname(signUpReq.getNickname())) {
             throw new BaseException(BaseResponseStatus.POST_USERS_EXISTS_NICKNAME);
         }
-        User user = userRepository.save(mapper.map(signUpReq, User.class));
-        return SignUpRes.builder()
+        User mappedUser = mapper.map(signUpReq, User.class);
+        mappedUser.updateProfileImgUrlRandomly();
+        User user = userRepository.save(mappedUser);
+        return UserDto.SignUpRes.builder()
                 .userIdx(user.getUserIdx())
                 .email(user.getEmail())
                 .name(user.getName())
                 .nickname(user.getNickname())
+                .profileImgUrl(user.getProfileImgUrl())
                 .build();
     }
 
     /**
      * 로그인
      */
-    public SignInRes login(SignInReq signInReq) throws BaseException {
+    public UserDto.SignInRes login(UserDto.SignInReq signInReq) throws BaseException {
         String email = signInReq.getEmail();
         Optional<User> userOptional = userRepository.findUserByEmail(email);
         if (userOptional.isEmpty()) {
@@ -59,12 +58,14 @@ public class UserService {
         }
         User user = userOptional.get();
         String jwt = jwtService.createJwt(user.getUserIdx());
-        return SignInRes.builder()
+        return UserDto.SignInRes.builder()
                 .jwt(jwt)
                 .userIdx(user.getUserIdx())
                 .email(user.getEmail())
                 .name(user.getName())
                 .nickname(user.getName())
+                .group(user.getGroup())
+                .profileImgUrl(user.getProfileImgUrl())
                 .build();
     }
 
@@ -81,6 +82,8 @@ public class UserService {
                 .email(user.getEmail())
                 .name(user.getName())
                 .nickname(user.getNickname())
+                .group(user.getGroup())
+                .profileImgUrl(user.getProfileImgUrl())
                 .build();
     }
 
@@ -93,11 +96,17 @@ public class UserService {
             throw new BaseException(BaseResponseStatus.RESPONSE_ERROR);
         }
         User user = userOptional.get();
-        user.updateUserInfo(patchReq);
+        user.updateUserInfo(
+                patchReq.getNickname(),
+                patchReq.getGroup(),
+                patchReq.getProfileImgUrl()
+        );
         return UserDto.UserRes.builder()
                 .email(user.getEmail())
                 .name(user.getName())
                 .nickname(user.getNickname())
+                .group(user.getGroup())
+                .profileImgUrl(user.getProfileImgUrl())
                 .build();
     }
 
@@ -115,6 +124,8 @@ public class UserService {
                 .email(user.getEmail())
                 .name(user.getName())
                 .nickname(user.getNickname())
+                .group(user.getGroup())
+                .profileImgUrl(user.getProfileImgUrl())
                 .build();
     }
 
