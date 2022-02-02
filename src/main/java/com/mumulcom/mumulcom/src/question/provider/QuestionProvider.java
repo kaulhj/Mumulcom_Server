@@ -104,9 +104,22 @@ public List<GetRecQueRes> getRecQuestion(long userIdx) throws BaseException{
     * 휘정
     * 내가 한 질문 목록 받아오는 API
     * */
-   public List<MyQuestionListRes> myQuestionListResList (int userIdx) throws BaseException {
+
+   // 코딩 질문 목록
+   public List<MyQuestionListRes> myCodingQuestionListResList (int userIdx, boolean isReplied) throws BaseException {
       try {
-         List<MyQuestionListRes> myQuestionListResList = questionDao.myQuestionListRes(userIdx);
+         List<MyQuestionListRes> myQuestionListResList = questionDao.myCodingQuestionListRes(userIdx, isReplied);
+         return myQuestionListResList;
+      } catch (Exception exception) {
+         exception.printStackTrace();
+         throw new BaseException(DATABASE_ERROR);
+      }
+   }
+
+   // 개념 질문 목록
+   public List<MyQuestionListRes> myConceptQuestionListResList (int userIdx, boolean isReplied) throws BaseException {
+      try {
+         List<MyQuestionListRes> myQuestionListResList = questionDao.myConceptQuestionListRes(userIdx,isReplied);
          return myQuestionListResList;
       } catch (Exception exception) {
          exception.printStackTrace();
