@@ -9,5 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ReplyInfoRes {
     private Long writer;
+    private Long answerer;
     private Long questionIdx;
 }
