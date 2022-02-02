@@ -98,7 +98,7 @@ public class ReplyController {
      * */
     @ResponseBody
     @PatchMapping("/adoption/{userIdx}/{replyIdx}")
-    public BaseResponse<String> adoptReply(@PathVariable("replyIdx") int replyIdx, @PathVariable("userIdx") int userIdx) {
+    public BaseResponse<String> adoptReply(@PathVariable("replyIdx") long replyIdx, @PathVariable("userIdx") long userIdx) {
         try {
             ReplyInfoRes replyInfo = replyProvider.getReplyInfo(replyIdx);
 

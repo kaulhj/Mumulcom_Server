@@ -43,7 +43,7 @@ public class ReplyProvider {
         }
     }
 
-    public ReplyInfoRes getReplyInfo (int replyIdx) throws BaseException {
+    public ReplyInfoRes getReplyInfo (long replyIdx) throws BaseException {
         try {
             ReplyInfoRes replyInfo = replyDao.getReplyInfo(replyIdx);
             return replyInfo;

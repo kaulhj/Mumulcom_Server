@@ -74,7 +74,7 @@ public class ReplyService {
      * 휘정 채택 API
      * */
     @Transactional
-    public void adoptReply(int replyIdx) throws BaseException {
+    public void adoptReply(long replyIdx) throws BaseException {
         try {
             int result = replyDao.adoptReply(replyIdx);
             if(result == 0) {

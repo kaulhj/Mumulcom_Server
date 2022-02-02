@@ -265,7 +265,7 @@ public class QuestionController {
      * */
     @ResponseBody
     @GetMapping("/my/concept")
-    public BaseResponse<List<MyQuestionListRes>> myConceptQuestion(@RequestParam int userIdx, @RequestParam(defaultValue = "false") boolean isReplied) {
+    public BaseResponse<List<MyQuestionListRes>> myConceptQuestion(@RequestParam long userIdx, @RequestParam(defaultValue = "false") boolean isReplied) {
         try {
             List<MyQuestionListRes> myQuestionListRes = questionProvider.myConceptQuestionListResList(userIdx, isReplied);
             return new BaseResponse<>(myQuestionListRes);

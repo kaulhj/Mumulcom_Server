@@ -106,7 +106,7 @@ public List<GetRecQueRes> getRecQuestion(long userIdx) throws BaseException{
     * */
 
    // 코딩 질문 목록
-   public List<MyQuestionListRes> myCodingQuestionListResList (int userIdx, boolean isReplied) throws BaseException {
+   public List<MyQuestionListRes> myCodingQuestionListResList (long userIdx, boolean isReplied) throws BaseException {
       try {
          List<MyQuestionListRes> myQuestionListResList = questionDao.myCodingQuestionListRes(userIdx, isReplied);
          return myQuestionListResList;
@@ -117,7 +117,7 @@ public List<GetRecQueRes> getRecQuestion(long userIdx) throws BaseException{
    }
 
    // 개념 질문 목록
-   public List<MyQuestionListRes> myConceptQuestionListResList (int userIdx, boolean isReplied) throws BaseException {
+   public List<MyQuestionListRes> myConceptQuestionListResList (long userIdx, boolean isReplied) throws BaseException {
       try {
          List<MyQuestionListRes> myQuestionListResList = questionDao.myConceptQuestionListRes(userIdx,isReplied);
          return myQuestionListResList;

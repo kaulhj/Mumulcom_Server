@@ -506,7 +506,7 @@ public class QuestionDao {
      * userIdx를 이용해서 사용자 정보 받은 후
      * 해당 사용자가 한 질문 목록 보여주기
      * */
-    public List<MyQuestionListRes> myCodingQuestionListRes (int userIdx, boolean isReplied) {
+    public List<MyQuestionListRes> myCodingQuestionListRes (long userIdx, boolean isReplied) {
         String myQuestionListQuery;
         if(isReplied == false) {
             myQuestionListQuery = "select * \n" +
@@ -555,7 +555,7 @@ public class QuestionDao {
      * userIdx를 이용해서 사용자 정보 받은 후
      * 해당 사용자가 한 질문 목록 보여주기
      * */
-    public List<MyQuestionListRes> myConceptQuestionListRes (int userIdx, boolean isReplied) {
+    public List<MyQuestionListRes> myConceptQuestionListRes (long userIdx, boolean isReplied) {
         String myQuestionListQuery;
         if(isReplied == false) {
             myQuestionListQuery = " select * \n" +

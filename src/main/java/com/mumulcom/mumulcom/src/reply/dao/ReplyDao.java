@@ -102,7 +102,7 @@ public class ReplyDao {
 
     // 해당 답변 idx를 가지고 질문자 알아내기
 
-    public ReplyInfoRes getReplyInfo(int replyIdx) {
+    public ReplyInfoRes getReplyInfo(long replyIdx) {
         String getQuestionWriterQuery = "select r.userIdx as answerer, q.userIdx as writer, q.questionIdx\n" +
                 "from Reply r join Question q on r.questionIdx = q.questionIdx\n" +
                 "where replyIdx = ?";
@@ -119,7 +119,7 @@ public class ReplyDao {
      * 휘정 채택하기 API
      * 채택된 답변의 status는 adopted
      */
-    public int adoptReply(int replyIdx) {
+    public int adoptReply(long replyIdx) {
         String adoptReplyQuery = "update Reply set status = 'adopted' , updatedAt = now() where replyIdx = ?";
         return this.jdbcTemplate.update(adoptReplyQuery, replyIdx); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
     }
