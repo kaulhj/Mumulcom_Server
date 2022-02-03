@@ -64,6 +64,7 @@ public enum BaseResponseStatus {
      * 2800 : Reply 오류
      */
     POST_INVALID_REREPLY_AUTH(false, 2800, "자신의 답변은 답변할 수 없습니다."),
+    GET_REPLIES_EMPTY_DATA(false, 2810, "해당 답변이 존재하지 않습니다,"),
 
 
     /**
