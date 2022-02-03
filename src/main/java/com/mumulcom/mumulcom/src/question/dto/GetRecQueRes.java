@@ -14,9 +14,9 @@ public class GetRecQueRes {
     private long questionIdx;   //최근질문 순서, 가장최근 : 1
     private String BigCategory;
     private String SmallCategory;
-    private String Name;
-    private String Created;
+    private String nickName;
+    private String CreatedAt;
     private String Title;
-    private long Reply;
-    private Long Like;
+    private long ReplyCount;
+    private Long LikeCount;
 }

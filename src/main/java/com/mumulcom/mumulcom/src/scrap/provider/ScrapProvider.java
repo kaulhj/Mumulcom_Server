@@ -108,15 +108,17 @@ public class ScrapProvider {
     }
 
     //24. 자신의 스크랩 질문인지 확인
-    public boolean scrapAuth(PostScrapReq postScrapReq)throws BaseException{
+    public int scrapAuth(PostScrapReq postScrapReq)throws BaseException{
         try{
-            boolean scrapAuth = scrapDao.scrapAuth(postScrapReq);
+            int scrapAuth = scrapDao.scrapAuth(postScrapReq);
             return scrapAuth;
         }catch (Exception exception){
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
+
+    //학준 24.2
     public int queIdxExist(Long getQuestionIdx)throws BaseException{
         try{
             int queId = scrapDao.queIdExist(getQuestionIdx);
@@ -126,5 +128,18 @@ public class ScrapProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    //학준 24.3
+    public int getScrapStatues(PostScrapReq postScrapReq)throws BaseException{
+        try{
+            int scrapStatus = scrapDao.getScrapStatus(postScrapReq);
+            return scrapStatus;
+        }catch (Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //
 
 }

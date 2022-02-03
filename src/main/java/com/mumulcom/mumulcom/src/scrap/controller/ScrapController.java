@@ -13,6 +13,7 @@ import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,6 +43,7 @@ public class ScrapController {
     //학준 24. 스크랩하기 / 내글은 스크랩 못하게 밸리데이션
     @ResponseBody
     @PostMapping("/creation")
+    @Transactional(rollbackFor = Exception.class)
     public BaseResponse<String> createScrap(@RequestBody PostScrapReq postScrapReq){
 
         try{
