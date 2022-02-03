@@ -1,9 +1,8 @@
-package com.mumulcom.mumulcom.src.questionlike.dao;
+package com.mumulcom.mumulcom.src.like.dao;
 
 
-import com.mumulcom.mumulcom.src.questionlike.dto.PostQueLikeReq;
-import com.mumulcom.mumulcom.src.questionlike.dto.PostReplyLikeReq;
-import com.mumulcom.mumulcom.src.scrap.dto.PostScrapReq;
+import com.mumulcom.mumulcom.src.like.dto.PostQueLikeReq;
+import com.mumulcom.mumulcom.src.like.dto.PostReplyLikeReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
