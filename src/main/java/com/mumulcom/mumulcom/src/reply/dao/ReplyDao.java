@@ -37,16 +37,24 @@ public class ReplyDao {
     public PostReplyRes creatReply(PostReplyReq postReplyReq) {
 
         String replyImgResult;
+        String createReplyQuery;
+        Object[] createReplyParams;
 
         // Reply table insert
-        String createReplyQuery = "insert into Reply(questionIdx, userIdx, replyUrl, content) values (?, ?, ?, ?)";
-        Object[] createReplyParams = new Object[]{postReplyReq.getQuestionIdx(), postReplyReq.getUserIdx(), postReplyReq.getReplyUrl(), postReplyReq.getContent()};
+        if(postReplyReq.getReplyUrl() != null) {
+            createReplyQuery = "insert into Reply(questionIdx, userIdx, replyUrl, content) values (?, ?, ?, ?)";
+            createReplyParams = new Object[]{postReplyReq.getQuestionIdx(), postReplyReq.getUserIdx(), postReplyReq.getReplyUrl(), postReplyReq.getContent()};
+        } else {
+            createReplyQuery = "insert into Reply(questionIdx, userIdx, content) values (?, ?, ?)";
+            createReplyParams = new Object[]{postReplyReq.getQuestionIdx(), postReplyReq.getUserIdx(), postReplyReq.getContent()};
+        }
+
         this.jdbcTemplate.update(createReplyQuery, createReplyParams);
 
         // 마지막으로 삽입된 ReplyIdx 값 추출
         String lastInsertIdQuery = "select last_insert_id()";
         Long replyIdx = this.jdbcTemplate.queryForObject(lastInsertIdQuery, Long.class);
-        replyImgResult = "해당 답변은 첨부된 이미지가 없습니다.";
+        replyImgResult = "";
 
         if (postReplyReq.getUrl() != null) {
 
@@ -60,7 +68,38 @@ public class ReplyDao {
             replyImgResult = "이미지 삽입이 완료됐습니다.";
         }
 
-        return new PostReplyRes(replyIdx, replyImgResult);
+        // 알림 기능
+        // 1. 질문 작성자에게 알림
+        // 답변 생성한 유저 닉네임 추출
+        String userNickname = this.jdbcTemplate.queryForObject("SELECT nickname FROM User WHERE userIdx = ?", String.class, postReplyReq.getUserIdx());
+        // 질문한 유저 인덱스 추출 (알림 대상 유저)
+        Long questionUserIdx = this.jdbcTemplate.queryForObject("SELECT userIdx FROM Question WHERE questionIdx = ?", Long.class, postReplyReq.getQuestionIdx());
+
+        String createReplyNoticeQuery = "INSERT INTO Notice(noticeCategoryIdx, questionIdx, userIdx, noticeContent) values (1, ?, ?, " + "'" + userNickname + "님이 회원님의 질문에 답변을 달았습니다.')";
+        Object[] createReplyNoticeParams = new Object[]{postReplyReq.getQuestionIdx(), questionUserIdx};
+        this.jdbcTemplate.update(createReplyNoticeQuery, createReplyNoticeParams);
+        String noticeReply = userNickname + "님이 회원님의 질문에 답변을 달았습니다.";
+
+        // 2. 질문을 스크랩한 유저들에게 알림
+        // 스크랩한 유저 인덱스 추출 (알림 대상 유저)
+        List<Long> scrapUserIdxList = new ArrayList<>();
+        this.jdbcTemplate.query("SELECT userIdx FROM Scrap WHERE questionIdx = ?",
+                (rs, rowNum) -> scrapUserIdxList.add(
+                        rs.getLong("userIdx")),
+                postReplyReq.getQuestionIdx());
+
+        String noticeScrap = "";
+        if(scrapUserIdxList.isEmpty() == false) {
+            String createReplyNoticeQuery2 = "INSERT INTO Notice(noticeCategoryIdx, questionIdx, userIdx, noticeContent) values (3, ?, ?, '회원님이 스크랩한 질문에 답변이 달렸습니다.')";
+
+            for(Long userIdx : scrapUserIdxList) {
+                Object[] createReplyNoticeParams2 = new Object[]{postReplyReq.getQuestionIdx(), userIdx};
+                this.jdbcTemplate.update(createReplyNoticeQuery2, createReplyNoticeParams2);
+            }
+            noticeScrap = "회원님이 스크랩한 질문에 답변이 달렸습니다.";
+        }
+
+        return new PostReplyRes(replyIdx, replyImgResult, noticeReply, questionUserIdx, noticeScrap, scrapUserIdxList);
     }
 
     /**
