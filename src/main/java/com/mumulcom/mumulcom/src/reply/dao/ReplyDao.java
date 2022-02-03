@@ -39,8 +39,8 @@ public class ReplyDao {
         String replyImgResult;
 
         // Reply table insert
-        String createReplyQuery = "insert into Reply(questionIdx, userIdx, content) values (?, ?, ?)";
-        Object[] createReplyParams = new Object[]{postReplyReq.getQuestionIdx(), postReplyReq.getUserIdx(), postReplyReq.getContent()};
+        String createReplyQuery = "insert into Reply(questionIdx, userIdx, replyUrl, content) values (?, ?, ?, ?)";
+        Object[] createReplyParams = new Object[]{postReplyReq.getQuestionIdx(), postReplyReq.getUserIdx(), postReplyReq.getReplyUrl(), postReplyReq.getContent()};
         this.jdbcTemplate.update(createReplyQuery, createReplyParams);
 
         // 마지막으로 삽입된 ReplyIdx 값 추출
