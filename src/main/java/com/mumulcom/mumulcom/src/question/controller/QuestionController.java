@@ -162,14 +162,14 @@ public class QuestionController {
 
     /**
      * yeji 7번 API 카테고리별 질문 목록 조회
-     * [GET] /questions/?sort=&?bigCategory=&?smallCategory=?isReplied=?lastQuestionIdx=?page=
+     * [GET] /questions?type=&sort=&bigCategory=&smallCategory=&isReplied=&lastQuestionIdx=&perPage=
      */
     @ResponseBody
     @GetMapping("")
-    public BaseResponse<List<GetQuestionListRes>> getQuestionsList(@RequestParam int sort, @RequestParam int bigCategoryIdx, @RequestParam(required = false, defaultValue = "0") int smallCategoryIdx, @RequestParam(defaultValue = "true") boolean isReplied,
+    public BaseResponse<List<GetQuestionListRes>> getQuestionsList(@RequestParam(defaultValue = "1") int type , @RequestParam int sort, @RequestParam int bigCategoryIdx, @RequestParam(required = false, defaultValue = "0") int smallCategoryIdx, @RequestParam(defaultValue = "true") boolean isReplied,
                                                                     @RequestParam int lastQuestionIdx, @RequestParam int perPage) {
         try {
-            List<GetQuestionListRes> getQuestionListRes = questionService.getQuestionsByCategory(sort, bigCategoryIdx, smallCategoryIdx, isReplied, lastQuestionIdx, perPage);
+            List<GetQuestionListRes> getQuestionListRes = questionService.getQuestionsByCategory(type, sort, bigCategoryIdx, smallCategoryIdx, isReplied, lastQuestionIdx, perPage);
             return new BaseResponse<>(getQuestionListRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));

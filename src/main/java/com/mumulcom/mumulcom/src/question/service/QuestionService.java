@@ -93,7 +93,8 @@ public class QuestionService {
     }
 
     /**
-     * 5번 API 코딩 질문 조회
+     * yeji
+     * 10번 API 코딩 질문 조회
      */
     public List<GetCodingQuestionRes> getCodingQuestions(int questionIdx) throws BaseException {
         try{
@@ -106,7 +107,8 @@ public class QuestionService {
     }
 
     /**
-     * 6번 API 개념 질문 조회
+     * yeji
+     * 11번 API 개념 질문 조회
      */
     public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx) throws BaseException {
         try {
@@ -119,12 +121,13 @@ public class QuestionService {
     }
 
     /**
-     * 7번 API
+     * yeji
+     * 12번 API
      * 카테고리별 질문 목록 조회 API
      */
-    public List<GetQuestionListRes> getQuestionsByCategory(int sort, int bigCategoryIdx, int smallCategoryIdx, boolean isReplied, int lastQuestionIdx, int perPage) throws BaseException {
+    public List<GetQuestionListRes> getQuestionsByCategory(int type, int sort, int bigCategoryIdx, int smallCategoryIdx, boolean isReplied, int lastQuestionIdx, int perPage) throws BaseException {
         try {
-            List<GetQuestionListRes> getQuestionListRes = questionDao.getQuestionsByCategory(sort, bigCategoryIdx, smallCategoryIdx, isReplied, lastQuestionIdx, perPage);
+            List<GetQuestionListRes> getQuestionListRes = questionDao.getQuestionsByCategory(type, sort, bigCategoryIdx, smallCategoryIdx, isReplied, lastQuestionIdx, perPage);
             return getQuestionListRes;
         } catch (Exception exception) {
             exception.printStackTrace();
