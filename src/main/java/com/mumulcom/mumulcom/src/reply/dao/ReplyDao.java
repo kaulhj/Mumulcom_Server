@@ -70,7 +70,7 @@ public class ReplyDao {
         String myReplyListQuery;
 
         if(isAdopted == false) {
-            myReplyListQuery = "select  questionList.questionIdx, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount\n" +
+            myReplyListQuery = "select  questionList.questionIdx, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
                     "from\n" +
                     "(select q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
@@ -83,7 +83,7 @@ public class ReplyDao {
                     "where r.userIdx = ? \n" +
                     "order by r.createdAt desc";
         } else { // 채택된 것만 보기
-            myReplyListQuery = "select  questionList.questionIdx, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount\n" +
+            myReplyListQuery = "select  questionList.questionIdx, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
                     "from\n" +
                     "(select q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
@@ -105,7 +105,8 @@ public class ReplyDao {
                         rs.getString("title"),
                         rs.getString("createdAt"),
                         rs.getInt("likeCount"),
-                        rs.getInt("replyCount")
+                        rs.getInt("replyCount"),
+                        rs.getString("content")
                 ), userIdx);
     }
 
@@ -117,7 +118,7 @@ public class ReplyDao {
         String myReplyListQuery;
 
         if(isAdopted == false) {
-            myReplyListQuery = "select  questionList.questionIdx, nickname, bigCategoryName, smallCategoryName, title,DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount\n" +
+            myReplyListQuery = "select  questionList.questionIdx, nickname, bigCategoryName, smallCategoryName, title,DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
                     "from\n" +
                     "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
@@ -130,7 +131,7 @@ public class ReplyDao {
                     "where r.userIdx = ?\n" +
                     "order by r.createdAt desc";
         } else { // 채택된 것만 보기
-            myReplyListQuery = "select  questionList.questionIdx, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount\n" +
+            myReplyListQuery = "select  questionList.questionIdx, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
                     "from\n" +
                     "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
@@ -153,7 +154,8 @@ public class ReplyDao {
                         rs.getString("title"),
                         rs.getString("createdAt"),
                         rs.getInt("likeCount"),
-                        rs.getInt("replyCount")
+                        rs.getInt("replyCount"),
+                        rs.getString("content")
                 ), userIdx);
     }
 
