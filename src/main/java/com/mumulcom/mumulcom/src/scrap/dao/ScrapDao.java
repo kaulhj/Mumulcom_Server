@@ -22,33 +22,6 @@ public class ScrapDao {
     }
 
 
-    //24.1
-    public String createScrap(PostScrapReq postScrapReq, int scrapStatus ){
-        Object[] ScrapParams = new Object[]{postScrapReq.getQuestionIdx(),
-                postScrapReq.getUserIdx()};
-        switch(scrapStatus) {
-            case 1:
-                String createScrapQuery = "INSERT INTO Scrap(QUESTIONIDX, USERIDX) VALUES (?, ?)";
-                this.jdbcTemplate.update(createScrapQuery,ScrapParams);
-                return new String("해당 글을 스크랩 하였습니다.");
-            case 2:
-                String changeToInactiveQuery = "update Scrap\n" +
-                        "SET status = 'inactive'\n" +
-                        "where questionIdx = ? AND userIdx = ?";
-                this.jdbcTemplate.update(changeToInactiveQuery,ScrapParams);
-                return new String("해당 글을 스크랩 취소하였습니다.");
-            default:
-                String changeToActiveQuery =  "update Scrap\n" +
-                    "SET status = 'active'\n" +
-                    "where questionIdx = ? AND userIdx = ?";
-                this.jdbcTemplate.update(changeToActiveQuery,ScrapParams);
-                return new String("해당 글을 다시 스크랩 하였습니다.");
-
-        }
-
-
-
-    }
 
     /**
      * 휘정
@@ -225,6 +198,36 @@ public class ScrapDao {
                         rs.getInt("replyCount")
                 ), myScrapParams);
     }
+
+
+    //학준24.1
+    public String createScrap(PostScrapReq postScrapReq, int scrapStatus ){
+        Object[] ScrapParams = new Object[]{postScrapReq.getQuestionIdx(),
+                postScrapReq.getUserIdx()};
+        switch(scrapStatus) {
+            case 1:
+                String createScrapQuery = "INSERT INTO Scrap(QUESTIONIDX, USERIDX) VALUES (?, ?)";
+                this.jdbcTemplate.update(createScrapQuery,ScrapParams);
+                return new String("해당 글을 스크랩 하였습니다.");
+            case 2:
+                String changeToInactiveQuery = "update Scrap\n" +
+                        "SET status = 'inactive'\n" +
+                        "where questionIdx = ? AND userIdx = ?";
+                this.jdbcTemplate.update(changeToInactiveQuery,ScrapParams);
+                return new String("해당 글을 스크랩 취소하였습니다.");
+            default:
+                String changeToActiveQuery =  "update Scrap\n" +
+                        "SET status = 'active'\n" +
+                        "where questionIdx = ? AND userIdx = ?";
+                this.jdbcTemplate.update(changeToActiveQuery,ScrapParams);
+                return new String("해당 글을 다시 스크랩 하였습니다.");
+
+        }
+
+
+
+    }
+
 
     //24.-2
     public int scrapAuth(PostScrapReq postScrapReq){

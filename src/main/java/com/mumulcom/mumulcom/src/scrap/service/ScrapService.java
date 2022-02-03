@@ -42,7 +42,7 @@ public class ScrapService {
                 throw new BaseException(BaseResponseStatus.POST_INVALID_SCRAP_AUTH);
             if(questionProvider.checkUserStatus(postScrapReq.getUserIdx()) == 0)
                 throw new BaseException(BaseResponseStatus.POST_USERS_INACTIVE_STATUS);
-            switch (scrapProvider.getScrapStatues(postScrapReq)) {
+            switch (scrapProvider.getScrapStatues(postScrapReq)){
                 case 1:
                     result = scrapDao.createScrap(postScrapReq, 1);
                     break;
