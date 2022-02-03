@@ -54,23 +54,23 @@ public class ScrapController {
         }
     }
 
-    // 스크랩한 목록 모두 보여주기
+    // 스크랩한 코딩 질문 목록 모두 보여주기
     // 카테고리 없을 때
     // 큰 카테고리만 있을 때
     // 둘다 있을 때
     // 큰 x, 작은 o 일때는 벨리데이션처리 해주기
     @ResponseBody
     @GetMapping("/coding")
-    public BaseResponse<List<MyScrapListRes>> getMyCodingScrapList (@RequestParam int userIdx, @RequestParam(required = false) String bigCategory, @RequestParam(required = false) String smallCategory) {
+    public BaseResponse<List<MyScrapListRes>> getMyCodingScrapList (@RequestParam int userIdx,  @RequestParam(defaultValue = "false") boolean isReplied,@RequestParam(required = false) String bigCategory, @RequestParam(required = false) String smallCategory) {
         try {
             List<MyScrapListRes> myScrapListResList;
             //카테고리 없을 때 -> 스크랩한 목록 다 보여주기
             if(bigCategory == null && smallCategory == null) {
-                myScrapListResList = scrapProvider.myCodingScrapListRes(userIdx);
+                myScrapListResList = scrapProvider.myCodingScrapListRes(userIdx, isReplied);
             } else if (smallCategory == null) { // 큰 카테고리만 있을 때
-                myScrapListResList = scrapProvider.myCodingScrapListRes(userIdx,bigCategory);
+                myScrapListResList = scrapProvider.myCodingScrapListRes(userIdx,bigCategory, isReplied);
             } else { // 모두 있을 때
-                myScrapListResList = scrapProvider.myCodingScrapListRes(userIdx, bigCategory, smallCategory);
+                myScrapListResList = scrapProvider.myCodingScrapListRes(userIdx, bigCategory, smallCategory, isReplied);
             }
             return new BaseResponse<>(myScrapListResList);
         } catch (BaseException exception) {
@@ -78,23 +78,23 @@ public class ScrapController {
         }
     }
 
-    // 스크랩한 목록 모두 보여주기
+    // 스크랩한 개념 질문 목록 모두 보여주기
     // 카테고리 없을 때
     // 큰 카테고리만 있을 때
     // 둘다 있을 때
     // 큰 x, 작은 o 일때는 벨리데이션처리 해주기
     @ResponseBody
     @GetMapping("/concept")
-    public BaseResponse<List<MyScrapListRes>> getMyConceptScrapList (@RequestParam int userIdx, @RequestParam(required = false) String bigCategory, @RequestParam(required = false) String smallCategory) {
+    public BaseResponse<List<MyScrapListRes>> getMyConceptScrapList (@RequestParam int userIdx,  @RequestParam(defaultValue = "false") boolean isReplied, @RequestParam(required = false) String bigCategory, @RequestParam(required = false) String smallCategory) {
         try {
             List<MyScrapListRes> myScrapListResList;
             //카테고리 없을 때 -> 스크랩한 목록 다 보여주기
             if(bigCategory == null && smallCategory == null) {
-                myScrapListResList = scrapProvider.myConceptScrapListRes(userIdx);
+                myScrapListResList = scrapProvider.myConceptScrapListRes(userIdx, isReplied);
             } else if (smallCategory == null) { // 큰 카테고리만 있을 때
-                myScrapListResList = scrapProvider.myConceptScrapListRes(userIdx,bigCategory);
+                myScrapListResList = scrapProvider.myConceptScrapListRes(userIdx,bigCategory, isReplied);
             } else { // 모두 있을 때
-                myScrapListResList = scrapProvider.myConceptScrapListRes(userIdx, bigCategory, smallCategory);
+                myScrapListResList = scrapProvider.myConceptScrapListRes(userIdx, bigCategory, smallCategory, isReplied);
             }
             return new BaseResponse<>(myScrapListResList);
         } catch (BaseException exception) {
