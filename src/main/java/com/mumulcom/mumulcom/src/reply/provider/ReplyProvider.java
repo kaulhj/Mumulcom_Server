@@ -33,9 +33,19 @@ public class ReplyProvider {
         this.jwtService = jwtService;
     }
 
-    public List<MyReplyListRes> myReplyListResList (int userIdx) throws BaseException {
+    public List<MyReplyListRes> myCodingReplyListResList (long userIdx, boolean isAdopted) throws BaseException {
         try {
-            List<MyReplyListRes> myReplyListRes = replyDao.myReplyListResList(userIdx);
+            List<MyReplyListRes> myReplyListRes = replyDao.myCodingReplyListResList(userIdx, isAdopted);
+            return myReplyListRes;
+        } catch (Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<MyReplyListRes> myConceptReplyListResList (long userIdx, boolean isAdopted) throws BaseException {
+        try {
+            List<MyReplyListRes> myReplyListRes = replyDao.myConceptReplyListResList(userIdx, isAdopted);
             return myReplyListRes;
         } catch (Exception exception){
             exception.printStackTrace();

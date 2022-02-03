@@ -76,13 +76,28 @@ public class ReplyController {
 
     /**
      * 휘정
-     * 내가 답변한 질문 조회 API
+     * 내가 답변한 코딩 질문 조회 API
      * */
     @ResponseBody
-    @GetMapping("/my/{userIdx}")
-    public BaseResponse<List<MyReplyListRes>> myReplyList(@PathVariable("userIdx") int userIdx) {
+    @GetMapping("/my/coding")
+    public BaseResponse<List<MyReplyListRes>> myCodingReplyList(@RequestParam long userIdx, @RequestParam(defaultValue = "false") boolean isAdopted) {
         try {
-            List<MyReplyListRes> myReplyListRes = replyProvider.myReplyListResList(userIdx);
+            List<MyReplyListRes> myReplyListRes = replyProvider.myCodingReplyListResList(userIdx, isAdopted);
+            return new BaseResponse<>(myReplyListRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 휘정
+     * 내가 답변한 개념 질문 조회 API
+     * */
+    @ResponseBody
+    @GetMapping("/my/concept")
+    public BaseResponse<List<MyReplyListRes>> myConceptReplyList(@RequestParam long userIdx, @RequestParam(defaultValue = "false") boolean isAdopted) {
+        try {
+            List<MyReplyListRes> myReplyListRes = replyProvider.myConceptReplyListResList(userIdx, isAdopted);
             return new BaseResponse<>(myReplyListRes);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
