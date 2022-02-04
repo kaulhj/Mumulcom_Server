@@ -11,6 +11,7 @@ import com.mumulcom.mumulcom.src.reply.dto.PostReReplReq;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
 import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -218,13 +219,19 @@ public class ReplyDao {
         String getQuestionWriterQuery = "select r.userIdx as answerer, q.userIdx as writer, q.questionIdx\n" +
                 "from Reply r join Question q on r.questionIdx = q.questionIdx\n" +
                 "where replyIdx = ?";
-        return this.jdbcTemplate.queryForObject(getQuestionWriterQuery,
-                (rs,rowNum) -> new ReplyInfoRes(
-                        rs.getLong("writer"),
-                        rs.getLong("answerer"),
-                        rs.getLong("questionIdx")
-                )
-                ,replyIdx);
+
+        try{
+            return this.jdbcTemplate.queryForObject(getQuestionWriterQuery,
+                    (rs,rowNum) -> new ReplyInfoRes(
+                            rs.getLong("writer"),
+                            rs.getLong("answerer"),
+                            rs.getLong("questionIdx")
+                    )
+                    ,replyIdx);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+
     }
 
     /**
