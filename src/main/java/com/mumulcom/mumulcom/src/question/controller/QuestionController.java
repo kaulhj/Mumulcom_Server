@@ -262,14 +262,32 @@ public class QuestionController {
 
     /**
      * 휘정
-     * 내가 한 질문 조회 API
-     * [GET] /questions/my/:userIdx
+     * 내가 한 코딩 질문 조회 API
+     * [GET] /questions/my/coding/...( 쿼리스트링)
+     * 일단 모든 질문 다 보여주고 isreplied가 true가 되면 답변달린것만 보여주기
      * */
     @ResponseBody
-    @GetMapping("/my/{userIdx}")
-    public BaseResponse<List<MyQuestionListRes>> myQuestion(@PathVariable("userIdx") int userIdx) {
+    @GetMapping("/my/coding")
+    public BaseResponse<List<MyQuestionListRes>> myCodingQuestion(@RequestParam int userIdx, @RequestParam(defaultValue = "false") boolean isReplied) {
         try {
-            List<MyQuestionListRes> myQuestionListRes = questionProvider.myQuestionListResList(userIdx);
+            List<MyQuestionListRes> myQuestionListRes = questionProvider.myCodingQuestionListResList(userIdx, isReplied);
+            return new BaseResponse<>(myQuestionListRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 휘정
+     * 내가 한 개념 질문 조회 API
+     * [GET] /questions/my/concept/...( 쿼리스트링)
+     * 일단 모든 질문 다 보여주고 isreplied가 true가 되면 답변달린것만 보여주기
+     * */
+    @ResponseBody
+    @GetMapping("/my/concept")
+    public BaseResponse<List<MyQuestionListRes>> myConceptQuestion(@RequestParam long userIdx, @RequestParam(defaultValue = "false") boolean isReplied) {
+        try {
+            List<MyQuestionListRes> myQuestionListRes = questionProvider.myConceptQuestionListResList(userIdx, isReplied);
             return new BaseResponse<>(myQuestionListRes);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());

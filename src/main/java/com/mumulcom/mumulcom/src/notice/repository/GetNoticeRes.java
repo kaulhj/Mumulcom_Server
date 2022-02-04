@@ -9,6 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GetNoticeRes {
     private long questionIdx;
+    private String profileImgUrl;
     private String noticeContent;
     private String diffTime;
 }

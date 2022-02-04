@@ -9,6 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MyReplyListRes {
     private long questionIdx;
+    private String profileImgUrl;
     private String nickname;
     private String bigCategoryName;
     private String smallCategoryName;
@@ -16,4 +17,5 @@ public class MyReplyListRes {
     private String createdAt;
     private int likeCount;
     private int replyCount;
+    private String content;
 }

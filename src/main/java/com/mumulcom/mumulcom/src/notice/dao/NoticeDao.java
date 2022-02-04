@@ -22,7 +22,8 @@ public class NoticeDao {
      * 알림 조회 API
      * */
     public List<GetNoticeRes> noticeList (int userIdx) {
-        String noticeListQuery = "select questionIdx, noticeContent, (select CASE\n" +
+
+        String noticeListQuery = "select n.questionIdx, noticeContent, profileImgUrl,(select CASE\n" +
                 "\twhen((select updatedAt between date_add(now(),interval -1 day) and NOW())) then '오늘'\n" +
                 "    when((select updatedAt between date_add(now(),interval -2 day) and date_add(now(),interval -1 day))) then '어제'\n" +
                 "    when((select updatedAt between date_add(now(),interval -3 day) and date_add(now(),interval -2 day))) then '2일전'\n" +
@@ -37,10 +38,14 @@ public class NoticeDao {
                 "    when((select updatedAt between date_add(now(),interval -3 month ) and date_add(now(),interval -2 month))) then '2달전'\n" +
                 "    when((select updatedAt between date_add(now(),interval -4 month ) and date_add(now(),interval -3 month))) then '3달전'\n" +
                 "    else '3달 넘은 오래된 게시물' \n" +
-                "end) as diffTime from Notice where userIdx = ? order by updatedAt desc";
+                "end) as diffTime \n" +
+                "from Notice n join (select profileImgUrl, q.questionIdx from Question q join User u on q.userIdx = u.userIdx) writerInfo on n.questionIdx = writerInfo.questionIdx\n" +
+                "where n.userIdx = ?\n" +
+                "order by updatedAt desc";
         return jdbcTemplate.query(noticeListQuery,
                 (rs,rowNum) -> new GetNoticeRes(
                         rs.getLong("questionIdx"),
+                        rs.getString("profileImgUrl"),
                         rs.getString("noticeContent"),
                         rs.getString("diffTime")
                 ),userIdx);

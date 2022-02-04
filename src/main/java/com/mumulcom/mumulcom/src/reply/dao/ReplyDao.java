@@ -115,51 +115,113 @@ public class ReplyDao {
 
     /**
      * 휘정
-     * 내가 답변한 질문 리스트 조회 API
+     * 내가 답변한 코딩 질문 리스트 조회 API
      */
-    public List<MyReplyListRes> myReplyListResList(int userIdx) {
-        String myReplyListQuery = "select  questionList.questionIdx, nickname, bigCategoryName, smallCategoryName, title, questionList.createdAt, likeCount, replyCount\n" +
-                "from\n" +
-                "(select q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount\n" +
-                "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
-                "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
-                "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
-                "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
-                "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
-                "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx\n" +
-                "union\n" +
-                "select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount\n" +
-                "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
-                "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
-                "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
-                "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
-                "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
-                "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) questionList join Reply r on questionList.questionIdx = r.questionIdx\n" +
-                "where r.userIdx = ?";
+    public List<MyReplyListRes> myCodingReplyListResList(long userIdx, boolean isAdopted) {
+        String myReplyListQuery;
+
+        if(isAdopted == false) {
+            myReplyListQuery = "select  questionList.questionIdx, questionList.profileImgUrl, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
+                    "from\n" +
+                    "(select q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount , u.profileImgUrl\n" +
+                    "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
+                    "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
+                    "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
+                    "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
+                    "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) questionList join Reply r on questionList.questionIdx = r.questionIdx\n" +
+                    "where r.userIdx = ? \n" +
+                    "order by r.createdAt desc";
+        } else { // 채택된 것만 보기
+            myReplyListQuery = "select  questionList.questionIdx, questionList.profileImgUrl, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
+                    "from\n" +
+                    "(select q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount , u.profileImgUrl\n" +
+                    "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
+                    "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
+                    "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
+                    "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
+                    "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) questionList join Reply r on questionList.questionIdx = r.questionIdx\n" +
+                    "where r.userIdx = ? and r.status = \"adopted\" \n" +
+                    "order by r.createdAt desc";
+        }
         return this.jdbcTemplate.query(myReplyListQuery,
                 (rs, rowNum) -> new MyReplyListRes(
                         rs.getLong("questionIdx"),
+                        rs.getString("profileImgUrl"),
                         rs.getString("nickname"),
                         rs.getString("bigCategoryName"),
                         rs.getString("smallCategoryName"),
                         rs.getString("title"),
                         rs.getString("createdAt"),
                         rs.getInt("likeCount"),
-                        rs.getInt("replyCount")
+                        rs.getInt("replyCount"),
+                        rs.getString("content")
+                ), userIdx);
+    }
+
+    /**
+     * 휘정
+     * 내가 답변한 개념 질문 리스트 조회 API
+     */
+    public List<MyReplyListRes> myConceptReplyListResList(long userIdx, boolean isAdopted) {
+        String myReplyListQuery;
+
+        if(isAdopted == false) {
+            myReplyListQuery = "select  questionList.questionIdx, questionList.profileImgUrl, nickname, bigCategoryName, smallCategoryName, title,DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
+                    "from\n" +
+                    "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount , u.profileImgUrl\n" +
+                    "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
+                    "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
+                    "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
+                    "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
+                    "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) questionList join Reply r on questionList.questionIdx = r.questionIdx\n" +
+                    "where r.userIdx = ?\n" +
+                    "order by r.createdAt desc";
+        } else { // 채택된 것만 보기
+            myReplyListQuery = "select  questionList.questionIdx, questionList.profileImgUrl, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
+                    "from\n" +
+                    "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount , u.profileImgUrl\n" +
+                    "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
+                    "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
+                    "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
+                    "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
+                    "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) questionList join Reply r on questionList.questionIdx = r.questionIdx\n" +
+                    "where r.userIdx = ? and r.status = \"adopted\" \n" +
+                    "order by r.createdAt desc";
+        }
+
+        return this.jdbcTemplate.query(myReplyListQuery,
+                (rs, rowNum) -> new MyReplyListRes(
+                        rs.getLong("questionIdx"),
+                        rs.getString("profileImgUrl"),
+                        rs.getString("nickname"),
+                        rs.getString("bigCategoryName"),
+                        rs.getString("smallCategoryName"),
+                        rs.getString("title"),
+                        rs.getString("createdAt"),
+                        rs.getInt("likeCount"),
+                        rs.getInt("replyCount"),
+                        rs.getString("content")
                 ), userIdx);
     }
 
     // 해당 답변 idx를 가지고 질문자 알아내기
 
-    public ReplyInfoRes getReplyInfo(int replyIdx) {
-        String getQuestionWriterQuery = "select q.userIdx as writer, q.questionIdx\n" +
+    public ReplyInfoRes getReplyInfo(long replyIdx) {
+        String getQuestionWriterQuery = "select r.userIdx as answerer, q.userIdx as writer, q.questionIdx\n" +
                 "from Reply r join Question q on r.questionIdx = q.questionIdx\n" +
                 "where replyIdx = ?";
         return this.jdbcTemplate.queryForObject(getQuestionWriterQuery,
                 (rs,rowNum) -> new ReplyInfoRes(
                         rs.getLong("writer"),
+                        rs.getLong("answerer"),
                         rs.getLong("questionIdx")
                 )
                 ,replyIdx);
@@ -169,8 +231,8 @@ public class ReplyDao {
      * 휘정 채택하기 API
      * 채택된 답변의 status는 adopted
      */
-    public int adoptReply(int replyIdx) {
-        String adoptReplyQuery = "update Reply set status = 'adopted' where replyIdx = ?";
+    public int adoptReply(long replyIdx) {
+        String adoptReplyQuery = "update Reply set status = 'adopted' , updatedAt = now() where replyIdx = ?";
         return this.jdbcTemplate.update(adoptReplyQuery, replyIdx); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
     }
 
@@ -259,7 +321,7 @@ public class ReplyDao {
      * */
     public int addAdoptionNotice (ReplyInfoRes replyInfoRes, String content) {
         String adoptionNoticeQuery = "insert into Notice (NoticeCategoryIdx, questionIdx, userIdx, noticeContent) values (7,?,?,?)";
-        Object[] adoptionNoticeParams = new Object[] {replyInfoRes.getQuestionIdx(), replyInfoRes.getWriter(), content};
+        Object[] adoptionNoticeParams = new Object[] {replyInfoRes.getQuestionIdx(), replyInfoRes.getAnswerer(), content};
         this.jdbcTemplate.update(adoptionNoticeQuery, adoptionNoticeParams);
         String lastInsertNoticeIdx = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInsertNoticeIdx, int.class); // 해당 쿼리문의 결과 마지막으로 삽인된 유저의 userIdx번호를 반환한다.

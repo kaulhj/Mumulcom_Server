@@ -9,11 +9,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SearchConceptQuestionRes {
     private long questionIdx;
+    private String profileImgUrl;
     private String nickname;
     private String bigCategoryName;
     private String smallCategoryName;
     private String title;
-    private String updatedAt;
+    private String createdAt;
     private String content;
     private int likeCount;
     private int replyCount;

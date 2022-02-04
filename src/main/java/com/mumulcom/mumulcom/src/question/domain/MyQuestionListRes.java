@@ -10,11 +10,12 @@ import lombok.Setter;
 public class MyQuestionListRes {
     private long userIdx;
     private long questionIdx;
+    private String profileImgUrl;
     private String nickname;
     private String bigCategoryName;
     private String smallCategoryName;
     private String title;
-    private String updatedAt;
+    private String createdAt;
     private int likeCount;
     private int replyCount;
 }

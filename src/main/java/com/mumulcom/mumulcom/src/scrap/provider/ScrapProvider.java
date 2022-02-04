@@ -39,9 +39,9 @@ public class ScrapProvider {
      * 3. 큰 카테고리, 작은 카테고리 둘 다 선택했을 때
      * */
 
-    public List<MyScrapListRes> myCodingScrapListRes (int userIdx) throws BaseException {
+    public List<MyScrapListRes> myCodingScrapListRes (int userIdx, boolean isReplied) throws BaseException {
         try {
-            List<MyScrapListRes> myScrapListRes = scrapDao.myCodingScrapListRes(userIdx);
+            List<MyScrapListRes> myScrapListRes = scrapDao.myCodingScrapListRes(userIdx,isReplied);
             return myScrapListRes;
         } catch (Exception exception){{
             exception.printStackTrace();
@@ -49,9 +49,9 @@ public class ScrapProvider {
         }}
     }
 
-    public List<MyScrapListRes> myCodingScrapListRes (int userIdx, String bigCategoryName) throws BaseException {
+    public List<MyScrapListRes> myCodingScrapListRes (int userIdx, String bigCategoryName, boolean isReplied) throws BaseException {
         try {
-            List<MyScrapListRes> myScrapListRes = scrapDao.myCodingScrapListRes(userIdx,bigCategoryName);
+            List<MyScrapListRes> myScrapListRes = scrapDao.myCodingScrapListRes(userIdx,bigCategoryName,isReplied);
             return myScrapListRes;
         } catch (Exception exception){{
             exception.printStackTrace();
@@ -59,9 +59,9 @@ public class ScrapProvider {
         }}
     }
 
-    public List<MyScrapListRes> myCodingScrapListRes (int userIdx, String bigCategoryName, String smallCategoryName) throws BaseException {
+    public List<MyScrapListRes> myCodingScrapListRes (int userIdx, String bigCategoryName, String smallCategoryName, boolean isReplied) throws BaseException {
         try {
-            List<MyScrapListRes> myScrapListRes = scrapDao.myCodingScrapListRes(userIdx,bigCategoryName,smallCategoryName);
+            List<MyScrapListRes> myScrapListRes = scrapDao.myCodingScrapListRes(userIdx,bigCategoryName,smallCategoryName,isReplied);
             return myScrapListRes;
         } catch (Exception exception){{
             exception.printStackTrace();
@@ -77,9 +77,9 @@ public class ScrapProvider {
      * 3. 큰 카테고리, 작은 카테고리 둘 다 선택했을 때
      * */
 
-    public List<MyScrapListRes> myConceptScrapListRes (int userIdx) throws BaseException {
+    public List<MyScrapListRes> myConceptScrapListRes (int userIdx, boolean isReplied) throws BaseException {
         try {
-            List<MyScrapListRes> myScrapListRes = scrapDao.myConceptScrapListRes(userIdx);
+            List<MyScrapListRes> myScrapListRes = scrapDao.myConceptScrapListRes(userIdx,isReplied);
             return myScrapListRes;
         } catch (Exception exception){{
             exception.printStackTrace();
@@ -87,9 +87,9 @@ public class ScrapProvider {
         }}
     }
 
-    public List<MyScrapListRes> myConceptScrapListRes (int userIdx, String bigCategoryName) throws BaseException {
+    public List<MyScrapListRes> myConceptScrapListRes (int userIdx, String bigCategoryName, boolean isReplied) throws BaseException {
         try {
-            List<MyScrapListRes> myScrapListRes = scrapDao.myConceptScrapListRes(userIdx,bigCategoryName);
+            List<MyScrapListRes> myScrapListRes = scrapDao.myConceptScrapListRes(userIdx,bigCategoryName,isReplied);
             return myScrapListRes;
         } catch (Exception exception){{
             exception.printStackTrace();
@@ -97,9 +97,9 @@ public class ScrapProvider {
         }}
     }
 
-    public List<MyScrapListRes> myConceptScrapListRes (int userIdx, String bigCategoryName, String smallCategoryName) throws BaseException {
+    public List<MyScrapListRes> myConceptScrapListRes (int userIdx, String bigCategoryName, String smallCategoryName, boolean isReplied) throws BaseException {
         try {
-            List<MyScrapListRes> myScrapListRes = scrapDao.myConceptScrapListRes(userIdx,bigCategoryName,smallCategoryName);
+            List<MyScrapListRes> myScrapListRes = scrapDao.myConceptScrapListRes(userIdx,bigCategoryName,smallCategoryName,isReplied);
             return myScrapListRes;
         } catch (Exception exception){{
             exception.printStackTrace();

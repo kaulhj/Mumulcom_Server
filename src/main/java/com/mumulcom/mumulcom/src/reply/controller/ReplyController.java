@@ -80,13 +80,28 @@ public class ReplyController {
 
     /**
      * 휘정
-     * 내가 답변한 질문 조회 API
+     * 내가 답변한 코딩 질문 조회 API
      * */
     @ResponseBody
-    @GetMapping("/my/{userIdx}")
-    public BaseResponse<List<MyReplyListRes>> myReplyList(@PathVariable("userIdx") int userIdx) {
+    @GetMapping("/my/coding")
+    public BaseResponse<List<MyReplyListRes>> myCodingReplyList(@RequestParam long userIdx, @RequestParam(defaultValue = "false") boolean isAdopted) {
         try {
-            List<MyReplyListRes> myReplyListRes = replyProvider.myReplyListResList(userIdx);
+            List<MyReplyListRes> myReplyListRes = replyProvider.myCodingReplyListResList(userIdx, isAdopted);
+            return new BaseResponse<>(myReplyListRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 휘정
+     * 내가 답변한 개념 질문 조회 API
+     * */
+    @ResponseBody
+    @GetMapping("/my/concept")
+    public BaseResponse<List<MyReplyListRes>> myConceptReplyList(@RequestParam long userIdx, @RequestParam(defaultValue = "false") boolean isAdopted) {
+        try {
+            List<MyReplyListRes> myReplyListRes = replyProvider.myConceptReplyListResList(userIdx, isAdopted);
             return new BaseResponse<>(myReplyListRes);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
@@ -102,16 +117,17 @@ public class ReplyController {
      * */
     @ResponseBody
     @PatchMapping("/adoption/{userIdx}/{replyIdx}")
-    public BaseResponse<String> adoptReply(@PathVariable("replyIdx") int replyIdx, @PathVariable("userIdx") int userIdx) {
+    public BaseResponse<String> adoptReply(@PathVariable("replyIdx") long replyIdx, @PathVariable("userIdx") long userIdx) {
         try {
             ReplyInfoRes replyInfo = replyProvider.getReplyInfo(replyIdx);
 
+            // 질문자와 현재 사용자가 같다면 채택 할 수 있게, 안같으면 채택이 불가능하게
             if(userIdx != replyInfo.getWriter()) {
                 return new BaseResponse<>(PATCH_ADOPT_NOT_SAME);
             }
 
-            replyService.adoptReply(replyIdx);
-            String result = replyIdx+"번째 답변이 채택되었습니다.";
+            replyService.adoptReply(replyIdx); // 채택중
+            String result = replyIdx+"번째 답변이 채택되었습니다."; // 몇번째 답변이 채택됨을 알려줌
             String content = "회원님의 답변이 채택되었습니다.";
             replyService.addAdoptionNotice(replyInfo, content);
             return new BaseResponse<>(result);
