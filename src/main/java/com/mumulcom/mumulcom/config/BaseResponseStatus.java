@@ -35,6 +35,7 @@ public enum BaseResponseStatus {
     POST_USERS_EXISTS_EMAIL(false, 2021, "이미 가입된 이메일입니다."),
     POST_USERS_EXISTS_NICKNAME(false, 2022, "이미 사용중인 닉네임입니다."),
     GET_USERS_EMPTY_DATA(false, 2023, "유저에 관한 정보가 없습니다"),
+    POST_USERS_INVALID_CATEGORY(false, 2024, "잘못된 카테고리명입니다."),
 
     /**
      * 2500 : Questions 오류
