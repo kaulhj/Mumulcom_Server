@@ -16,11 +16,17 @@ public enum UserProfileImg {
     ;
 
     private final String imgUrl;
+    private static final String deletedUserProfileImgUrl = "https://mumulcom-bucket.s3.ap-northeast-2.amazonaws.com/character/-1.png";
+
     UserProfileImg(String imgUrl) {
         this.imgUrl = imgUrl;
     }
 
     public static String getRandomProfileImgUrl() {
         return UserProfileImg.values()[new Random().nextInt(UserProfileImg.values().length)].getImgUrl();
+    }
+
+    public static String getDeletedUserProfileImgUrl() {
+        return deletedUserProfileImgUrl;
     }
 }
