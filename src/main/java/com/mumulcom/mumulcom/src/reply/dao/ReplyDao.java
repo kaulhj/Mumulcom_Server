@@ -176,7 +176,7 @@ public class ReplyDao {
 
     //학준 29.
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public String rereply(PostReReplReq postReReplReq) {
         String RereplQuery = "INSERT INTO Rereply(replyIdx, userIdx, content, imageUrl )\n" +
                 " VALUES (?, ?, ?, ?)";
@@ -184,24 +184,37 @@ public class ReplyDao {
                 postReReplReq.getContent(), postReReplReq.getImageUrl()};
         this.jdbcTemplate.update(RereplQuery, RereplParams);
 
+        //questionIdx값 추출
+        String questionIdxQuery = "SELECT DISTINCT questionIdx\n" +
+                "FROM Reply RP\n" +
+                "INNER JOIN Rereply R on RP.replyIdx = R.replyIdx\n" +
+                "WHERE R.replyIdx = ?";
+        int questionIdx = this.jdbcTemplate.queryForObject(questionIdxQuery,int.class,postReReplReq.getReplyIdx());
         String ReReplNotQuery = "INSERT INTO Notice(NOTICECATEGORYIDX, QUESTIONIDX, USERIDX, " +
                 "NOTICECONTENT) VALUES (?, ?, ?, ?)";
-        Object[] ReReplyNotParams = new Object[]{4, 0, postReReplReq.getUserIdx(), new String("회원님이 답변한 글에 댓글이 달렸습니다.")};
+        Object[] ReReplyNotParams = new Object[]{4, questionIdx, postReReplReq.getUserIdx(), new String("회원님이 답변한 글에 댓글이 달렸습니다.")};
         this.jdbcTemplate.update(ReReplNotQuery, ReReplyNotParams);
         return new String("답변에 답글을 달았습니다");
 
 
     }
 
-    //29.
+    //29.1
     public int reReplyAuth(PostReReplReq postReReplReq){
-        String reRepAuthQuery = "SELECT EXISTS (SELECT userIdx from Rereply where replyIdx = ?)";
+        String reRepAuthQuery = "SELECT userIdx from Reply where replyIdx = ?";
                long result =  this.jdbcTemplate.queryForObject(reRepAuthQuery,
                 long.class,postReReplReq.getReplyIdx());
-        if(result == 1){
-            return 1;
-        }else
+        if(result == postReReplReq.getUserIdx()){
             return 0;
+        }else
+            return 1;
+    }
+
+    //29.2
+    public int repIdxExist(long replyIdx){
+        String repIdxExistQuery = "SELECT EXISTS(SELECT replyIdx from Reply where\n " +
+                " replyIdx =?)";
+        return this.jdbcTemplate.queryForObject(repIdxExistQuery,int.class,replyIdx);
     }
 
     /**

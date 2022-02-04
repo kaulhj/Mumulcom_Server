@@ -1,6 +1,8 @@
 package com.mumulcom.mumulcom.src.reply.service;
 
 import com.mumulcom.mumulcom.config.BaseException;
+import com.mumulcom.mumulcom.config.BaseResponse;
+import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.reply.dao.ReplyDao;
 
 import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
@@ -122,11 +124,17 @@ public class ReplyService {
     //29
     public String Rereply(PostReReplReq postReReplReq) throws BaseException{
 
-        if(replyProvider.reReplyAuth(postReReplReq) == 0)
-                throw new BaseException(POST_INVALID_REREPLY_AUTH);
+
         try{
+            if(replyProvider.repIdxExist(postReReplReq.getReplyIdx()) == 0)
+                throw new BaseException(BaseResponseStatus.GET_REPLIES_EMPTY_DATA);
+            if(replyProvider.reReplyAuth(postReReplReq) == 0)
+                throw new BaseException(POST_INVALID_REREPLY_AUTH);
             String result = replyDao.rereply(postReReplReq);
             return result;
+        }catch(BaseException baseException){
+            baseException.printStackTrace();
+            throw new BaseException(baseException.getStatus());
         }catch (Exception exception){
           exception.printStackTrace();
             throw new BaseException(DATABASE_ERROR);

@@ -36,7 +36,7 @@ public class S3Uploader {
         for(MultipartFile file : uploadFile ) {
             String fileType = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
             String randomName = UUID.randomUUID().toString() + fileType; // 파일 중복되지 않게 고유식별자 생성
-
+                        //중복될일 찾아보기
             String fileName = dirName + "/" + randomName;
             imageUrls.add(putS3(file, fileName));
 

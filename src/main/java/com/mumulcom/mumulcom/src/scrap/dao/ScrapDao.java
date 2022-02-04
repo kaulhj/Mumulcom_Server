@@ -21,15 +21,7 @@ public class ScrapDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public String createScrap(PostScrapReq postScrapReq){
 
-        String createScrapQuery = "INSERT INTO Scrap(QUESTIONIDX, USERIDX) VALUES (?, ?)";
-        Object[] createScrapParams = new Object[]{postScrapReq.getQuestionIdx(),
-        postScrapReq.getUserIdx()};
-
-        this.jdbcTemplate.update(createScrapQuery,createScrapParams);
-        return new String("해당 글을 스크랩 하였습니다");
-    }
 
     /**
      * 휘정
@@ -207,16 +199,47 @@ public class ScrapDao {
                 ), myScrapParams);
     }
 
+
+    //학준24.1
+    public String createScrap(PostScrapReq postScrapReq, int scrapStatus ){
+        Object[] ScrapParams = new Object[]{postScrapReq.getQuestionIdx(),
+                postScrapReq.getUserIdx()};
+        switch(scrapStatus) {
+            case 1:
+                String createScrapQuery = "INSERT INTO Scrap(QUESTIONIDX, USERIDX) VALUES (?, ?)";
+                this.jdbcTemplate.update(createScrapQuery,ScrapParams);
+                return new String("해당 글을 스크랩 하였습니다.");
+            case 2:
+                String changeToInactiveQuery = "update Scrap\n" +
+                        "SET status = 'inactive'\n" +
+                        "where questionIdx = ? AND userIdx = ?";
+                this.jdbcTemplate.update(changeToInactiveQuery,ScrapParams);
+                return new String("해당 글을 스크랩 취소하였습니다.");
+            default:
+                String changeToActiveQuery =  "update Scrap\n" +
+                        "SET status = 'active'\n" +
+                        "where questionIdx = ? AND userIdx = ?";
+                this.jdbcTemplate.update(changeToActiveQuery,ScrapParams);
+                return new String("해당 글을 다시 스크랩 하였습니다.");
+
+        }
+
+
+
+    }
+
+
     //24.-2
-    public boolean scrapAuth(PostScrapReq postScrapReq){
+    public int scrapAuth(PostScrapReq postScrapReq){
         String scrapAuthQuery = "select userIdx\n" +
                 "from Question\n" +
                 "where questionIdx = ?";
-         if(postScrapReq.getUserIdx() == this.jdbcTemplate.queryForObject(scrapAuthQuery, long.class,
-                postScrapReq.getQuestionIdx())){
-             return false;
+         if(this.jdbcTemplate.queryForObject(scrapAuthQuery, int.class,
+                postScrapReq.getQuestionIdx()) == postScrapReq.getUserIdx()){
+             return 0;
          }else
-             return true;
+             return 1;
+
     }
 
     //24-3
@@ -226,6 +249,21 @@ public class ScrapDao {
 
         return this.jdbcTemplate.queryForObject(checkQueQuery, int.class,
                 getQuestionIdx);
+    }
+
+    //학준 24.4
+    public int getScrapStatus(PostScrapReq postScrapReq){
+        String scrapStatusQuery  = "SELECT\n" +
+                "        distinct CASE\n" +
+                "            WHEN EXISTS(SELECT userIdx, questionIdx from Scrap where userIdx = ? AND questionIdx = ? AND status = 'active')= '1' then 2\n" +
+                "            WHEN EXISTS(SELECT userIdx, questionIdx from Scrap where userIdx = ? AND questionIdx = ? AND status = 'inactive')= '1' then 3\n" +
+                "            ELSE 1 END\n" +
+                "FROM Scrap";
+
+
+        Object[] scrapStatusParams = new Object[]{postScrapReq.getUserIdx(), postScrapReq.getQuestionIdx(),
+        postScrapReq.getUserIdx(),postScrapReq.getQuestionIdx()};
+        return this.jdbcTemplate.queryForObject(scrapStatusQuery, int.class,scrapStatusParams);
     }
 
 

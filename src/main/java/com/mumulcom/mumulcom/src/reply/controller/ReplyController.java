@@ -2,6 +2,7 @@ package com.mumulcom.mumulcom.src.reply.controller;
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
+import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
 import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
 
@@ -125,6 +126,11 @@ public class ReplyController {
     @PostMapping("/reply")
     public BaseResponse<String> Rereply(@RequestBody PostReReplReq postReReplReq){
         try{
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(postReReplReq.getUserIdx())) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
+
             if(postReReplReq.getReplyIdx() == 0 || postReReplReq.getUserIdx() == 0
             || postReReplReq.getContent() == null){
                 throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
@@ -134,6 +140,7 @@ public class ReplyController {
         }catch (BaseException exception){
             exception.printStackTrace();
             return new BaseResponse<>(exception.getStatus());
+
         }
     }
 
