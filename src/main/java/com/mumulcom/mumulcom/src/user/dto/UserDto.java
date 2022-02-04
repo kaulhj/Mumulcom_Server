@@ -7,6 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 public class UserDto {
 
@@ -29,6 +30,7 @@ public class UserDto {
         private String name;
         private String nickname;
         private String group;
+        private List<String> myCategories;
         private String profileImgUrl;
     }
 
@@ -55,6 +57,8 @@ public class UserDto {
         @Mapping("group")
         @NotBlank
         private String group;
+
+        private List<String> myCategories;
     }
 
     @Builder
@@ -64,6 +68,7 @@ public class UserDto {
         private String email;
         private String name;
         private String nickname;
+        private List<String> myCategories;
         private String profileImgUrl;
     }
 
@@ -81,7 +86,10 @@ public class UserDto {
 
         private String group;
 
+        private List<String> myCategories;
+
         private String profileImgUrl;
+
     }
 
     @Builder
@@ -91,6 +99,7 @@ public class UserDto {
         private String name;
         private String nickname;
         private String group;
+        private List<String> myCategories;
         private String profileImgUrl;
     }
 }
