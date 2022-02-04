@@ -2,8 +2,8 @@ package com.mumulcom.mumulcom.src.category.controller;
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
-import com.mumulcom.mumulcom.src.category.domain.GetCategoryRes;
-import com.mumulcom.mumulcom.src.category.provider.GetCategoryListProvider;
+import com.mumulcom.mumulcom.src.category.dto.GetCategoryRes;
+import com.mumulcom.mumulcom.src.category.provider.CategoryProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +15,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
-public class GetCategoryListController {
+public class CategoryController {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final GetCategoryListProvider getCategoryListProvider;
+    private final CategoryProvider getCategoryListProvider;
 
-    public GetCategoryListController(GetCategoryListProvider getCategoryListProvider) {
+    public CategoryController(CategoryProvider getCategoryListProvider) {
         this.getCategoryListProvider = getCategoryListProvider;
     }
 
