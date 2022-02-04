@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -50,9 +51,11 @@ public class ReplyController {
      */
     @ResponseBody
     @PostMapping("")
-    public BaseResponse<PostReplyRes> createReply(@RequestBody PostReplyReq postReplyReq) {
+    public BaseResponse<PostReplyRes> createReply(@RequestPart(value = "images", required = false) List<MultipartFile> multipartFileList,
+                                                  @RequestPart(value = "postReplyReq") PostReplyReq postReplyReq) {
         try {
-            PostReplyRes postReplyRes = replyService.createReply(postReplyReq);
+            List<String> imgUrls = replyService.uploadS3image(multipartFileList, postReplyReq.getUserIdx());
+            PostReplyRes postReplyRes = replyService.createReply(imgUrls, postReplyReq);
             return new BaseResponse<>(postReplyRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));

@@ -34,7 +34,7 @@ public class ReplyDao {
      * yeji 18번 API
      * 답변 생성 + 알림
      */
-    public PostReplyRes creatReply(PostReplyReq postReplyReq) {
+    public PostReplyRes creatReply(List<String> imgUrls, PostReplyReq postReplyReq) {
 
         String replyImgResult;
         String createReplyQuery;
@@ -53,20 +53,31 @@ public class ReplyDao {
 
         // 마지막으로 삽입된 ReplyIdx 값 추출
         String lastInsertIdQuery = "select last_insert_id()";
-        Long replyIdx = this.jdbcTemplate.queryForObject(lastInsertIdQuery, Long.class);
+        Long lastReplyIdx = this.jdbcTemplate.queryForObject(lastInsertIdQuery, Long.class);
         replyImgResult = "";
 
-        if (postReplyReq.getUrl() != null) {
+        // s3에서 받아온 url DB insert
+        if(imgUrls.size() != 0) {
+            String createReplyImgQuery = "insert into ReplyImage(replyIdx, url) value (?, ?)";
+            for(String url : imgUrls) {
+                Object[] createReplyImgParams = new Object[]{lastReplyIdx, url};
+                this.jdbcTemplate.update(createReplyImgQuery, createReplyImgParams);
+            }
+        }
+
+        /*
+         ** s3 서버 사용하기 전 프론트에서 url 주소를 받아서 이미지 처리했을 때
+         * if (postReplyReq.getUrl() != null) {
 
             // ReplyImg table insert
-            String createReplyImgQuery = "insert into ReplyImage(replyIdx, url) value (?, ?)";
-            Long replyImgIdx;
+            String createReplyImgQuery = "insert into ReplyImage(lastReplyIdx, url) value (?, ?)";
             for (String url : postReplyReq.getUrl()) {
                 Object[] createReplyImgParams = new Object[]{replyIdx, url};
                 this.jdbcTemplate.update(createReplyImgQuery, createReplyImgParams);
             }
             replyImgResult = "이미지 삽입이 완료됐습니다.";
-        }
+            }
+         */
 
         // 알림 기능
         // 1. 질문 작성자에게 알림
@@ -99,7 +110,7 @@ public class ReplyDao {
             noticeScrap = "회원님이 스크랩한 질문에 답변이 달렸습니다.";
         }
 
-        return new PostReplyRes(replyIdx, replyImgResult, noticeReply, questionUserIdx, noticeScrap, scrapUserIdxList);
+        return new PostReplyRes(lastReplyIdx, replyImgResult, noticeReply, questionUserIdx, noticeScrap, scrapUserIdxList);
     }
 
     /**
