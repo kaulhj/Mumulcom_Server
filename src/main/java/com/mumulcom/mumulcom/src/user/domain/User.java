@@ -47,6 +47,8 @@ public class User extends BaseTimeEntity {
     }
 
     public void deleteUser() {
+        this.nickname = "알 수 없음";
+        this.profileImgUrl = UserProfileImg.getDeletedUserProfileImgUrl();
         this.status = "Inactive";
     }
 }
