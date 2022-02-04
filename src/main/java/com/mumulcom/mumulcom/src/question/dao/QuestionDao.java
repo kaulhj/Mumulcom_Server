@@ -85,7 +85,7 @@ public class QuestionDao {
                 "order by created desc limit 4";
 
      */
-        String getLateListQuery = "SELECT q.questionIdx,b.bigCategoryName,s.smallCategoryName,u.name,\n" +
+        String getLateListQuery = "SELECT q.questionIdx,b.bigCategoryName,s.smallCategoryName,u.nickname,\n" +
                 "              concat(MONTH(q.createdAt),'/',day(q.createdAt),',',substring(year(q.createdAt),-2))as created\n" +
                 ",title, u.profileImgUrl,ifnull(ql2.likeCount, 0) likeCount, ifnull(rc2.replyCount,0) replyCount\n" +
                 " FROM\n" +
@@ -109,7 +109,7 @@ public class QuestionDao {
                         rowNum+1,
                         rs.getString("bigCategoryName"),
                         rs.getString("smallCategoryName"),
-                        rs.getString("name"),
+                        rs.getString("nickname"),
                         rs.getString("created"),
                         rs.getString("title"),
                         rs.getInt("replyCount"),
@@ -179,7 +179,7 @@ public class QuestionDao {
                 "order by created desc";
 
          */
-        String getRepListQuery = "SELECT q.questionIdx,b.bigCategoryName,s.smallCategoryName,u.name,\n" +
+        String getRepListQuery = "SELECT q.questionIdx,b.bigCategoryName,s.smallCategoryName,u.nickname,\n" +
                 "              concat(MONTH(q.createdAt),'/',day(q.createdAt),',',substring(year(q.createdAt),-2))as created\n" +
                 ",title, u.profileImgUrl,ifnull(ql2.likeCount, 0) likeCount, ifnull(rc2.replyCount,0) replyCount\n" +
                 " FROM\n" +
@@ -203,7 +203,7 @@ public class QuestionDao {
                         rowNum+1,
                         rs.getString("bigCategoryName"),
                         rs.getString("smallCategoryName"),
-                        rs.getString("name"),
+                        rs.getString("nickname"),
                         rs.getString("created"),
                         rs.getString("title"),
                         rs.getInt("replyCount"),
