@@ -42,7 +42,7 @@ public class QuestionDao {
     public List<GetRecQueRes> getRecQuestion(int countSize, long userIdx){
 
 
-
+    /*
 
         //좋아요 값 배열에 넣기
         String getRecQueQuery =  "SELECT\n" +
@@ -82,7 +82,28 @@ public class QuestionDao {
                 "where q.userIdx = ? AND q.status = 'active'\n" +
                 "group by questionIdx\n" +
                 "order by created desc limit 4";
-        return this.jdbcTemplate.query(GetListQueQuery,
+
+     */
+        String getLateListQuery = "SELECT q.questionIdx,b.bigCategoryName,s.smallCategoryName,u.name,\n" +
+                "              concat(MONTH(q.createdAt),'/',day(q.createdAt),',',substring(year(q.createdAt),-2))as created\n" +
+                ",title, u.profileImgUrl,ifnull(ql2.likeCount, 0) likeCount, ifnull(rc2.replyCount,0) replyCount\n" +
+                " FROM\n" +
+                "      Question q\n" +
+                "INNER JOIN User u on q.userIdx = u.userIdx\n" +
+                "INNER JOIN BigCategory b on q.bigCategoryIdx = b.bigCategoryIdx\n" +
+                "INNER JOIN SmallCategory s on q.smallCategoryIdx = s.smallCategoryIdx\n" +
+                "LEFT JOIN (SELECT questionIdx, count(CASE\n" +
+                "        WHEN ql1.status = 'active' then 1 end) AS likeCount FROM QuestionLike ql1 group by questionIdx) AS ql2\n" +
+                "                        ON q.questionIdx = ql2.questionIdx\n" +
+                "LEFT JOIN (SELECT questionIdx, count(CASE\n" +
+                "    WHEN rc1.status = 'active' then 1\n" +
+                "    WHEN rc1.status = 'adopted' then 1 end) AS replyCount FROM Reply rc1 group by questionIdx) AS rc2\n" +
+                "                        ON q.questionIdx = rc2.questionIdx\n" +
+                "\n" +
+                "  where u.userIdx = ?\n" +
+                "order by q.createdAt desc";
+
+        return this.jdbcTemplate.query(getLateListQuery,
                 (rs, rowNum) -> new GetRecQueRes(
                         rowNum+1,
                         rs.getString("bigCategoryName"),
@@ -90,8 +111,8 @@ public class QuestionDao {
                         rs.getString("name"),
                         rs.getString("created"),
                         rs.getString("title"),
-                        rs.getLong("replies"),
-                        reply.get(rowNum),
+                        rs.getInt("replyCount"),
+                        rs.getInt("likeCount"),
                         rs.getString("profileImgUrl")),
 
                 userIdx);
@@ -112,11 +133,11 @@ public class QuestionDao {
     }
     //16-2
     @Transactional
-    public List<GetRecQueRes> getRecQuestions(int countSize, long userIdx){
+    public List<GetRecQueRes> getRecQuestions( long userIdx){
 
 
 
-
+        /*
             //좋아요 값 배열에 넣기
         String getRecQueQuery =  "SELECT\n" +
                 "       count(CASE WHEN Q.questionIdx = L.questionIdx and L.status = 'active' then 1 END )as LikeCount\n" +
@@ -155,7 +176,28 @@ public class QuestionDao {
                 "where q.userIdx = ? AND q.status = 'active'\n" +
                 "group by questionIdx\n" +
                 "order by created desc";
-        return this.jdbcTemplate.query(GetListQueQuery,
+
+         */
+        String getRepListQuery = "SELECT q.questionIdx,b.bigCategoryName,s.smallCategoryName,u.name,\n" +
+                "              concat(MONTH(q.createdAt),'/',day(q.createdAt),',',substring(year(q.createdAt),-2))as created\n" +
+                ",title, u.profileImgUrl,ifnull(ql2.likeCount, 0) likeCount, ifnull(rc2.replyCount,0) replyCount\n" +
+                " FROM\n" +
+                "      Question q\n" +
+                "INNER JOIN User u on q.userIdx = u.userIdx\n" +
+                "INNER JOIN BigCategory b on q.bigCategoryIdx = b.bigCategoryIdx\n" +
+                "INNER JOIN SmallCategory s on q.smallCategoryIdx = s.smallCategoryIdx\n" +
+                "LEFT JOIN (SELECT questionIdx, count(CASE\n" +
+                "        WHEN ql1.status = 'active' then 1 end) AS likeCount FROM QuestionLike ql1 group by questionIdx) AS ql2\n" +
+                "                        ON q.questionIdx = ql2.questionIdx\n" +
+                "INNER JOIN (SELECT questionIdx, count(CASE\n" +
+                "    WHEN rc1.status = 'active' then 1\n" +
+                "    WHEN rc1.status = 'adopted' then 1 end) AS replyCount FROM Reply rc1 group by questionIdx) AS rc2\n" +
+                "                        ON q.questionIdx = rc2.questionIdx\n" +
+                "\n" +
+                "  where u.userIdx = ?\n" +
+                "order by q.createdAt desc";
+
+        return this.jdbcTemplate.query(getRepListQuery,
                 (rs, rowNum) -> new GetRecQueRes(
                         rowNum+1,
                         rs.getString("bigCategoryName"),
@@ -163,8 +205,8 @@ public class QuestionDao {
                         rs.getString("name"),
                         rs.getString("created"),
                         rs.getString("title"),
-                        rs.getLong("replies"),
-                        Likes.get(rowNum),
+                        rs.getInt("replyCount"),
+                        rs.getInt("likeCount"),
                         rs.getString("profileImgUrl")),
                 userIdx);
     }

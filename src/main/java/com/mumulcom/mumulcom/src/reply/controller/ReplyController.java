@@ -127,7 +127,7 @@ public class ReplyController {
             if (!userIdxByJwt.equals(postReReplReq.getUserIdx())) {
                 throw new BaseException(BaseResponseStatus.INVALID_JWT);
             }
-            
+
             if(postReReplReq.getReplyIdx() == 0 || postReReplReq.getUserIdx() == 0
             || postReReplReq.getContent() == null){
                 throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);

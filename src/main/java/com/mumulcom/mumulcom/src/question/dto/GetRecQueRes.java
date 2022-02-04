@@ -17,7 +17,7 @@ public class GetRecQueRes {
     private String nickName;
     private String CreatedAt;
     private String Title;
-    private long ReplyCount;
-    private Long LikeCount;
+    private int ReplyCount;
+    private int LikeCount;
     private String profileImgUrl;   //프로필이미지사진
 }

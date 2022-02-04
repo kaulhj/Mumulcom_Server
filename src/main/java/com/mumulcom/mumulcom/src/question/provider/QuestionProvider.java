@@ -77,7 +77,7 @@ public List<GetRecQueRes> getRecQuestion(long userIdx) throws BaseException{
          if(countSize == 0)
             throw new BaseException(BaseResponseStatus.GET_USERS_EMPTY_DATA);
       try{
-         List<GetRecQueRes> getRecQueRes = questionDao.getRecQuestions(countSize, userIdx);
+         List<GetRecQueRes> getRecQueRes = questionDao.getRecQuestions(userIdx);
          return getRecQueRes;
       }catch (Exception exception){
          exception.printStackTrace();

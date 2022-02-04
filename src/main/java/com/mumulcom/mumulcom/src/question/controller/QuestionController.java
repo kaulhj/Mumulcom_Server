@@ -61,7 +61,7 @@ public class QuestionController {
                 throw new BaseException(BaseResponseStatus.INVALID_JWT);
             }
                 if(codeQuestionReq.getUserIdx() == 0 || codeQuestionReq.getCurrentError() == null
-                        || codeQuestionReq.getMyCodingSkill() == null || codeQuestionReq.getBigCategoryIdx() == 0
+                         || codeQuestionReq.getBigCategoryIdx() == 0
                         || codeQuestionReq.getSmallCategoryIdx() == 0 || codeQuestionReq.getTitle() == null) {
                     throw new BaseException(BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY);
                 }
