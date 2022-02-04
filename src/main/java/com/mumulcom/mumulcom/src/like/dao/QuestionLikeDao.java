@@ -167,7 +167,7 @@ public class QuestionLikeDao {
 
     //25.3 질문좋아요 활성화 상태 검사
     public int checkUserStatus(PostQueLikeReq postQueLikeReq) {
-        String checkUStaQuery = "SSELECT count(\n" +
+        String checkUStaQuery = "SELECT count(\n" +
                 "                  CASE\n" +
                 "                       WHEN U.status = 'inactive' then 1 end\n" +
                 "                          )\n" +
