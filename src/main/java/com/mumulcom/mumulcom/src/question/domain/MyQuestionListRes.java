@@ -15,7 +15,7 @@ public class MyQuestionListRes {
     private String bigCategoryName;
     private String smallCategoryName;
     private String title;
-    private String updatedAt;
+    private String createdAt;
     private int likeCount;
     private int replyCount;
 }

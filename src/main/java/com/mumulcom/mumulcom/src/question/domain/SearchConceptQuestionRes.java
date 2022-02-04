@@ -14,7 +14,7 @@ public class SearchConceptQuestionRes {
     private String bigCategoryName;
     private String smallCategoryName;
     private String title;
-    private String updatedAt;
+    private String createdAt;
     private String content;
     private int likeCount;
     private int replyCount;
