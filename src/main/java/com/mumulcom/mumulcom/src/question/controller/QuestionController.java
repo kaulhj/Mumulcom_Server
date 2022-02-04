@@ -16,6 +16,7 @@ import com.mumulcom.mumulcom.utils.ValidationRegex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,13 +50,18 @@ public class QuestionController {
     //학준 7. 코딩질문하기
     @ResponseBody
     @PostMapping("/coding")
+    @Transactional(rollbackFor = Exception.class)
     public BaseResponse<String> codeQuestion(
             @RequestPart(value = "images", required = false) List<MultipartFile> multipartFile,
             @RequestPart(value = "codeQuestionReq") CodeQuestionReq codeQuestionReq){
         //s3이미지 저장하고 url반환값
         try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(codeQuestionReq.getUserIdx())) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
                 if(codeQuestionReq.getUserIdx() == 0 || codeQuestionReq.getCurrentError() == null
-                        || codeQuestionReq.getMyCodingSkill() == null || codeQuestionReq.getBigCategoryIdx() == 0
+                         || codeQuestionReq.getBigCategoryIdx() == 0
                         || codeQuestionReq.getSmallCategoryIdx() == 0 || codeQuestionReq.getTitle() == null) {
                     throw new BaseException(BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY);
                 }
@@ -66,7 +72,8 @@ public class QuestionController {
                     throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
                 }
                 List<String> imageUrls = questionService.uploadS3image(multipartFile, codeQuestionReq.getUserIdx());
-                String result = questionService.codeQuestion(imageUrls, codeQuestionReq);return new BaseResponse<>(result);
+                String result = questionService.codeQuestion(imageUrls, codeQuestionReq);
+                return new BaseResponse<>(result);
                 }catch (BaseException exception) {
                     exception.printStackTrace();
                     return new BaseResponse<>(exception.getStatus());
@@ -81,6 +88,10 @@ public class QuestionController {
             @RequestPart(value = "images", required = false ) List<MultipartFile> multipartFile,
             @RequestPart(value = "conceptQueReq") ConceptQueReq conceptQueReq){
         try{
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(conceptQueReq.getUserIdx())) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
             if(conceptQueReq.getUserIdx() == 0 || conceptQueReq.getContent() == null
                     || conceptQueReq.getBigCategoryIdx() == 0
                     || conceptQueReq.getSmallCategoryIdx() == 0 || conceptQueReq.getTitle() == null) {
@@ -106,6 +117,10 @@ public class QuestionController {
     public BaseResponse<List<GetRecQueRes>> getRecQuestion(@PathVariable("userIdx")long userIdx
     ){
         try{
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
 
             List<GetRecQueRes> getRecQueRes = questionProvider.getRecQuestion(userIdx);
             return new BaseResponse<>(getRecQueRes);
@@ -122,6 +137,11 @@ public class QuestionController {
     public BaseResponse<List<GetRecQueRes>> getRecQuestions(@PathVariable("userIdx")long userIdx
     ){
         try{
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
+
             List<GetRecQueRes> getRecQueRes = questionProvider.getRecQuestions(userIdx);
             return new BaseResponse<>(getRecQueRes);
         }catch (BaseException exception){

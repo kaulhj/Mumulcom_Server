@@ -35,6 +35,8 @@ public enum BaseResponseStatus {
     POST_USERS_EXISTS_EMAIL(false, 2021, "이미 가입된 이메일입니다."),
     POST_USERS_EXISTS_NICKNAME(false, 2022, "이미 사용중인 닉네임입니다."),
     GET_USERS_EMPTY_DATA(false, 2023, "유저에 관한 정보가 없습니다"),
+
+    POST_USERS_INACTIVE_STATUS(false, 2050, "비활성화된 유저입니다"),
     POST_USERS_INVALID_CATEGORY(false, 2024, "잘못된 카테고리명입니다."),
 
     /**
@@ -64,6 +66,7 @@ public enum BaseResponseStatus {
      * 2800 : Reply 오류
      */
     POST_INVALID_REREPLY_AUTH(false, 2800, "자신의 답변은 답변할 수 없습니다."),
+    GET_REPLIES_EMPTY_DATA(false, 2810, "해당 답변이 존재하지 않습니다,"),
 
 
     /**

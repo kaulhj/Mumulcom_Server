@@ -39,10 +39,16 @@ public class QuestionService {
 
 // 7.1 코딩질문
     public String codeQuestion(List<String> imgUrls, CodeQuestionReq codeQuestionReq)throws BaseException{
+
+
         try{
+            if(questionProvider.checkUserStatus(codeQuestionReq.getUserIdx()) == 0)
+                throw new BaseException(BaseResponseStatus.POST_USERS_INACTIVE_STATUS);
 
             String result = questionDao.codeQuestion(imgUrls, codeQuestionReq);
             return result;
+        }catch (BaseException baseException) {
+            throw new BaseException(baseException.getStatus());
         }catch (Exception exception){
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
@@ -69,9 +75,14 @@ public class QuestionService {
     //학준 8. 개념질문
     public String conceptQuestion(List<String> imgUrls, ConceptQueReq conceptQueReq)throws BaseException{
         try{
+            if(questionProvider.checkUserStatus(conceptQueReq.getUserIdx()) == 0)
+                throw new BaseException(BaseResponseStatus.POST_USERS_INACTIVE_STATUS);
 
             String result = questionDao.conceptQuestion(imgUrls, conceptQueReq);
             return result;
+
+        }catch (BaseException baseException) {
+            throw new BaseException(baseException.getStatus());
         }catch (Exception exception){
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);

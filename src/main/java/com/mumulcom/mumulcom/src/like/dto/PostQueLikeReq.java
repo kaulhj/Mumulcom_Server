@@ -1,4 +1,4 @@
-package com.mumulcom.mumulcom.src.questionlike.dto;
+package com.mumulcom.mumulcom.src.like.dto;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 
-public class PostReplyLikeReq {
-    private long replyIdx;
+public class PostQueLikeReq {
+    private long questionIdx;
     private long userIdx;
 }

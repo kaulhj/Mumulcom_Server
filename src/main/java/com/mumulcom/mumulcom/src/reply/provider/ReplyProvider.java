@@ -63,4 +63,15 @@ public class ReplyProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    //29.1
+    public int repIdxExist(long replyIdx)throws BaseException{
+        try{
+            int repExist = replyDao.repIdxExist(replyIdx);
+            return repExist;
+        }catch (Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

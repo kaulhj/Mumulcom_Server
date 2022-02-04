@@ -1,17 +1,18 @@
-package com.mumulcom.mumulcom.src.questionlike.controller;
+package com.mumulcom.mumulcom.src.like.controller;
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 
-import com.mumulcom.mumulcom.src.questionlike.service.QuestionLikeService;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
-import com.mumulcom.mumulcom.src.questionlike.provider.QuestionLikeProvider;
-import com.mumulcom.mumulcom.src.questionlike.dto.PostQueLikeReq;
-import com.mumulcom.mumulcom.src.questionlike.dto.PostReplyLikeReq;
+import com.mumulcom.mumulcom.src.like.service.QuestionLikeService;
+import com.mumulcom.mumulcom.src.like.provider.QuestionLikeProvider;
+import com.mumulcom.mumulcom.src.like.dto.PostQueLikeReq;
+import com.mumulcom.mumulcom.src.like.dto.PostReplyLikeReq;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import static com.mumulcom.mumulcom.config.BaseResponseStatus.*;
 
@@ -40,9 +41,14 @@ public class QuestionLikeController {
 
     @ResponseBody
     @PostMapping("/questions/creation")
+    @Transactional(rollbackFor = Exception.class)
     public BaseResponse<String> createQueLike(@RequestBody PostQueLikeReq postQueLikeReq){
 
         try{
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(postQueLikeReq.getUserIdx())) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
             if(postQueLikeReq.getQuestionIdx() == 0 || postQueLikeReq.getUserIdx() == 0 )
                 throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
             String result = questionLikeService.createQuestionLike(postQueLikeReq);
@@ -59,6 +65,11 @@ public class QuestionLikeController {
     public BaseResponse<String> createReplyLike(@RequestBody PostReplyLikeReq postReplyLikeReq){
 
         try{
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(postReplyLikeReq.getUserIdx())) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
+
             if(postReplyLikeReq.getReplyIdx() == 0 || postReplyLikeReq.getUserIdx() == 0 )
                 throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
             String result = questionLikeService.createReplyLike(postReplyLikeReq);
