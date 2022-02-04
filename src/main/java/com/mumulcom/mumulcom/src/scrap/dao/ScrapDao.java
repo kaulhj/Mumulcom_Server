@@ -177,7 +177,7 @@ public class ScrapDao {
         String myScrapListQuery;
 
         if(isReplied == false) { // 답변이 달린 질문
-            myScrapListQuery = "select questionList.questionIdx,questionList.profileImgUrl, questionList.nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt,, likeCount, replyCount\n" +
+            myScrapListQuery = "select questionList.questionIdx,questionList.profileImgUrl, questionList.nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount\n" +
                     "from \n" +
                     "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
@@ -190,7 +190,7 @@ public class ScrapDao {
                     "where s.userIdx = ?\n" +
                     "order by s.createdAt desc";
         } else {
-            myScrapListQuery = "select questionList.questionIdx, questionList.profileImgUrl,questionList.nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt,, likeCount, replyCount\n" +
+            myScrapListQuery = "select questionList.questionIdx, questionList.profileImgUrl,questionList.nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount\n" +
                     "from \n" +
                     "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
@@ -224,7 +224,7 @@ public class ScrapDao {
         String myScrapListQuery;
 
         if(isReplied == false) { // 답변이 달린 질문
-            myScrapListQuery = "select questionList.questionIdx,questionList.profileImgUrl, questionList.nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt,, likeCount, replyCount\n" +
+            myScrapListQuery = "select questionList.questionIdx,questionList.profileImgUrl, questionList.nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount\n" +
                     "from \n" +
                     "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
@@ -237,7 +237,7 @@ public class ScrapDao {
                     "where s.userIdx = ? and bigCategoryName = ?\n" +
                     "order by s.createdAt desc";
         } else {
-            myScrapListQuery = "select questionList.questionIdx, questionList.profileImgUrl,questionList.nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt,, likeCount, replyCount\n" +
+            myScrapListQuery = "select questionList.questionIdx, questionList.profileImgUrl,questionList.nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount\n" +
                     "from \n" +
                     "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
@@ -271,7 +271,7 @@ public class ScrapDao {
         String myScrapListQuery;
 
         if(isReplied == false) { // 답변이 달린 질문
-            myScrapListQuery = "select questionList.questionIdx, questionList.profileImgUrl,questionList.nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt,, likeCount, replyCount\n" +
+            myScrapListQuery = "select questionList.questionIdx, questionList.profileImgUrl,questionList.nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount\n" +
                     "from \n" +
                     "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
@@ -284,7 +284,7 @@ public class ScrapDao {
                     "where s.userIdx = ? and bigCategoryName = ? and smallCategoryName = ?\n" +
                     "order by s.createdAt desc";
         } else {
-            myScrapListQuery = "select questionList.questionIdx, questionList.profileImgUrl,questionList.nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt,, likeCount, replyCount\n" +
+            myScrapListQuery = "select questionList.questionIdx, questionList.profileImgUrl,questionList.nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount\n" +
                     "from \n" +
                     "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
