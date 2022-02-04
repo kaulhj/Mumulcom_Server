@@ -2,6 +2,8 @@ package com.mumulcom.mumulcom.src.question.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -12,6 +14,7 @@ public class GetCodingQuestionRes {
     private String profileImgUrl;
     private String createdAt;
     private String title;
+    private List<String> questionImgUrl;
     private String currentError;
     private String myCodingSkill;
     private String bigCategoryName;

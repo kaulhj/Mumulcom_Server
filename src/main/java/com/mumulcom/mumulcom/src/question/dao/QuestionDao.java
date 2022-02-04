@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -262,13 +263,15 @@ public class QuestionDao {
      */
     public List<GetCodingQuestionRes> getCodingQuestions(int questionIdx) {
         String getCodingQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, IFNULL(I.url,'') AS questionImgUrl, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
                         "INNER JOIN CodeQuestion CQ on q.questionIdx = CQ.questionIdx\n" +
                         "INNER JOIN BigCategory BC on q.bigCategoryIdx = BC.bigCategoryIdx\n" +
                         "INNER JOIN SmallCategory SC on q.smallCategoryIdx = SC.smallCategoryIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, GROUP_CONCAT(imageUrl) url FROM Image GROUP BY questionIdx) I\n" +
+                        "on q.questionIdx = I.questionIdx\n"+
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` WHERE questionIdx = ?) l\n" +
                         "ON q.questionIdx = l.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
@@ -284,6 +287,7 @@ public class QuestionDao {
                         rs.getString("profileImgUrl"),
                         rs.getString("createdAt"),
                         rs.getString("title"),
+                        Arrays.asList(rs.getString("questionImgUrl").split(",")),
                         rs.getString("currentError"),
                         rs.getString("myCodingSkill"),
                         rs.getString("bigCategoryName"),
@@ -299,13 +303,15 @@ public class QuestionDao {
      */
     public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx) {
         String getConceptQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.content, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, IFNULL(I.url,'') AS questionImgUrl, CQ.content, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
                         "INNER JOIN ConceptQuestion CQ on q.questionIdx = CQ.questionIdx\n" +
                         "INNER JOIN BigCategory BC on q.bigCategoryIdx = BC.bigCategoryIdx\n" +
                         "INNER JOIN SmallCategory SC on q.smallCategoryIdx = SC.smallCategoryIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, GROUP_CONCAT(imageUrl) url FROM Image GROUP BY questionIdx) I\n" +
+                        "on q.questionIdx = I.questionIdx\n"+
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` WHERE questionIdx = ?) l\n" +
                         "ON q.questionIdx = l.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
@@ -321,6 +327,7 @@ public class QuestionDao {
                         rs.getString("profileImgUrl"),
                         rs.getString("createdAt"),
                         rs.getString("title"),
+                        Arrays.asList(rs.getString("questionImgUrl").split(",")),
                         rs.getString("content"),
                         rs.getString("bigCategoryName"),
                         rs.getString("smallCategoryName"),
