@@ -7,6 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 public class UserDto {
 
@@ -28,6 +29,9 @@ public class UserDto {
         private String email;
         private String name;
         private String nickname;
+        private String group;
+        private List<String> myCategories;
+        private String profileImgUrl;
     }
 
     @Getter
@@ -53,6 +57,8 @@ public class UserDto {
         @Mapping("group")
         @NotBlank
         private String group;
+
+        private List<String> myCategories;
     }
 
     @Builder
@@ -62,6 +68,8 @@ public class UserDto {
         private String email;
         private String name;
         private String nickname;
+        private List<String> myCategories;
+        private String profileImgUrl;
     }
 
     @Builder
@@ -75,6 +83,13 @@ public class UserDto {
         @Pattern(regexp = "^[가-힣a-z0-9]+$")
         @Size(min = 2, max = 8)
         private String nickname;
+
+        private String group;
+
+        private List<String> myCategories;
+
+        private String profileImgUrl;
+
     }
 
     @Builder
@@ -83,5 +98,8 @@ public class UserDto {
         private String email;
         private String name;
         private String nickname;
+        private String group;
+        private List<String> myCategories;
+        private String profileImgUrl;
     }
 }

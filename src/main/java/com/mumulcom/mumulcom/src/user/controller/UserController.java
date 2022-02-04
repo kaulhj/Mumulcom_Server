@@ -4,10 +4,6 @@ import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.user.dto.UserDto;
-import com.mumulcom.mumulcom.src.user.dto.UserDto.SignInReq;
-import com.mumulcom.mumulcom.src.user.dto.UserDto.SignInRes;
-import com.mumulcom.mumulcom.src.user.dto.UserDto.SignUpReq;
-import com.mumulcom.mumulcom.src.user.dto.UserDto.SignUpRes;
 import com.mumulcom.mumulcom.src.user.service.UserService;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +26,9 @@ public class UserController {
      * 회원가입 API
      */
     @PostMapping
-    public BaseResponse<SignUpRes> createUser(@RequestBody @Valid SignUpReq signUpReq) {
+    public BaseResponse<UserDto.SignUpRes> createUser(@RequestBody @Valid UserDto.SignUpReq signUpReq) {
         try {
-            SignUpRes result = userService.join(signUpReq);
+            UserDto.SignUpRes result = userService.join(signUpReq);
             return new BaseResponse<>(result);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
@@ -43,9 +39,9 @@ public class UserController {
      * 로그인 API
      */
     @PostMapping("/login")
-    public BaseResponse<SignInRes> login(@RequestBody @Valid SignInReq signInReq) {
+    public BaseResponse<UserDto.SignInRes> login(@RequestBody @Valid UserDto.SignInReq signInReq) {
         try {
-            SignInRes result = userService.login(signInReq);
+            UserDto.SignInRes result = userService.login(signInReq);
             return new BaseResponse<>(result);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
