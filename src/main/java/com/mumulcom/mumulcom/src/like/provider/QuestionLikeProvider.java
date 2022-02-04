@@ -1,12 +1,11 @@
-package com.mumulcom.mumulcom.src.questionlike.provider;
+package com.mumulcom.mumulcom.src.like.provider;
 
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
-import com.mumulcom.mumulcom.src.questionlike.dao.QuestionLikeDao;
-import com.mumulcom.mumulcom.src.questionlike.dto.PostQueLikeReq;
-import com.mumulcom.mumulcom.src.questionlike.dto.PostReplyLikeReq;
-import com.mumulcom.mumulcom.src.scrap.dto.PostScrapReq;
+import com.mumulcom.mumulcom.src.like.dao.QuestionLikeDao;
+import com.mumulcom.mumulcom.src.like.dto.PostQueLikeReq;
+import com.mumulcom.mumulcom.src.like.dto.PostReplyLikeReq;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
