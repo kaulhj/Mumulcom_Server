@@ -37,17 +37,30 @@ public class QuestionProvider {
        this.jwtService = jwtService;
    }
 
-
+//학준 7.
+   public int checkUserStatus(long userIdx)throws BaseException {
+       try {
+           int validNum = questionDao.checkUserStatus(userIdx);  //active면 1, inactive면 0
+           return validNum;
+       } catch (Exception exception) {
+           exception.printStackTrace();
+           throw new BaseException(DATABASE_ERROR);
+       }
+   }
 
 //학준 9. 최근질문 최대 4개 조회
 public List<GetRecQueRes> getRecQuestion(long userIdx) throws BaseException{
+    try{
+
       int countSize = questionDao.countSize(userIdx);
       if(countSize == 0)
          throw new BaseException(BaseResponseStatus.GET_USERS_EMPTY_DATA);
-      try{
+
       List<GetRecQueRes> getRecQueRes = questionDao.getRecQuestion(countSize, userIdx);
       return getRecQueRes;
-   }catch (Exception exception){
+   }catch (BaseException basexception){
+      throw new BaseException(basexception.getStatus());
+    } catch (Exception exception){
       exception.printStackTrace();
       throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
    }
@@ -64,7 +77,7 @@ public List<GetRecQueRes> getRecQuestion(long userIdx) throws BaseException{
          if(countSize == 0)
             throw new BaseException(BaseResponseStatus.GET_USERS_EMPTY_DATA);
       try{
-         List<GetRecQueRes> getRecQueRes = questionDao.getRecQuestions(countSize, userIdx);
+         List<GetRecQueRes> getRecQueRes = questionDao.getRecQuestions(userIdx);
          return getRecQueRes;
       }catch (Exception exception){
          exception.printStackTrace();

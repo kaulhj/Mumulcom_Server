@@ -1,4 +1,4 @@
-package com.mumulcom.mumulcom.src.category.domain;
+package com.mumulcom.mumulcom.src.category.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -11,4 +11,8 @@ import java.util.List;
 public class PostReplyRes {
     private Long replyIdx;
     private String replyImgResult;
+    private String noticeReply;
+    private Long questionUserIdx;
+    private String noticeScrap;
+    private List<Long> scrapUserIdx;
 }

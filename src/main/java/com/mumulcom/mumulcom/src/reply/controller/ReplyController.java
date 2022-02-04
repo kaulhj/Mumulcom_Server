@@ -2,6 +2,7 @@ package com.mumulcom.mumulcom.src.reply.controller;
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
+import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
 import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
 
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -45,14 +47,16 @@ public class ReplyController {
     }
 
     /**
-     * yeji 8번 API
+     * yeji 18번 API
      * reply 생성
      */
     @ResponseBody
     @PostMapping("")
-    public BaseResponse<PostReplyRes> createReply(@RequestBody PostReplyReq postReplyReq) {
+    public BaseResponse<PostReplyRes> createReply(@RequestPart(value = "images", required = false) List<MultipartFile> multipartFileList,
+                                                  @RequestPart(value = "postReplyReq") PostReplyReq postReplyReq) {
         try {
-            PostReplyRes postReplyRes = replyService.createReply(postReplyReq);
+            List<String> imgUrls = replyService.uploadS3image(multipartFileList, postReplyReq.getUserIdx());
+            PostReplyRes postReplyRes = replyService.createReply(imgUrls, postReplyReq);
             return new BaseResponse<>(postReplyRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
@@ -138,6 +142,11 @@ public class ReplyController {
     @PostMapping("/reply")
     public BaseResponse<String> Rereply(@RequestBody PostReReplReq postReReplReq){
         try{
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(postReReplReq.getUserIdx())) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
+
             if(postReReplReq.getReplyIdx() == 0 || postReReplReq.getUserIdx() == 0
             || postReReplReq.getContent() == null){
                 throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
@@ -147,6 +156,7 @@ public class ReplyController {
         }catch (BaseException exception){
             exception.printStackTrace();
             return new BaseResponse<>(exception.getStatus());
+
         }
     }
 

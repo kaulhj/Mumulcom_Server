@@ -1,0 +1,24 @@
+name: SERVER distribute
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_IP }}
+          username: ${{ secrets.REMOTE_SSH_ID }}
+          key: ${{ secrets.REMOTE_SSH_KEY }}
+          port: ${{ secrets.REMOTE_SSH_PORT }}
+          script: |
+            cd /var/www/Mumulcom_Server
+            sudo git pull
+            fuser -k -n tcp 9000
+            sudo ./gradlew clean build
+            nohup java -jar build/libs/mumulcom-0.0.1-SNAPSHOT.jar

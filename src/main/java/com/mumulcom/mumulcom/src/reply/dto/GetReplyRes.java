@@ -2,6 +2,8 @@ package com.mumulcom.mumulcom.src.reply.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -12,10 +14,11 @@ public class GetReplyRes {
     private Long questionIdx;
     private Long userIdx;
     private String nickname;
+    private String profileImgUrl;
     private String createdAt;
     private String replyUrl;
     private String content;
-    private String replyImgUrl;
+    private List<String> replyImgUrl;
     private int likeCount;
     private int reReplyCount;
     private String status;

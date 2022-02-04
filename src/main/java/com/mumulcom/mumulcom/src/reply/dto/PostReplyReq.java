@@ -11,6 +11,6 @@ import java.util.List;
 public class PostReplyReq {
     private Long questionIdx;
     private Long userIdx;
+    private String replyUrl;
     private String content;
-    private List<String> url;
 }
