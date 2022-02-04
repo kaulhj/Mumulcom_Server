@@ -70,9 +70,9 @@ public class ReplyDao {
         String myReplyListQuery;
 
         if(isAdopted == false) {
-            myReplyListQuery = "select  questionList.questionIdx, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
+            myReplyListQuery = "select  questionList.questionIdx, questionList.profileImgUrl, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
                     "from\n" +
-                    "(select q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount\n" +
+                    "(select q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount , u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
                     "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
@@ -83,9 +83,9 @@ public class ReplyDao {
                     "where r.userIdx = ? \n" +
                     "order by r.createdAt desc";
         } else { // 채택된 것만 보기
-            myReplyListQuery = "select  questionList.questionIdx, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
+            myReplyListQuery = "select  questionList.questionIdx, questionList.profileImgUrl, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
                     "from\n" +
-                    "(select q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount\n" +
+                    "(select q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount , u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
                     "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
@@ -99,6 +99,7 @@ public class ReplyDao {
         return this.jdbcTemplate.query(myReplyListQuery,
                 (rs, rowNum) -> new MyReplyListRes(
                         rs.getLong("questionIdx"),
+                        rs.getString("profileImgUrl"),
                         rs.getString("nickname"),
                         rs.getString("bigCategoryName"),
                         rs.getString("smallCategoryName"),
@@ -118,9 +119,9 @@ public class ReplyDao {
         String myReplyListQuery;
 
         if(isAdopted == false) {
-            myReplyListQuery = "select  questionList.questionIdx, nickname, bigCategoryName, smallCategoryName, title,DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
+            myReplyListQuery = "select  questionList.questionIdx, questionList.profileImgUrl, nickname, bigCategoryName, smallCategoryName, title,DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
                     "from\n" +
-                    "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount\n" +
+                    "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount , u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
                     "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
@@ -131,9 +132,9 @@ public class ReplyDao {
                     "where r.userIdx = ?\n" +
                     "order by r.createdAt desc";
         } else { // 채택된 것만 보기
-            myReplyListQuery = "select  questionList.questionIdx, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
+            myReplyListQuery = "select  questionList.questionIdx, questionList.profileImgUrl, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(questionList.createdAt, '%m-%d, %y') AS createdAt, likeCount, replyCount , r.content\n" +
                     "from\n" +
-                    "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount\n" +
+                    "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount , u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
                     "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
@@ -148,6 +149,7 @@ public class ReplyDao {
         return this.jdbcTemplate.query(myReplyListQuery,
                 (rs, rowNum) -> new MyReplyListRes(
                         rs.getLong("questionIdx"),
+                        rs.getString("profileImgUrl"),
                         rs.getString("nickname"),
                         rs.getString("bigCategoryName"),
                         rs.getString("smallCategoryName"),
