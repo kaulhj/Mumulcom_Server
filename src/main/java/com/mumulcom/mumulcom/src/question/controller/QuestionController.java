@@ -131,7 +131,7 @@ public class QuestionController {
 
 
     /**
-     * yeji 5번 API 코딩 질문 조회
+     * yeji 10번 API 코딩 질문 조회
      * [GET] /questions/coding/:questionIdx
      */
     @ResponseBody
@@ -146,7 +146,7 @@ public class QuestionController {
     }
 
     /**
-     * yeji 6번 API 개념 질문 조회
+     * yeji 11번 API 개념 질문 조회
      * [GET] /questions/concept/:questionIdx
      */
     @ResponseBody
@@ -161,7 +161,7 @@ public class QuestionController {
     }
 
     /**
-     * yeji 7번 API 카테고리별 질문 목록 조회
+     * yeji 12번 API 카테고리별 질문 목록 조회
      * [GET] /questions?type=&sort=&bigCategory=&smallCategory=&isReplied=&lastQuestionIdx=&perPage=
      */
     @ResponseBody

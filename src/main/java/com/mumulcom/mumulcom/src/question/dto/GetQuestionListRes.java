@@ -12,6 +12,7 @@ public class GetQuestionListRes {
     private Long questionIdx;
     private Long useIdx;
     private String nickname;
+    private String profileImgUrl;
     private String createdAt;
     private String title;
     private String bigCategoryName;

@@ -262,7 +262,7 @@ public class QuestionDao {
      */
     public List<GetCodingQuestionRes> getCodingQuestions(int questionIdx) {
         String getCodingQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -281,6 +281,7 @@ public class QuestionDao {
                         rs.getLong("questionIdx"),
                         rs.getLong("userIdx"),
                         rs.getString("nickname"),
+                        rs.getString("profileImgUrl"),
                         rs.getString("createdAt"),
                         rs.getString("title"),
                         rs.getString("currentError"),
@@ -298,7 +299,7 @@ public class QuestionDao {
      */
     public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx) {
         String getConceptQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.content, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.content, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -317,6 +318,7 @@ public class QuestionDao {
                         rs.getLong("questionIdx"),
                         rs.getLong("userIdx"),
                         rs.getString("nickname"),
+                        rs.getString("profileImgUrl"),
                         rs.getString("createdAt"),
                         rs.getString("title"),
                         rs.getString("content"),
@@ -351,7 +353,7 @@ public class QuestionDao {
 
         if(smallCategoryIdx == 0) {
             if(isReplied == true) {
-                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -366,7 +368,7 @@ public class QuestionDao {
                         "order by "+ orderBy +" desc\n" +
                         "limit ?, ?";
             } else {
-                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -383,7 +385,7 @@ public class QuestionDao {
             } getQuestionsParams = new Object[]{bigCategoryIdx, lastQuestionIdx, perPage};
         } else {
             if(isReplied == true) {
-                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -398,7 +400,7 @@ public class QuestionDao {
                         "order by "+ orderBy +" desc\n" +
                         "limit ?, ?";
             } else {
-                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -420,6 +422,7 @@ public class QuestionDao {
                         rs.getLong("questionIdx"),
                         rs.getLong("userIdx"),
                         rs.getString("nickname"),
+                        rs.getString("profileImgUrl"),
                         rs.getString("createdAt"),
                         rs.getString("title"),
                         rs.getString("bigCategoryName"),

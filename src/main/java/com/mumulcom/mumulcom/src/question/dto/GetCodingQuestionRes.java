@@ -9,6 +9,7 @@ public class GetCodingQuestionRes {
     private Long questionIdx;
     private Long userIdx;
     private String nickname;
+    private String profileImgUrl;
     private String createdAt;
     private String title;
     private String currentError;
