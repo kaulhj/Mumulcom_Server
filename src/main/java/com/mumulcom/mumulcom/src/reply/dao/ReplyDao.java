@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -30,36 +31,86 @@ public class ReplyDao {
     }
 
     /**
-     * yeji 8번 API
-     * 답변 생성
+     * yeji 18번 API
+     * 답변 생성 + 알림
      */
-    public PostReplyRes creatReply(PostReplyReq postReplyReq) {
+    public PostReplyRes creatReply(List<String> imgUrls, PostReplyReq postReplyReq) {
 
         String replyImgResult;
+        String createReplyQuery;
+        Object[] createReplyParams;
 
         // Reply table insert
-        String createReplyQuery = "insert into Reply(questionIdx, userIdx, content) values (?, ?, ?)";
-        Object[] createReplyParams = new Object[]{postReplyReq.getQuestionIdx(), postReplyReq.getUserIdx(), postReplyReq.getContent()};
+        if(postReplyReq.getReplyUrl() != null) {
+            createReplyQuery = "insert into Reply(questionIdx, userIdx, replyUrl, content) values (?, ?, ?, ?)";
+            createReplyParams = new Object[]{postReplyReq.getQuestionIdx(), postReplyReq.getUserIdx(), postReplyReq.getReplyUrl(), postReplyReq.getContent()};
+        } else {
+            createReplyQuery = "insert into Reply(questionIdx, userIdx, content) values (?, ?, ?)";
+            createReplyParams = new Object[]{postReplyReq.getQuestionIdx(), postReplyReq.getUserIdx(), postReplyReq.getContent()};
+        }
+
         this.jdbcTemplate.update(createReplyQuery, createReplyParams);
 
         // 마지막으로 삽입된 ReplyIdx 값 추출
         String lastInsertIdQuery = "select last_insert_id()";
-        Long replyIdx = this.jdbcTemplate.queryForObject(lastInsertIdQuery, Long.class);
-        replyImgResult = "해당 답변은 첨부된 이미지가 없습니다.";
+        Long lastReplyIdx = this.jdbcTemplate.queryForObject(lastInsertIdQuery, Long.class);
+        replyImgResult = "";
 
-        if (postReplyReq.getUrl() != null) {
+        // s3에서 받아온 url DB insert
+        if(imgUrls.size() != 0) {
+            String createReplyImgQuery = "insert into ReplyImage(replyIdx, url) value (?, ?)";
+            for(String url : imgUrls) {
+                Object[] createReplyImgParams = new Object[]{lastReplyIdx, url};
+                this.jdbcTemplate.update(createReplyImgQuery, createReplyImgParams);
+            }
+        }
+
+        /*
+         ** s3 서버 사용하기 전 프론트에서 url 주소를 받아서 이미지 처리했을 때
+         * if (postReplyReq.getUrl() != null) {
 
             // ReplyImg table insert
-            String createReplyImgQuery = "insert into ReplyImage(replyIdx, url) value (?, ?)";
-            Long replyImgIdx;
+            String createReplyImgQuery = "insert into ReplyImage(lastReplyIdx, url) value (?, ?)";
             for (String url : postReplyReq.getUrl()) {
                 Object[] createReplyImgParams = new Object[]{replyIdx, url};
                 this.jdbcTemplate.update(createReplyImgQuery, createReplyImgParams);
             }
             replyImgResult = "이미지 삽입이 완료됐습니다.";
+            }
+         */
+
+        // 알림 기능
+        // 1. 질문 작성자에게 알림
+        // 답변 생성한 유저 닉네임 추출
+        String userNickname = this.jdbcTemplate.queryForObject("SELECT nickname FROM User WHERE userIdx = ?", String.class, postReplyReq.getUserIdx());
+        // 질문한 유저 인덱스 추출 (알림 대상 유저)
+        Long questionUserIdx = this.jdbcTemplate.queryForObject("SELECT userIdx FROM Question WHERE questionIdx = ?", Long.class, postReplyReq.getQuestionIdx());
+
+        String createReplyNoticeQuery = "INSERT INTO Notice(noticeCategoryIdx, questionIdx, userIdx, noticeContent) values (1, ?, ?, " + "'" + userNickname + "님이 회원님의 질문에 답변을 달았습니다.')";
+        Object[] createReplyNoticeParams = new Object[]{postReplyReq.getQuestionIdx(), questionUserIdx};
+        this.jdbcTemplate.update(createReplyNoticeQuery, createReplyNoticeParams);
+        String noticeReply = userNickname + "님이 회원님의 질문에 답변을 달았습니다.";
+
+        // 2. 질문을 스크랩한 유저들에게 알림
+        // 스크랩한 유저 인덱스 추출 (알림 대상 유저)
+        List<Long> scrapUserIdxList = new ArrayList<>();
+        this.jdbcTemplate.query("SELECT userIdx FROM Scrap WHERE questionIdx = ?",
+                (rs, rowNum) -> scrapUserIdxList.add(
+                        rs.getLong("userIdx")),
+                postReplyReq.getQuestionIdx());
+
+        String noticeScrap = "";
+        if(scrapUserIdxList.isEmpty() == false) {
+            String createReplyNoticeQuery2 = "INSERT INTO Notice(noticeCategoryIdx, questionIdx, userIdx, noticeContent) values (3, ?, ?, '회원님이 스크랩한 질문에 답변이 달렸습니다.')";
+
+            for(Long userIdx : scrapUserIdxList) {
+                Object[] createReplyNoticeParams2 = new Object[]{postReplyReq.getQuestionIdx(), userIdx};
+                this.jdbcTemplate.update(createReplyNoticeQuery2, createReplyNoticeParams2);
+            }
+            noticeScrap = "회원님이 스크랩한 질문에 답변이 달렸습니다.";
         }
 
-        return new PostReplyRes(replyIdx, replyImgResult);
+        return new PostReplyRes(lastReplyIdx, replyImgResult, noticeReply, questionUserIdx, noticeScrap, scrapUserIdxList);
     }
 
     /**
@@ -172,7 +223,7 @@ public class ReplyDao {
      */
     public List<GetReplyRes> getReplyList(int questionIdx) {
         String getReplyListQuery =
-                "SELECT r.replyIdx, r.questionIdx, r.userIdx, U.nickname, DATE_FORMAT(r.createdAt, '%m-%d, %y') AS createdAt, r.replyUrl, r.content, img.url AS replyImgUrl, IFNULL(likeCount.lcount, 0) likeCount, IFNULL(reCount.rcount, 0) reReplyCount, CASE r.status WHEN 'active' THEN 'N' WHEN 'adopted' THEN 'Y' END AS status\n" +
+                "SELECT r.replyIdx, r.questionIdx, r.userIdx, U.nickname, U.profileImgUrl, DATE_FORMAT(r.createdAt, '%m-%d, %y') AS createdAt, r.replyUrl, r.content, IFNULL(img.url, '') AS replyImgUrl, IFNULL(likeCount.lcount, 0) likeCount, IFNULL(reCount.rcount, 0) reReplyCount, CASE r.status WHEN 'active' THEN 'N' WHEN 'adopted' THEN 'Y' END AS status\n" +
                 "FROM Reply r\n" +
                 "INNER JOIN User U on r.userIdx = U.userIdx\n" +
                 "LEFT JOIN (SELECT replyIdx, GROUP_CONCAT(url) url FROM ReplyImage GROUP BY replyIdx) img\n" +
@@ -190,10 +241,11 @@ public class ReplyDao {
                         rs.getLong("questionIdx"),
                         rs.getLong("userIdx"),
                         rs.getString("nickname"),
+                        rs.getString("profileImgUrl"),
                         rs.getString("createdAt"),
                         rs.getString("replyUrl"),
                         rs.getString("content"),
-                        rs.getString("replyImgUrl"),
+                        Arrays.asList(rs.getString("replyImgUrl").split(",")),
                         rs.getInt("likeCount"),
                         rs.getInt("reReplyCount"),
                         rs.getString("status")),

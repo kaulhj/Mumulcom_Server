@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -313,18 +314,20 @@ public class QuestionDao {
     }
     
     /**
-     * yeji 5번 API
+     * yeji 10번 API
      * 코딩 질문 조회
      */
     public List<GetCodingQuestionRes> getCodingQuestions(int questionIdx) {
         String getCodingQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, IFNULL(I.url,'') AS questionImgUrl, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
                         "INNER JOIN CodeQuestion CQ on q.questionIdx = CQ.questionIdx\n" +
                         "INNER JOIN BigCategory BC on q.bigCategoryIdx = BC.bigCategoryIdx\n" +
                         "INNER JOIN SmallCategory SC on q.smallCategoryIdx = SC.smallCategoryIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, GROUP_CONCAT(imageUrl) url FROM Image GROUP BY questionIdx) I\n" +
+                        "on q.questionIdx = I.questionIdx\n"+
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` WHERE questionIdx = ?) l\n" +
                         "ON q.questionIdx = l.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
@@ -337,30 +340,34 @@ public class QuestionDao {
                         rs.getLong("questionIdx"),
                         rs.getLong("userIdx"),
                         rs.getString("nickname"),
+                        rs.getString("profileImgUrl"),
                         rs.getString("createdAt"),
                         rs.getString("title"),
+                        Arrays.asList(rs.getString("questionImgUrl").split(",")),
                         rs.getString("currentError"),
                         rs.getString("myCodingSkill"),
-                        rs.getString("bigCategoryIdx"),
-                        rs.getString("smallCategoryIdx"),
+                        rs.getString("bigCategoryName"),
+                        rs.getString("smallCategoryName"),
                         rs.getInt("likeCount"),
                         rs.getInt("replyCount")),
                 getCodingQuestionParams, getCodingQuestionParams, getCodingQuestionParams);
     }
 
     /**
-     * yeji 6번 API
+     * yeji 11번 API
      * 개념 질문 조회
      */
     public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx) {
         String getConceptQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, CQ.content, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, IFNULL(I.url,'') AS questionImgUrl, CQ.content, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
                         "INNER JOIN ConceptQuestion CQ on q.questionIdx = CQ.questionIdx\n" +
                         "INNER JOIN BigCategory BC on q.bigCategoryIdx = BC.bigCategoryIdx\n" +
                         "INNER JOIN SmallCategory SC on q.smallCategoryIdx = SC.smallCategoryIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, GROUP_CONCAT(imageUrl) url FROM Image GROUP BY questionIdx) I\n" +
+                        "on q.questionIdx = I.questionIdx\n"+
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` WHERE questionIdx = ?) l\n" +
                         "ON q.questionIdx = l.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
@@ -373,23 +380,26 @@ public class QuestionDao {
                         rs.getLong("questionIdx"),
                         rs.getLong("userIdx"),
                         rs.getString("nickname"),
+                        rs.getString("profileImgUrl"),
                         rs.getString("createdAt"),
                         rs.getString("title"),
+                        Arrays.asList(rs.getString("questionImgUrl").split(",")),
                         rs.getString("content"),
-                        rs.getString("bigCategoryIdx"),
-                        rs.getString("smallCategoryIdx"),
+                        rs.getString("bigCategoryName"),
+                        rs.getString("smallCategoryName"),
                         rs.getInt("likeCount"),
                         rs.getInt("replyCount")),
                 getConceptQuestionParams, getConceptQuestionParams, getConceptQuestionParams);
     }
 
     /**
-     * yeji 7번 API
+     * yeji 12번 API
      * 카테고리별 질문 목록 조회 API (최신순, 핫한순 정렬)
      */
-    public List<GetQuestionListRes> getQuestionsByCategory(int sort, int bigCategoryIdx, int smallCategoryIdx, boolean isReplied, int lastQuestionIdx, int perPage) {
+    public List<GetQuestionListRes> getQuestionsByCategory(int type, int sort, int bigCategoryIdx, int smallCategoryIdx, boolean isReplied, int lastQuestionIdx, int perPage) {
         String getQuestionsQuery;
         String orderBy = "";
+        String typeSql = "";
         Object[] getQuestionsParams;
 
         if (sort == 1) {
@@ -398,12 +408,19 @@ public class QuestionDao {
             orderBy = "likeCount";
         }
 
+        if(type == 1) {
+            typeSql = "INNER JOIN CodeQuestion CQ on q.questionIdx = CQ.questionIdx\n";
+        } else if(type == 2) {
+            typeSql = "INNER JOIN ConceptQuestion CQ on q.questionIdx = CQ.questionIdx\n";
+        }
+
         if(smallCategoryIdx == 0) {
             if(isReplied == true) {
-                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
+                        typeSql +
                         "INNER JOIN BigCategory BC on q.bigCategoryIdx = BC.bigCategoryIdx\n" +
                         "INNER JOIN SmallCategory SC on q.smallCategoryIdx = SC.smallCategoryIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` group by questionIdx) l\n" +
@@ -414,10 +431,11 @@ public class QuestionDao {
                         "order by "+ orderBy +" desc\n" +
                         "limit ?, ?";
             } else {
-                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
+                        typeSql +
                         "INNER JOIN BigCategory BC on q.bigCategoryIdx = BC.bigCategoryIdx\n" +
                         "INNER JOIN SmallCategory SC on q.smallCategoryIdx = SC.smallCategoryIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` group by questionIdx) l\n" +
@@ -430,10 +448,11 @@ public class QuestionDao {
             } getQuestionsParams = new Object[]{bigCategoryIdx, lastQuestionIdx, perPage};
         } else {
             if(isReplied == true) {
-                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
+                        typeSql +
                         "INNER JOIN BigCategory BC on q.bigCategoryIdx = BC.bigCategoryIdx\n" +
                         "INNER JOIN SmallCategory SC on q.smallCategoryIdx = SC.smallCategoryIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` group by questionIdx) l\n" +
@@ -444,10 +463,11 @@ public class QuestionDao {
                         "order by "+ orderBy +" desc\n" +
                         "limit ?, ?";
             } else {
-                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
+                        typeSql +
                         "INNER JOIN BigCategory BC on q.bigCategoryIdx = BC.bigCategoryIdx\n" +
                         "INNER JOIN SmallCategory SC on q.smallCategoryIdx = SC.smallCategoryIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` group by questionIdx) l\n" +
@@ -465,10 +485,11 @@ public class QuestionDao {
                         rs.getLong("questionIdx"),
                         rs.getLong("userIdx"),
                         rs.getString("nickname"),
+                        rs.getString("profileImgUrl"),
                         rs.getString("createdAt"),
                         rs.getString("title"),
-                        rs.getString("bigCategoryIdx"),
-                        rs.getString("smallCategoryIdx"),
+                        rs.getString("bigCategoryName"),
+                        rs.getString("smallCategoryName"),
                         rs.getInt("likeCount"),
                         rs.getInt("replyCount")),
                 getQuestionsParams);
