@@ -199,7 +199,7 @@ public class ReplyDao {
      */
     public List<GetReplyRes> getReplyList(int questionIdx) {
         String getReplyListQuery =
-                "SELECT r.replyIdx, r.questionIdx, r.userIdx, U.nickname, U.profileImgUrl, DATE_FORMAT(r.createdAt, '%m-%d, %y') AS createdAt, r.replyUrl, r.content, IFNULL(img.url, '첨부된 이미지가 없습니다.') AS replyImgUrl, IFNULL(likeCount.lcount, 0) likeCount, IFNULL(reCount.rcount, 0) reReplyCount, CASE r.status WHEN 'active' THEN 'N' WHEN 'adopted' THEN 'Y' END AS status\n" +
+                "SELECT r.replyIdx, r.questionIdx, r.userIdx, U.nickname, U.profileImgUrl, DATE_FORMAT(r.createdAt, '%m-%d, %y') AS createdAt, r.replyUrl, r.content, IFNULL(img.url, '') AS replyImgUrl, IFNULL(likeCount.lcount, 0) likeCount, IFNULL(reCount.rcount, 0) reReplyCount, CASE r.status WHEN 'active' THEN 'N' WHEN 'adopted' THEN 'Y' END AS status\n" +
                 "FROM Reply r\n" +
                 "INNER JOIN User U on r.userIdx = U.userIdx\n" +
                 "LEFT JOIN (SELECT replyIdx, GROUP_CONCAT(url) url FROM ReplyImage GROUP BY replyIdx) img\n" +
