@@ -56,6 +56,10 @@ public class QuestionController {
             @RequestPart(value = "codeQuestionReq") CodeQuestionReq codeQuestionReq){
         //s3이미지 저장하고 url반환값
         try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(codeQuestionReq.getUserIdx())) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
                 if(codeQuestionReq.getUserIdx() == 0 || codeQuestionReq.getCurrentError() == null
                         || codeQuestionReq.getMyCodingSkill() == null || codeQuestionReq.getBigCategoryIdx() == 0
                         || codeQuestionReq.getSmallCategoryIdx() == 0 || codeQuestionReq.getTitle() == null) {
@@ -84,6 +88,10 @@ public class QuestionController {
             @RequestPart(value = "images", required = false ) List<MultipartFile> multipartFile,
             @RequestPart(value = "conceptQueReq") ConceptQueReq conceptQueReq){
         try{
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(conceptQueReq.getUserIdx())) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
             if(conceptQueReq.getUserIdx() == 0 || conceptQueReq.getContent() == null
                     || conceptQueReq.getBigCategoryIdx() == 0
                     || conceptQueReq.getSmallCategoryIdx() == 0 || conceptQueReq.getTitle() == null) {
@@ -109,6 +117,10 @@ public class QuestionController {
     public BaseResponse<List<GetRecQueRes>> getRecQuestion(@PathVariable("userIdx")long userIdx
     ){
         try{
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
 
             List<GetRecQueRes> getRecQueRes = questionProvider.getRecQuestion(userIdx);
             return new BaseResponse<>(getRecQueRes);
@@ -125,6 +137,11 @@ public class QuestionController {
     public BaseResponse<List<GetRecQueRes>> getRecQuestions(@PathVariable("userIdx")long userIdx
     ){
         try{
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
+
             List<GetRecQueRes> getRecQueRes = questionProvider.getRecQuestions(userIdx);
             return new BaseResponse<>(getRecQueRes);
         }catch (BaseException exception){

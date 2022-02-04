@@ -68,7 +68,7 @@ public class QuestionDao {
         String GetListQueQuery = "SELECT q.questionIdx,b.bigCategoryName,s.smallCategoryName,u.name,\n" +
                 "              concat(MONTH(q.createdAt),'/',day(q.createdAt),',',substring(year(q.createdAt),-2))as created\n" +
                 " ,count(CASE WHEN q.questionIdx = r.questionIdx and (r.status = 'active' or r.status = 'adopted') then 1 END )as replies\n" +
-                ",title \n" +
+                ",title , u.profileImgUrl \n" +
                 " FROM\n" +
                 "\n" +
                 "      Question q\n" +
@@ -91,7 +91,9 @@ public class QuestionDao {
                         rs.getString("created"),
                         rs.getString("title"),
                         rs.getLong("replies"),
-                        reply.get(rowNum)),
+                        reply.get(rowNum),
+                        rs.getString("profileImgUrl")),
+
                 userIdx);
     }
 
@@ -125,11 +127,11 @@ public class QuestionDao {
                 "group by Q.questionIdx\n" +
                 "order by Q.questionIdx desc limit 1 offset ?";
 
-        List<Long> reply = new ArrayList<>();
+        List<Long> Likes = new ArrayList<>();
 
         for(int i=0;i<countSize;i++) {
             Object[] getReqQueParams = new Object[]{userIdx, i};
-            reply.add(this.jdbcTemplate.queryForObject(getRecQueQuery,
+            Likes.add(this.jdbcTemplate.queryForObject(getRecQueQuery,
                     long.class,
                     getReqQueParams));
         }
@@ -139,7 +141,7 @@ public class QuestionDao {
         String GetListQueQuery = "SELECT q.questionIdx,b.bigCategoryName,s.smallCategoryName,u.name,\n" +
         "              concat(MONTH(q.createdAt),'/',day(q.createdAt),',',substring(year(q.createdAt),-2))as created\n" +
                 " ,count(CASE WHEN q.questionIdx = r.questionIdx AND (r.status = 'active' or r.status = 'adopted')then 1 END )as replies\n" +
-                ",title \n" +
+                ",title, u.profileImgUrl \n" +
                 " FROM\n" +
                 "\n" +
                 "      Question q\n" +
@@ -162,7 +164,8 @@ public class QuestionDao {
                         rs.getString("created"),
                         rs.getString("title"),
                         rs.getLong("replies"),
-                        reply.get(rowNum)),
+                        Likes.get(rowNum),
+                        rs.getString("profileImgUrl")),
                 userIdx);
     }
 

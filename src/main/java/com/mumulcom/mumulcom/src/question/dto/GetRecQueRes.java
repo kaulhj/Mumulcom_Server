@@ -19,4 +19,5 @@ public class GetRecQueRes {
     private String Title;
     private long ReplyCount;
     private Long LikeCount;
+    private String profileImgUrl;   //프로필이미지사진
 }

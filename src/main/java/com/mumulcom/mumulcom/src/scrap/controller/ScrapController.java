@@ -47,6 +47,11 @@ public class ScrapController {
     public BaseResponse<String> createScrap(@RequestBody PostScrapReq postScrapReq){
 
         try{
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(postScrapReq.getUserIdx())) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
+
             if(postScrapReq.getQuestionIdx() == 0 && postScrapReq.getUserIdx() == 0)
                 throw new BaseException(BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY);
             String result = scrapService.createScrap(postScrapReq);
