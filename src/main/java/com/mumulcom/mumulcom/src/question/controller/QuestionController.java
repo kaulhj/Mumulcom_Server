@@ -278,8 +278,14 @@ public class QuestionController {
      * */
     @ResponseBody
     @GetMapping("/my/coding")
-    public BaseResponse<List<MyQuestionListRes>> myCodingQuestion(@RequestParam int userIdx, @RequestParam(defaultValue = "false") boolean isReplied) {
+    public BaseResponse<List<MyQuestionListRes>> myCodingQuestion(@RequestParam long userIdx, @RequestParam(defaultValue = "false") boolean isReplied) {
         try {
+
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
+
             List<MyQuestionListRes> myQuestionListRes = questionProvider.myCodingQuestionListResList(userIdx, isReplied);
             return new BaseResponse<>(myQuestionListRes);
         } catch (BaseException exception) {
@@ -297,6 +303,12 @@ public class QuestionController {
     @GetMapping("/my/concept")
     public BaseResponse<List<MyQuestionListRes>> myConceptQuestion(@RequestParam long userIdx, @RequestParam(defaultValue = "false") boolean isReplied) {
         try {
+
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
+
             List<MyQuestionListRes> myQuestionListRes = questionProvider.myConceptQuestionListResList(userIdx, isReplied);
             return new BaseResponse<>(myQuestionListRes);
         } catch (BaseException exception) {

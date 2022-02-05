@@ -70,6 +70,10 @@ public class ScrapController {
     @GetMapping("/coding")
     public BaseResponse<List<MyScrapListRes>> getMyCodingScrapList (@RequestParam int userIdx,  @RequestParam(defaultValue = "false") boolean isReplied,@RequestParam(required = false) String bigCategory, @RequestParam(required = false) String smallCategory) {
         try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
             List<MyScrapListRes> myScrapListResList;
             //카테고리 없을 때 -> 스크랩한 목록 다 보여주기
             if(bigCategory == null && smallCategory == null) {
@@ -94,6 +98,10 @@ public class ScrapController {
     @GetMapping("/concept")
     public BaseResponse<List<MyScrapListRes>> getMyConceptScrapList (@RequestParam int userIdx,  @RequestParam(defaultValue = "false") boolean isReplied, @RequestParam(required = false) String bigCategory, @RequestParam(required = false) String smallCategory) {
         try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
             List<MyScrapListRes> myScrapListResList;
             //카테고리 없을 때 -> 스크랩한 목록 다 보여주기
             if(bigCategory == null && smallCategory == null) {

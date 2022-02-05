@@ -21,7 +21,7 @@ public class NoticeDao {
      * 휘정
      * 알림 조회 API
      * */
-    public List<GetNoticeRes> noticeList (int userIdx) {
+    public List<GetNoticeRes> noticeList (long userIdx) {
 
         String noticeListQuery = "select n.questionIdx, noticeContent, profileImgUrl,(select CASE\n" +
                 "\twhen((select updatedAt between date_add(now(),interval -1 day) and NOW())) then '오늘'\n" +

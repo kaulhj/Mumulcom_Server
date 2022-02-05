@@ -86,6 +86,10 @@ public class ReplyController {
     @GetMapping("/my/coding")
     public BaseResponse<List<MyReplyListRes>> myCodingReplyList(@RequestParam long userIdx, @RequestParam(defaultValue = "false") boolean isAdopted) {
         try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
             List<MyReplyListRes> myReplyListRes = replyProvider.myCodingReplyListResList(userIdx, isAdopted);
             return new BaseResponse<>(myReplyListRes);
         } catch (BaseException exception) {
@@ -101,6 +105,10 @@ public class ReplyController {
     @GetMapping("/my/concept")
     public BaseResponse<List<MyReplyListRes>> myConceptReplyList(@RequestParam long userIdx, @RequestParam(defaultValue = "false") boolean isAdopted) {
         try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
             List<MyReplyListRes> myReplyListRes = replyProvider.myConceptReplyListResList(userIdx, isAdopted);
             return new BaseResponse<>(myReplyListRes);
         } catch (BaseException exception) {

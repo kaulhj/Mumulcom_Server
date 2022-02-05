@@ -2,6 +2,7 @@ package com.mumulcom.mumulcom.src.notice.controller;
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
+import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.notice.provider.NoticeProvider;
 import com.mumulcom.mumulcom.src.notice.repository.GetNoticeRes;
 import com.mumulcom.mumulcom.utils.JwtService;
@@ -29,8 +30,12 @@ public class NoticeController {
 
     @ResponseBody
     @GetMapping("/{userIdx}")
-    public BaseResponse<List<GetNoticeRes>> noticeList(@PathVariable("userIdx") int userIdx) {
+    public BaseResponse<List<GetNoticeRes>> noticeList(@PathVariable("userIdx") long userIdx) {
         try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
             List<GetNoticeRes> noticeRes = noticeProvider.getNoticeResList(userIdx);
             return new BaseResponse<>(noticeRes);
         }  catch (BaseException exception) {
