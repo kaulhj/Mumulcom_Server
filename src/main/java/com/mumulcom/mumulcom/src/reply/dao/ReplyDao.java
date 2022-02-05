@@ -297,7 +297,7 @@ public class ReplyDao {
                 "INNER JOIN User U on r.userIdx = U.userIdx\n" +
                 "LEFT JOIN (SELECT replyIdx, GROUP_CONCAT(url) url FROM ReplyImage GROUP BY replyIdx) img\n" +
                 "on r.replyIdx = img.replyIdx\n" +
-                "LEFT JOIN (SELECT replyIdx, count(replyIdx) AS lcount FROM ReplyLike group by replyIdx) likeCount\n" +
+                "LEFT JOIN (SELECT replyIdx, count(replyIdx) AS lcount FROM ReplyLike where status = 'active' group by replyIdx) likeCount\n" +
                 "ON r.replyIdx = likeCount.replyIdx\n" +
                 "LEFT JOIN (SELECT replyIdx, count(replyIdx) AS rcount FROM Rereply group by replyIdx) reCount\n" +
                 "on r.replyIdx = reCount.replyIdx\n" +
