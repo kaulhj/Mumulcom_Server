@@ -24,8 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static com.mumulcom.mumulcom.config.BaseResponseStatus.PATCH_ADOPT_NOT_SAME;
-import static com.mumulcom.mumulcom.config.BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY;
+import static com.mumulcom.mumulcom.config.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("/replies")
@@ -55,8 +54,15 @@ public class ReplyController {
     public BaseResponse<PostReplyRes> createReply(@RequestPart(value = "images", required = false) List<MultipartFile> multipartFileList,
                                                   @RequestPart(value = "postReplyReq") PostReplyReq postReplyReq) {
         try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+
+            if(postReplyReq.getUserIdx() != userIdxByJwt) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
             List<String> imgUrls = replyService.uploadS3image(multipartFileList, postReplyReq.getUserIdx());
             PostReplyRes postReplyRes = replyService.createReply(imgUrls, postReplyReq);
+
             return new BaseResponse<>(postReplyRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
