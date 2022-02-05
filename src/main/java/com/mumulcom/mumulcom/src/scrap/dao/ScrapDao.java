@@ -31,7 +31,7 @@ public class ScrapDao {
      * 3. 큰 카테고리, 작은 카테고리 둘 다 선택했을 때
      * */
     // 스크랩한 코딩 질문 - 1
-    public List<MyScrapListRes> myCodingScrapListRes(int userIdx, boolean isReplied) {
+    public List<MyScrapListRes> myCodingScrapListRes(long userIdx, boolean isReplied) {
         String myScrapListQuery;
 
         if(isReplied == false) { // 답변이 달린 질문
@@ -39,7 +39,7 @@ public class ScrapDao {
                     "from (select u.userIdx, q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount ,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                     "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
@@ -51,7 +51,7 @@ public class ScrapDao {
                     "from (select u.userIdx, q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount ,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                     "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
@@ -76,7 +76,7 @@ public class ScrapDao {
 
 
     // 스크랩한 코딩 질문 - 2
-    public List<MyScrapListRes> myCodingScrapListRes(int userIdx, String bigCategoryName, boolean isReplied) {
+    public List<MyScrapListRes> myCodingScrapListRes(long userIdx, String bigCategoryName, boolean isReplied) {
         String myScrapListQuery;
 
         if(isReplied == false) { // 답변이 달린 질문
@@ -84,7 +84,7 @@ public class ScrapDao {
                     "from (select u.userIdx, q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                     "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
@@ -96,7 +96,7 @@ public class ScrapDao {
                     "from (select u.userIdx, q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                     "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
@@ -120,7 +120,7 @@ public class ScrapDao {
     }
 
     // 스크랩한 코딩 질문 - 3
-    public List<MyScrapListRes> myCodingScrapListRes(int userIdx, String bigCategoryName, String smallCategoryName, boolean isReplied) {
+    public List<MyScrapListRes> myCodingScrapListRes(long userIdx, String bigCategoryName, String smallCategoryName, boolean isReplied) {
         String myScrapListQuery;
 
         if(isReplied == false) { // 답변이 달린 질문
@@ -128,7 +128,7 @@ public class ScrapDao {
                     "from (select u.userIdx, q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                     "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
@@ -140,7 +140,7 @@ public class ScrapDao {
                     "from (select u.userIdx, q.questionIdx, nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                     "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
@@ -172,7 +172,7 @@ public class ScrapDao {
      * 3. 큰 카테고리, 작은 카테고리 둘 다 선택했을 때
      * */
     // 스크랩한 개념 질문 - 1
-    public List<MyScrapListRes> myConceptScrapListRes(int userIdx, boolean isReplied) {
+    public List<MyScrapListRes> myConceptScrapListRes(long userIdx, boolean isReplied) {
 
         String myScrapListQuery;
 
@@ -182,7 +182,7 @@ public class ScrapDao {
                     "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                     "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
@@ -195,7 +195,7 @@ public class ScrapDao {
                     "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                     "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
@@ -220,7 +220,7 @@ public class ScrapDao {
 
 
     // 스크랩한 개념 질문 - 2
-    public List<MyScrapListRes> myConceptScrapListRes(int userIdx, String bigCategoryName, boolean isReplied) {
+    public List<MyScrapListRes> myConceptScrapListRes(long userIdx, String bigCategoryName, boolean isReplied) {
         String myScrapListQuery;
 
         if(isReplied == false) { // 답변이 달린 질문
@@ -229,7 +229,7 @@ public class ScrapDao {
                     "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                     "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
@@ -242,7 +242,7 @@ public class ScrapDao {
                     "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                     "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
@@ -267,7 +267,7 @@ public class ScrapDao {
     }
 
     // 스크랩한 개념 질문 - 3
-    public List<MyScrapListRes> myConceptScrapListRes(int userIdx, String bigCategoryName, String smallCategoryName, boolean isReplied) {
+    public List<MyScrapListRes> myConceptScrapListRes(long userIdx, String bigCategoryName, String smallCategoryName, boolean isReplied) {
         String myScrapListQuery;
 
         if(isReplied == false) { // 답변이 달린 질문
@@ -276,7 +276,7 @@ public class ScrapDao {
                     "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                     "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
@@ -289,7 +289,7 @@ public class ScrapDao {
                     "(select q.questionIdx,nickname, bigCategoryName, smallCategoryName, title, q.createdAt, likeCount, replyCount,u.profileImgUrl\n" +
                     "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
-                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
+                    "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                     "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +

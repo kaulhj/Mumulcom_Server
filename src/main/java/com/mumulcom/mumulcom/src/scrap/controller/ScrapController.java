@@ -68,7 +68,7 @@ public class ScrapController {
     // 큰 x, 작은 o 일때는 벨리데이션처리 해주기
     @ResponseBody
     @GetMapping("/coding")
-    public BaseResponse<List<MyScrapListRes>> getMyCodingScrapList (@RequestParam int userIdx,  @RequestParam(defaultValue = "false") boolean isReplied,@RequestParam(required = false) String bigCategory, @RequestParam(required = false) String smallCategory) {
+    public BaseResponse<List<MyScrapListRes>> getMyCodingScrapList (@RequestParam long userIdx,  @RequestParam(defaultValue = "false") boolean isReplied,@RequestParam(required = false) String bigCategory, @RequestParam(required = false) String smallCategory) {
         try {
             Long userIdxByJwt = jwtService.getUserIdx();
             if (!userIdxByJwt.equals(userIdx)) {
@@ -96,7 +96,7 @@ public class ScrapController {
     // 큰 x, 작은 o 일때는 벨리데이션처리 해주기
     @ResponseBody
     @GetMapping("/concept")
-    public BaseResponse<List<MyScrapListRes>> getMyConceptScrapList (@RequestParam int userIdx,  @RequestParam(defaultValue = "false") boolean isReplied, @RequestParam(required = false) String bigCategory, @RequestParam(required = false) String smallCategory) {
+    public BaseResponse<List<MyScrapListRes>> getMyConceptScrapList (@RequestParam long userIdx,  @RequestParam(defaultValue = "false") boolean isReplied, @RequestParam(required = false) String bigCategory, @RequestParam(required = false) String smallCategory) {
         try {
             Long userIdxByJwt = jwtService.getUserIdx();
             if (!userIdxByJwt.equals(userIdx)) {
