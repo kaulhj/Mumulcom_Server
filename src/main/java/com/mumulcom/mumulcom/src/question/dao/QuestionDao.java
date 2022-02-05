@@ -102,7 +102,7 @@ public class QuestionDao {
                 "                        ON q.questionIdx = rc2.questionIdx\n" +
                 "\n" +
                 "  where u.userIdx = ?\n" +
-                "order by q.createdAt desc";
+                "order by q.createdAt desc limit 4";
 
         return this.jdbcTemplate.query(getLateListQuery,
                 (rs, rowNum) -> new GetRecQueRes(
