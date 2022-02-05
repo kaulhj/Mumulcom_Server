@@ -27,7 +27,7 @@ public class NoticeProvider {
         this.jwtService = jwtService;
     }
 
-    public List<GetNoticeRes> getNoticeResList(int userIcx) throws BaseException {
+    public List<GetNoticeRes> getNoticeResList(long userIcx) throws BaseException {
         try {
             List<GetNoticeRes> getNoticeList = noticeDao.noticeList(userIcx);
             return getNoticeList;

@@ -21,24 +21,22 @@ public class NoticeDao {
      * 휘정
      * 알림 조회 API
      * */
-    public List<GetNoticeRes> noticeList (int userIdx) {
+    public List<GetNoticeRes> noticeList (long userIdx) {
 
-        String noticeListQuery = "select n.questionIdx, noticeContent, profileImgUrl,(select CASE\n" +
-                "\twhen((select updatedAt between date_add(now(),interval -1 day) and NOW())) then '오늘'\n" +
-                "    when((select updatedAt between date_add(now(),interval -2 day) and date_add(now(),interval -1 day))) then '어제'\n" +
-                "    when((select updatedAt between date_add(now(),interval -3 day) and date_add(now(),interval -2 day))) then '2일전'\n" +
-                "    when((select updatedAt between date_add(now(),interval -4 day) and date_add(now(),interval -3 day))) then '3일전'\n" +
-                "    when((select updatedAt between date_add(now(),interval -5 day) and date_add(now(),interval -4 day))) then '4일전'\n" +
-                "    when((select updatedAt between date_add(now(),interval -6 day) and date_add(now(),interval -5 day))) then '5일전'\n" +
-                "    when((select updatedAt between date_add(now(),interval -7 day) and date_add(now(),interval -6 day))) then '6일전'\n" +
-                "    when((select updatedAt between date_add(now(),interval -14 day) and date_add(now(),interval -7 day))) then '1주전'\n" +
-                "    when((select updatedAt between date_add(now(),interval -21 day) and date_add(now(),interval -14 day))) then '2주전'\n" +
-                "    when((select updatedAt between date_add(now(),interval -31 day) and date_add(now(),interval -21 day))) then '3주전'\n" +
-                "    when((select updatedAt between date_add(now(),interval -2 month ) and date_add(now(),interval -1 month))) then '1달전'\n" +
-                "    when((select updatedAt between date_add(now(),interval -3 month ) and date_add(now(),interval -2 month))) then '2달전'\n" +
-                "    when((select updatedAt between date_add(now(),interval -4 month ) and date_add(now(),interval -3 month))) then '3달전'\n" +
+        String noticeListQuery = "select n.questionIdx, noticeContent, profileImgUrl, (select CASE\n" +
+                "\twhen((select timestampdiff(DAY,DATE_FORMAT(createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) = 0) then '오늘'\n" +
+                "    when((select timestampdiff(DAY,DATE_FORMAT(createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) = 1) then '어제'\n" +
+                "    when((select timestampdiff(DAY,DATE_FORMAT(createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) = 2) then '2일전'\n" +
+                "    when((select timestampdiff(DAY,DATE_FORMAT(createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) = 3) then '3일전'\n" +
+                "    when((select timestampdiff(DAY,DATE_FORMAT(createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) = 4) then '4일전'\n" +
+                "    when((select timestampdiff(DAY,DATE_FORMAT(createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) = 5) then '5일전'\n" +
+                "    when((select timestampdiff(DAY,DATE_FORMAT(createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) = 6) then '6일전'\n" +
+                "    when((select timestampdiff(DAY,DATE_FORMAT(createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) >= 7 and (select timestampdiff(DAY,DATE_FORMAT(createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) <= 13) then '1주전'\n" +
+                "    when((select timestampdiff(DAY,DATE_FORMAT(createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) >= 14 and (select timestampdiff(DAY,DATE_FORMAT(createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) <= 20) then '2주전'\n" +
+                "    when((select timestampdiff(DAY,DATE_FORMAT(createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) >= 21 and (select timestampdiff(DAY,DATE_FORMAT(createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) <= 27) then '3주전'\n" +
+                "    when((select timestampdiff(DAY,DATE_FORMAT(createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) >= 28 and (select timestampdiff(DAY,DATE_FORMAT(createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) <= 59) then '1달전'\n" +
                 "    else '3달 넘은 오래된 게시물' \n" +
-                "end) as diffTime \n" +
+                "end) as diffTime,createdAt\n" +
                 "from Notice n join (select profileImgUrl, q.questionIdx from Question q join User u on q.userIdx = u.userIdx) writerInfo on n.questionIdx = writerInfo.questionIdx\n" +
                 "where n.userIdx = ?\n" +
                 "order by updatedAt desc";

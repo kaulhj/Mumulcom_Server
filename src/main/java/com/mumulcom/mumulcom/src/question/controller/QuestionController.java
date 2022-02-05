@@ -230,13 +230,18 @@ public class QuestionController {
     /**
      * 휘정
      * 개념 질문 검색 API
-     * [GET] /questions/search/concept/:keyword
+     * [GET] /questions/search/concept?keyword=
      * */
     @ResponseBody
-    @GetMapping("/search/concept/{keyword}")
-    public BaseResponse<List<SearchConceptQuestionRes>> searchConceptQuestion(@PathVariable("keyword") String keyword) {
+    @GetMapping("/search/concept")
+    public BaseResponse<List<SearchConceptQuestionRes>> searchConceptQuestion(@RequestParam(required = false) String keyword) {
         try {
-            List<SearchConceptQuestionRes> searchConceptQuestionRes = questionProvider.searchConceptQuestionResList(keyword);
+            List<SearchConceptQuestionRes> searchConceptQuestionRes;
+            if(keyword == null) {
+                searchConceptQuestionRes = questionProvider.searchConceptQuestionResList();
+            } else {
+                searchConceptQuestionRes = questionProvider.searchConceptQuestionResList(keyword);
+            }
             return new BaseResponse<>(searchConceptQuestionRes);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
@@ -247,13 +252,18 @@ public class QuestionController {
     /**
      * 휘정
      * 코딩 질문 검색 API
-     * [GET] /questions/search/coding/:keyword
+     * [GET] /questions/search/coding?keyword=
      * */
     @ResponseBody
-    @GetMapping("/search/coding/{keyword}")
-    public BaseResponse<List<SearchCodingQuestionRes>> searchCodingQuestion(@PathVariable("keyword") String keyword) {
+    @GetMapping("/search/coding")
+    public BaseResponse<List<SearchCodingQuestionRes>> searchCodingQuestion(@RequestParam(required = false) String keyword) {
         try {
-            List<SearchCodingQuestionRes> searchCodingQuestionRes = questionProvider.searchCodingQuestionResList(keyword);
+            List<SearchCodingQuestionRes> searchCodingQuestionRes;
+            if(keyword == null) {
+                searchCodingQuestionRes = questionProvider.searchCodingQuestionResList();
+            } else {
+                searchCodingQuestionRes = questionProvider.searchCodingQuestionResList(keyword);
+            }
             return new BaseResponse<>(searchCodingQuestionRes);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
@@ -268,8 +278,14 @@ public class QuestionController {
      * */
     @ResponseBody
     @GetMapping("/my/coding")
-    public BaseResponse<List<MyQuestionListRes>> myCodingQuestion(@RequestParam int userIdx, @RequestParam(defaultValue = "false") boolean isReplied) {
+    public BaseResponse<List<MyQuestionListRes>> myCodingQuestion(@RequestParam long userIdx, @RequestParam(defaultValue = "false") boolean isReplied) {
         try {
+
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
+
             List<MyQuestionListRes> myQuestionListRes = questionProvider.myCodingQuestionListResList(userIdx, isReplied);
             return new BaseResponse<>(myQuestionListRes);
         } catch (BaseException exception) {
@@ -287,6 +303,12 @@ public class QuestionController {
     @GetMapping("/my/concept")
     public BaseResponse<List<MyQuestionListRes>> myConceptQuestion(@RequestParam long userIdx, @RequestParam(defaultValue = "false") boolean isReplied) {
         try {
+
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
+
             List<MyQuestionListRes> myQuestionListRes = questionProvider.myConceptQuestionListResList(userIdx, isReplied);
             return new BaseResponse<>(myQuestionListRes);
         } catch (BaseException exception) {
