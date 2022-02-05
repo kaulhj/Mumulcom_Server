@@ -20,7 +20,7 @@ import java.util.Optional;
 
 
 @Service
-@Transactional
+@Transactional(rollbackOn = BaseException.class)
 public class UserService {
     private final UserRepository userRepository;
     private final MyCategoryRepository myCategoryRepository;
@@ -81,6 +81,9 @@ public class UserService {
             throw new BaseException(BaseResponseStatus.FAILED_TO_LOGIN);
         }
         User user = userOptional.get();
+        if (user.getStatus().equals("inactive")) {
+            throw new BaseException(BaseResponseStatus.FAILED_TO_LOGIN);
+        }
         String jwt = jwtService.createJwt(user.getUserIdx());
         return UserDto.SignInRes.builder()
                 .jwt(jwt)

@@ -6,12 +6,14 @@ import com.mumulcom.mumulcom.src.category.dto.GetCategoryRes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 import static com.mumulcom.mumulcom.config.BaseResponseStatus.DATABASE_ERROR;
+import static com.mumulcom.mumulcom.config.BaseResponseStatus.POST_USERS_INVALID_CATEGORY;
 
 @Service
 public class CategoryProvider {
@@ -36,6 +38,8 @@ public class CategoryProvider {
     public Optional<Long> getSmallCategoryIdxByName(String smallCategoryName) throws BaseException {
         try {
             return categoryDao.getSmallCategoryIdxByName(smallCategoryName);
+        } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
+            throw new BaseException(POST_USERS_INVALID_CATEGORY);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
