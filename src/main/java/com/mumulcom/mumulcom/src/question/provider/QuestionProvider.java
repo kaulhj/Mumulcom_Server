@@ -89,6 +89,18 @@ public List<GetRecQueRes> getRecQuestion(long userIdx) throws BaseException{
     * 휘정
     * 개념 질문 검색하기
     * */
+   // keyword 없을 때
+   public List<SearchConceptQuestionRes> searchConceptQuestionResList() throws BaseException{
+       try {
+           List<SearchConceptQuestionRes> searchConceptQuestionResList = questionDao.searchConceptQuestionRes();
+           return searchConceptQuestionResList;
+       } catch (Exception exception) {
+           exception.printStackTrace();
+           throw new BaseException(DATABASE_ERROR);
+       }
+   }
+
+    //keyword 있을 때
    public List<SearchConceptQuestionRes> searchConceptQuestionResList(String keyword) throws BaseException {
       try {
          List<SearchConceptQuestionRes> searchConceptQuestionResList = questionDao.searchConceptQuestionRes(keyword);
@@ -103,6 +115,18 @@ public List<GetRecQueRes> getRecQuestion(long userIdx) throws BaseException{
     * 휘정
     * 코딩 질문 검색하기
     * */
+   //keyword 없을 때
+   public List<SearchCodingQuestionRes> searchCodingQuestionResList() throws BaseException {
+       try {
+           List<SearchCodingQuestionRes> searchCodingQuestionResList = questionDao.searchCodingQuestionRes();
+           return searchCodingQuestionResList;
+       } catch (Exception exception) {
+           exception.printStackTrace();
+           throw new BaseException(DATABASE_ERROR);
+       }
+   }
+
+   //keyword 있을 때
    public List<SearchCodingQuestionRes> searchCodingQuestionResList(String keyword) throws BaseException {
       try {
          List<SearchCodingQuestionRes> searchCodingQuestionResList = questionDao.searchCodingQuestionRes(keyword);
