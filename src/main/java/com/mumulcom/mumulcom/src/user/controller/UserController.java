@@ -54,6 +54,10 @@ public class UserController {
     @GetMapping("/{userIdx}")
     public BaseResponse<UserDto.UserRes> getUser(@PathVariable Long userIdx) {
         try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
             UserDto.UserRes result = userService.getUser(userIdx);
             return new BaseResponse<>(result);
         } catch (BaseException e) {
