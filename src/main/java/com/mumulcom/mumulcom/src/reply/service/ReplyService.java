@@ -5,6 +5,7 @@ import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.reply.dao.ReplyDao;
 
+import com.mumulcom.mumulcom.src.reply.domain.AdoptRes;
 import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
 
 
@@ -112,9 +113,11 @@ public class ReplyService {
 
 
     @Transactional
-    public void addAdoptionNotice(ReplyInfoRes replyInfoRes, String content) throws BaseException {
+    public AdoptRes addAdoptionNotice(ReplyInfoRes replyInfoRes, String content) throws BaseException {
         try {
             replyDao.addAdoptionNotice(replyInfoRes,content);
+            AdoptRes adoptRes = new AdoptRes(replyInfoRes.getAnswerer(),replyInfoRes.getQuestionIdx(), content);
+            return adoptRes;
         } catch (Exception exception) { // DB에 이상이 있는 경우 에러 메시지를 보냅니다.
           exception.printStackTrace();
             throw new BaseException(DATABASE_ERROR);
