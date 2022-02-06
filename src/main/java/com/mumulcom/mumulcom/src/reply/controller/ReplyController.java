@@ -3,6 +3,7 @@ package com.mumulcom.mumulcom.src.reply.controller;
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
+import com.mumulcom.mumulcom.src.reply.domain.AdoptRes;
 import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
 import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
 
@@ -131,8 +132,14 @@ public class ReplyController {
      * */
     @ResponseBody
     @PatchMapping("/adoption/{userIdx}/{replyIdx}")
-    public BaseResponse<String> adoptReply(@PathVariable("replyIdx") long replyIdx, @PathVariable("userIdx") long userIdx) {
+    public BaseResponse<AdoptRes> adoptReply(@PathVariable("replyIdx") long replyIdx, @PathVariable("userIdx") long userIdx) {
         try {
+
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
+
             ReplyInfoRes replyInfo = replyProvider.getReplyInfo(replyIdx);
 
             // 질문자와 현재 사용자가 같다면 채택 할 수 있게, 안같으면 채택이 불가능하게
@@ -143,8 +150,8 @@ public class ReplyController {
             replyService.adoptReply(replyIdx); // 채택중
             String result = replyIdx+"번째 답변이 채택되었습니다."; // 몇번째 답변이 채택됨을 알려줌
             String content = "회원님의 답변이 채택되었습니다.";
-            replyService.addAdoptionNotice(replyInfo, content);
-            return new BaseResponse<>(result);
+            AdoptRes adoptRes = replyService.addAdoptionNotice(replyInfo, content);
+            return new BaseResponse<>(adoptRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
