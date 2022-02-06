@@ -1,9 +1,11 @@
 package com.mumulcom.mumulcom;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
 
 @SpringBootApplication
 // SpringBoot의 가장 기본적인 설정 선언.
@@ -13,6 +15,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 // Bean 간단 설명, 스프링 컨테이너가 관리하는 자바 객체
 public class MumulcomApplication {
+
+    @PostConstruct
+    public void start() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+    }
 
     public static final String APPLICATION_LOCATIONS = "spring.config.location="
             + "classpath:application.yml,"

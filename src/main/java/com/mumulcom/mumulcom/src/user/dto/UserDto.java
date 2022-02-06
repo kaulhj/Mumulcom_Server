@@ -84,6 +84,7 @@ public class UserDto {
         @Size(min = 2, max = 8)
         private String nickname;
 
+        @NotBlank
         private String group;
 
         private List<String> myCategories;
