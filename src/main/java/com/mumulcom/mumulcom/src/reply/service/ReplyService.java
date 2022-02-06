@@ -8,12 +8,9 @@ import com.mumulcom.mumulcom.src.reply.dao.ReplyDao;
 import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
 
 
-import com.mumulcom.mumulcom.src.reply.dto.GetReplyRes;
-import com.mumulcom.mumulcom.src.reply.dto.PostReReplReq;
+import com.mumulcom.mumulcom.src.reply.dto.*;
 
 
-import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
-import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
 import com.mumulcom.mumulcom.src.reply.provider.ReplyProvider;
 import com.mumulcom.mumulcom.src.s3.service.S3Uploader;
 import com.mumulcom.mumulcom.utils.JwtService;
@@ -122,7 +119,7 @@ public class ReplyService {
     }
 
     //29
-    public String Rereply(PostReReplReq postReReplReq) throws BaseException{
+    public PostReRepRes Rereply(PostReReplReq postReReplReq) throws BaseException{
 
 
         try{
@@ -130,7 +127,7 @@ public class ReplyService {
                 throw new BaseException(BaseResponseStatus.GET_REPLIES_EMPTY_DATA);
             if(replyProvider.reReplyAuth(postReReplReq) == 0)
                 throw new BaseException(POST_INVALID_REREPLY_AUTH);
-            String result = replyDao.rereply(postReReplReq);
+            PostReRepRes result = replyDao.rereply(postReReplReq);
             return result;
         }catch(BaseException baseException){
             baseException.printStackTrace();

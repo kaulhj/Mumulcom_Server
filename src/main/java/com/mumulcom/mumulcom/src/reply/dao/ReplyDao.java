@@ -4,12 +4,9 @@ import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
 import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
 
 
-import com.mumulcom.mumulcom.src.reply.dto.GetReplyRes;
-import com.mumulcom.mumulcom.src.reply.dto.PostReReplReq;
+import com.mumulcom.mumulcom.src.reply.dto.*;
 
 
-import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
-import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -246,7 +243,10 @@ public class ReplyDao {
     //학준 29.
 
     @Transactional(rollbackFor = Exception.class)
-    public String rereply(PostReReplReq postReReplReq) {
+    public PostReRepRes rereply(PostReReplReq postReReplReq) {
+        Long noticeTargetUserIdx = this.jdbcTemplate.queryForObject("SELECT userIdx\n" +
+                "FROM Reply\n" +
+                "WHERE replyIdx = ?", long.class, postReReplReq.getReplyIdx());
         String RereplQuery = "INSERT INTO Rereply(replyIdx, userIdx, content, imageUrl )\n" +
                 " VALUES (?, ?, ?, ?)";
         Object[] RereplParams = new Object[]{postReReplReq.getReplyIdx(), postReReplReq.getUserIdx(),
@@ -263,7 +263,7 @@ public class ReplyDao {
                 "NOTICECONTENT) VALUES (?, ?, ?, ?)";
         Object[] ReReplyNotParams = new Object[]{4, questionIdx, postReReplReq.getUserIdx(), new String("회원님이 답변한 글에 댓글이 달렸습니다.")};
         this.jdbcTemplate.update(ReReplNotQuery, ReReplyNotParams);
-        return new String("답변에 답글을 달았습니다");
+        return new PostReRepRes(noticeTargetUserIdx,"답변에 답글을 달았습니다");
 
 
     }

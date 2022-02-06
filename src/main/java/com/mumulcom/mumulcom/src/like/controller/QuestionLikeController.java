@@ -4,6 +4,8 @@ import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
+import com.mumulcom.mumulcom.src.like.dto.PostLikeRes;
+
 import com.mumulcom.mumulcom.src.like.service.QuestionLikeService;
 import com.mumulcom.mumulcom.src.like.provider.QuestionLikeProvider;
 import com.mumulcom.mumulcom.src.like.dto.PostQueLikeReq;
@@ -42,7 +44,7 @@ public class QuestionLikeController {
     @ResponseBody
     @PostMapping("/questions/creation")
     @Transactional(rollbackFor = Exception.class)
-    public BaseResponse<String> createQueLike(@RequestBody PostQueLikeReq postQueLikeReq){
+    public BaseResponse<PostLikeRes> createQueLike(@RequestBody PostQueLikeReq postQueLikeReq){
 
         try{
             Long userIdxByJwt = jwtService.getUserIdx();
@@ -51,7 +53,7 @@ public class QuestionLikeController {
             }
             if(postQueLikeReq.getQuestionIdx() == 0 || postQueLikeReq.getUserIdx() == 0 )
                 throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
-            String result = questionLikeService.createQuestionLike(postQueLikeReq);
+            PostLikeRes result = questionLikeService.createQuestionLike(postQueLikeReq);
             return new BaseResponse<>(result);
         }catch (BaseException exception){
             exception.printStackTrace();
@@ -62,7 +64,7 @@ public class QuestionLikeController {
     //학준 26. 답변좋아요+ 알림넣기
     @ResponseBody
     @PostMapping("/replies/creation")
-    public BaseResponse<String> createReplyLike(@RequestBody PostReplyLikeReq postReplyLikeReq){
+    public BaseResponse<PostLikeRes> createReplyLike(@RequestBody PostReplyLikeReq postReplyLikeReq){
 
         try{
             Long userIdxByJwt = jwtService.getUserIdx();
@@ -72,7 +74,7 @@ public class QuestionLikeController {
 
             if(postReplyLikeReq.getReplyIdx() == 0 || postReplyLikeReq.getUserIdx() == 0 )
                 throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
-            String result = questionLikeService.createReplyLike(postReplyLikeReq);
+            PostLikeRes result = questionLikeService.createReplyLike(postReplyLikeReq);
             return new BaseResponse<>(result);
         }catch (BaseException exception){
             exception.printStackTrace();
