@@ -56,17 +56,16 @@ public class QuestionService {
     }
 
     //7.2 S3이미지업로드
-    public List<String> uploadS3image(List<MultipartFile> multipartFileList, Long userIdx) {
+    public List<String> uploadS3image(List<MultipartFile> multipartFileList, Long userIdx) throws BaseException {
         try {
 
-            List<String> imagePath1 = s3Uploader.upload(multipartFileList, "userIdx"+ String.valueOf(userIdx));
+            List<String> imagePath1 = s3Uploader.upload(multipartFileList, "userIdx" + String.valueOf(userIdx));
             return imagePath1;
-        }catch (NullPointerException nullPointerException) {
-            return new ArrayList<>();
-        }catch(Exception exception){
+        }catch(NullPointerException nullPointerException){
+          return new ArrayList<>();
+        }catch(Exception exception) {
             exception.printStackTrace();
-            List<String> mylist = Collections.singletonList("이미지 전송 실패");
-            return mylist;
+            throw new BaseException(BaseResponseStatus.POST_IMAGES_FAILED);
         }
 
 

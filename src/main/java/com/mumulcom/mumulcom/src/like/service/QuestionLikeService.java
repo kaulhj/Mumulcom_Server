@@ -4,7 +4,9 @@ package com.mumulcom.mumulcom.src.like.service;
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.like.dao.QuestionLikeDao;
+import com.mumulcom.mumulcom.src.like.dto.PostLikeRes;
 import com.mumulcom.mumulcom.src.like.dto.PostQueLikeReq;
+
 import com.mumulcom.mumulcom.src.like.dto.PostReplyLikeReq;
 import com.mumulcom.mumulcom.src.like.provider.QuestionLikeProvider;
 import com.mumulcom.mumulcom.utils.JwtService;
@@ -33,9 +35,9 @@ public class QuestionLikeService {
     }
 
 //학준 25
-    public String createQuestionLike(PostQueLikeReq postQueLikeReq)throws BaseException{
+    public PostLikeRes createQuestionLike(PostQueLikeReq postQueLikeReq)throws BaseException{
         try{
-            String result = null;
+            PostLikeRes result = null;
             if(questionLikeProvider.likeQueIdxExist(postQueLikeReq.getQuestionIdx()) == 0)
                 throw new BaseException(BaseResponseStatus.GET_QUESTIONS_EMPTY_DATA);
             if(questionLikeProvider.likeAuth(postQueLikeReq) == 0)
@@ -54,7 +56,7 @@ public class QuestionLikeService {
 
             }
 
-            return new String(result);
+            return result;
         }catch(BaseException baseException) {
             baseException.printStackTrace();
             throw new BaseException(baseException.getStatus());
@@ -66,9 +68,9 @@ public class QuestionLikeService {
 
 
     //26
-    public String createReplyLike(PostReplyLikeReq postReplyLikeReq)throws BaseException{
+    public PostLikeRes createReplyLike(PostReplyLikeReq postReplyLikeReq)throws BaseException{
         try{
-            String result = null;
+            PostLikeRes result = null;
             if(questionLikeProvider.likeReplyIdxExist(postReplyLikeReq.getReplyIdx()) == 0)
                 throw new BaseException(BaseResponseStatus.GET_QUESTIONS_EMPTY_DATA);
             if(questionLikeProvider.ReplylikeAuth(postReplyLikeReq) == 0)
@@ -86,7 +88,7 @@ public class QuestionLikeService {
                     result = questionLikeDao.createReplyLike(postReplyLikeReq, 3);
 
             }
-            return new String(result);
+            return result;
         }catch(BaseException baseException) {
             baseException.printStackTrace();
             throw new BaseException(baseException.getStatus());

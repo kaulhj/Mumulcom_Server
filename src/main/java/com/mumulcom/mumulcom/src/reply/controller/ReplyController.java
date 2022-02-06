@@ -8,12 +8,9 @@ import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
 import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
 
 
-import com.mumulcom.mumulcom.src.reply.dto.GetReplyRes;
-import com.mumulcom.mumulcom.src.reply.dto.PostReReplReq;
+import com.mumulcom.mumulcom.src.reply.dto.*;
 
 
-import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
-import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
 import com.mumulcom.mumulcom.src.reply.provider.ReplyProvider;
 import com.mumulcom.mumulcom.src.reply.service.ReplyService;
 import com.mumulcom.mumulcom.utils.JwtService;
@@ -161,7 +158,7 @@ public class ReplyController {
     //학준 29. 대답변하기 + 알림넣기
     @ResponseBody
     @PostMapping("/reply")
-    public BaseResponse<String> Rereply(@RequestBody PostReReplReq postReReplReq){
+    public BaseResponse<PostReRepRes> Rereply(@RequestBody PostReReplReq postReReplReq){
         try{
             Long userIdxByJwt = jwtService.getUserIdx();
             if (!userIdxByJwt.equals(postReReplReq.getUserIdx())) {
@@ -172,7 +169,7 @@ public class ReplyController {
             || postReReplReq.getContent() == null){
                 throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
             }
-            String result = replyService.Rereply(postReReplReq);
+            PostReRepRes result = replyService.Rereply(postReReplReq);
             return new BaseResponse<>(result);
         }catch (BaseException exception){
             exception.printStackTrace();
