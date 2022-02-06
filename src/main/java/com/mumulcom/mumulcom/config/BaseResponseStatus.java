@@ -47,6 +47,7 @@ public enum BaseResponseStatus {
     POST_EMPTY_ESSENTIAL_BODY(false,2500, "필수정보들을 모두 입력해주세요"),
     POST_QUESTIONS_INVALID_CATEGORY_RANGE(false,2501, "카테고리를 범위안에 입력해주세요"),
     GET_QUESTIONS_EMPTY_DATA(false, 2502, "존재하지 않는 질문입니다"),
+    POST_IMAGES_FAILED(false,2510,"S3에 이미지 전송을 실패했습니다."),
 
     /**
      * 2600 : Scrap 오류

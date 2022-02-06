@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -71,7 +72,11 @@ public class QuestionController {
                 || !ValidationRegex.smallCategoryRange(Long.toString(codeQuestionReq.getSmallCategoryIdx()))) {
                     throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
                 }
-                List<String> imageUrls = questionService.uploadS3image(multipartFile, codeQuestionReq.getUserIdx());
+                List<String> imageUrls = null;
+                if(! multipartFile.get(0).getOriginalFilename().equals(""))
+                    imageUrls = questionService.uploadS3image(multipartFile, codeQuestionReq.getUserIdx());
+                else
+                    imageUrls = new ArrayList<>();
                 String result = questionService.codeQuestion(imageUrls, codeQuestionReq);
                 return new BaseResponse<>(result);
                 }catch (BaseException exception) {

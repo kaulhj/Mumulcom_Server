@@ -3,16 +3,14 @@ package com.mumulcom.mumulcom.src.reply.controller;
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
+import com.mumulcom.mumulcom.src.reply.domain.AdoptRes;
 import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
 import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
 
 
-import com.mumulcom.mumulcom.src.reply.dto.GetReplyRes;
-import com.mumulcom.mumulcom.src.reply.dto.PostReReplReq;
+import com.mumulcom.mumulcom.src.reply.dto.*;
 
 
-import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
-import com.mumulcom.mumulcom.src.reply.dto.PostReplyRes;
 import com.mumulcom.mumulcom.src.reply.provider.ReplyProvider;
 import com.mumulcom.mumulcom.src.reply.service.ReplyService;
 import com.mumulcom.mumulcom.utils.JwtService;
@@ -131,8 +129,14 @@ public class ReplyController {
      * */
     @ResponseBody
     @PatchMapping("/adoption/{userIdx}/{replyIdx}")
-    public BaseResponse<String> adoptReply(@PathVariable("replyIdx") long replyIdx, @PathVariable("userIdx") long userIdx) {
+    public BaseResponse<AdoptRes> adoptReply(@PathVariable("replyIdx") long replyIdx, @PathVariable("userIdx") long userIdx) {
         try {
+
+            Long userIdxByJwt = jwtService.getUserIdx();
+            if (!userIdxByJwt.equals(userIdx)) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
+
             ReplyInfoRes replyInfo = replyProvider.getReplyInfo(replyIdx);
 
             // 질문자와 현재 사용자가 같다면 채택 할 수 있게, 안같으면 채택이 불가능하게
@@ -143,8 +147,8 @@ public class ReplyController {
             replyService.adoptReply(replyIdx); // 채택중
             String result = replyIdx+"번째 답변이 채택되었습니다."; // 몇번째 답변이 채택됨을 알려줌
             String content = "회원님의 답변이 채택되었습니다.";
-            replyService.addAdoptionNotice(replyInfo, content);
-            return new BaseResponse<>(result);
+            AdoptRes adoptRes = replyService.addAdoptionNotice(replyInfo, content);
+            return new BaseResponse<>(adoptRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
@@ -154,7 +158,7 @@ public class ReplyController {
     //학준 29. 대답변하기 + 알림넣기
     @ResponseBody
     @PostMapping("/reply")
-    public BaseResponse<String> Rereply(@RequestBody PostReReplReq postReReplReq){
+    public BaseResponse<PostReRepRes> Rereply(@RequestBody PostReReplReq postReReplReq){
         try{
             Long userIdxByJwt = jwtService.getUserIdx();
             if (!userIdxByJwt.equals(postReReplReq.getUserIdx())) {
@@ -165,7 +169,7 @@ public class ReplyController {
             || postReReplReq.getContent() == null){
                 throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
             }
-            String result = replyService.Rereply(postReReplReq);
+            PostReRepRes result = replyService.Rereply(postReReplReq);
             return new BaseResponse<>(result);
         }catch (BaseException exception){
             exception.printStackTrace();

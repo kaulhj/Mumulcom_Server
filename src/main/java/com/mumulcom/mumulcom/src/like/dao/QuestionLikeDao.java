@@ -1,7 +1,9 @@
 package com.mumulcom.mumulcom.src.like.dao;
 
 
+import com.mumulcom.mumulcom.src.like.dto.PostLikeRes;
 import com.mumulcom.mumulcom.src.like.dto.PostQueLikeReq;
+
 import com.mumulcom.mumulcom.src.like.dto.PostReplyLikeReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,14 +25,17 @@ public class QuestionLikeDao {
     }
 
 //25.
-    public String createQuestionLike(PostQueLikeReq postQueLikeReq, int status){
+    public PostLikeRes createQuestionLike(PostQueLikeReq postQueLikeReq, int status){
         Object[] createQueLikeParams = new Object[]{postQueLikeReq.getQuestionIdx(), postQueLikeReq.getUserIdx()};
         String result;
+        Long targetUserIdx = this.jdbcTemplate.queryForObject("SELECT userIdx\n" +
+                "FROM Question\n" +
+                "where questionIdx = ?", long.class, postQueLikeReq.getQuestionIdx());  //타겟 유저인덱스 추출(알림용)
         switch(status) {
             case 1: //최초스크랩
                 String createQueLikeQuery = "INSERT INTO QuestionLike(QUESTIONIDX, USERIDX) VALUES (?, ?)";
                 this.jdbcTemplate.update(createQueLikeQuery,createQueLikeParams);
-                result =  new String("해당 글을 스크랩 하였습니다.");
+                result =  new String("해당 글을 좋아요 하였습니다.");
                 String creLikNotQuery = "INSERT INTO Notice (noticeCategoryIdx,questionIdx,userIdx,noticeContent)\n" +
                         "VALUES (?,?,?,?)";
 
@@ -58,19 +63,20 @@ public class QuestionLikeDao {
                         nContent};
 
                 this.jdbcTemplate.update(creLikNotQuery,creLikeNotParams);
-                return nContent;
+
+                return new PostLikeRes(targetUserIdx,nContent);
             case 2:
                 String changeToInactiveQuery = "update QuestionLike\n" +
                         "SET status = 'inactive'\n" +
                         "where questionIdx = ? AND userIdx = ?";
                 this.jdbcTemplate.update(changeToInactiveQuery,createQueLikeParams);
-                return new String("해당 글을 스크랩 취소하였습니다.");
+                return new PostLikeRes(0,"해당 글을 좋아요 취소하였습니다.");
             default: //3
                 String changeToActiveQuery =  "update QuestionLike\n" +
                         "SET status = 'active'\n" +
                         "where questionIdx = ? AND userIdx = ?";
                 this.jdbcTemplate.update(changeToActiveQuery,createQueLikeParams);
-                return new String("해당 글을 다시 스크랩 하였습니다.");
+                return new PostLikeRes(0, "해당 글을 다시 좋아요 하였습니다.");
 
         }
 
@@ -80,11 +86,14 @@ public class QuestionLikeDao {
 
 
     //26.
-    public String createReplyLike(PostReplyLikeReq postReplyLikeReq, int status){
+    public PostLikeRes createReplyLike(PostReplyLikeReq postReplyLikeReq, int status){
 
             Object[] creatRepLikeParams = new Object[]{postReplyLikeReq.getReplyIdx(),postReplyLikeReq.getUserIdx()};
             switch (status) {
                 case 1:
+                    Long noticeTargetUserIdx = this.jdbcTemplate.queryForObject("SELECT userIdx\n" +
+                            "FROM Reply\n" +
+                            "WHERE replyIdx = ?", long.class,postReplyLikeReq.getReplyIdx());
                     String createLikeQuery = "INSERT INTO ReplyLike(ReplyIdx, USERIDX) VALUES (?, ?)";
                     Object[] createLikeParams = new Object[]{postReplyLikeReq.getReplyIdx(),
                             postReplyLikeReq.getUserIdx()};
@@ -118,19 +127,19 @@ public class QuestionLikeDao {
                             nContent};
 
                     this.jdbcTemplate.update(creLikNotQuery, creLikeNotParams);
-                    return nContent;
+                    return new PostLikeRes(noticeTargetUserIdx, nContent);
                 case 2:
                     String changeToInactiveQuery = "update ReplyLike\n" +
                             "SET status = 'inactive'\n" +
                             "where ReplyIdx = ? AND userIdx = ?";
                     this.jdbcTemplate.update(changeToInactiveQuery,creatRepLikeParams);
-                    return new String("해당 답변 좋아요를 취소하였습니다.");
+                    return new PostLikeRes(0,"해당 답변 좋아요를 취소하였습니다.");
                 default : //3
                     String changeToActiveQuery =  "update ReplyLike\n" +
                             "SET status = 'active'\n" +
                             "where ReplyIdx = ? AND userIdx = ?";
                     this.jdbcTemplate.update(changeToActiveQuery,creatRepLikeParams);
-                    return new String("해당 답변을 다시 좋아요 하였습니다.");
+                    return new PostLikeRes(0,"해당 답변을 다시 좋아요 하였습니다.");
 
         }
     }
