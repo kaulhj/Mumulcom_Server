@@ -12,8 +12,8 @@ import java.util.List;
 
 public class GetRecQueRes {
     private long questionIdx;   //최근질문 순서, 가장최근 : 1
-    private String BigCategory;
-    private String SmallCategory;
+    private String BigCategoryName;
+    private String SmallCategoryName;
     private String nickname;
     private String CreatedAt;
     private String Title;
