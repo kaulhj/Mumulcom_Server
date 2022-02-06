@@ -131,7 +131,7 @@ public class UserService {
                 patchReq.getProfileImgUrl()
         );
         //관심 코딩 분야에서 변경된 사항이 있으면
-        if (isMyCategoriesChanged(getMyCategoriesByUserIdx(user.getUserIdx()), patchReq.getMyCategories())) {
+        if (patchReq.getMyCategories() != null && isMyCategoriesChanged(getMyCategoriesByUserIdx(user.getUserIdx()), patchReq.getMyCategories())) {
             //기존 레코드 삭제
             myCategoryRepository.deleteAll(myCategoryRepository.findByUserIdx(user.getUserIdx()));
             //새로 저장
