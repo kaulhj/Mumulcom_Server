@@ -44,7 +44,7 @@ public class ReplyController {
     }
 
     /**
-     * yeji 18번 API
+     * yeji 19번 API
      * reply 생성
      */
     @ResponseBody
