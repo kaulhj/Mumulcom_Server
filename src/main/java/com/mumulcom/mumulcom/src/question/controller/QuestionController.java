@@ -108,11 +108,14 @@ public class QuestionController {
             if(conceptQueReq.getBigCategoryIdx()!= 5)
                 if(!ValidationRegex.smallCategoryRange(Long.toString(conceptQueReq.getSmallCategoryIdx())))
                     throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
-            if(!ValidationRegex.bigCategoryRange(Long.toString(conceptQueReq.getBigCategoryIdx()))
-                    || !ValidationRegex.smallCategoryRange(Long.toString(conceptQueReq.getSmallCategoryIdx()))){
+            if(!ValidationRegex.bigCategoryRange(Long.toString(conceptQueReq.getBigCategoryIdx()))){
                 throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
             }
-            List<String> imageUrls = questionService.uploadS3image(multipartFile, conceptQueReq.getUserIdx());
+            List<String> imageUrls = null;
+            if(! multipartFile.get(0).getOriginalFilename().equals(""))
+                imageUrls = questionService.uploadS3image(multipartFile, conceptQueReq.getUserIdx());
+            else
+                imageUrls = new ArrayList<>();
             String result = questionService.conceptQuestion(imageUrls, conceptQueReq);
 
             return new BaseResponse<>(result);
