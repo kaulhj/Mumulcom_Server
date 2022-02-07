@@ -32,7 +32,7 @@ public class ReplyDao {
     }
 
     /**
-     * yeji 18번 API
+     * yeji 19번 API
      * 답변 생성 + 알림
      */
     public PostReplyRes creatReply(List<String> imgUrls, PostReplyReq postReplyReq) {
@@ -288,7 +288,7 @@ public class ReplyDao {
 
     /**
      * yeji
-     * 전체 답변 조회 API (명세서 20번)
+     * 전체 답변 조회 API (명세서 22번)
      */
     public List<GetReplyRes> getReplyList(int questionIdx) {
         String getReplyListQuery =
