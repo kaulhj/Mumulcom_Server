@@ -10,7 +10,7 @@ import lombok.Setter;
 public class GetQuestionListRes {
 
     private Long questionIdx;
-    private Long useIdx;
+    private Long userIdx;
     private String nickname;
     private String profileImgUrl;
     private String createdAt;
