@@ -13,11 +13,11 @@ public class ValidationRegex {
     }
 
     public static boolean bigCategoryRange(String str) {
-        return Pattern.matches("^[1-3]*$", str);
+        return Pattern.matches("^[1-5]*$", str);
     }
 
     public static boolean smallCategoryRange(String str) {
-        return Pattern.matches("^[1-8]*$", str);
+        return Pattern.matches("^[1-12]*$", str);
     }
 
 

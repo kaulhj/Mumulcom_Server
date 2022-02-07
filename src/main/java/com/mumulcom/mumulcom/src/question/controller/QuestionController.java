@@ -63,15 +63,18 @@ public class QuestionController {
             }
                 if(codeQuestionReq.getUserIdx() == 0 || codeQuestionReq.getCurrentError() == null
                          || codeQuestionReq.getBigCategoryIdx() == 0
-                        || codeQuestionReq.getSmallCategoryIdx() == 0 || codeQuestionReq.getTitle() == null) {
+                         || codeQuestionReq.getTitle() == null) {
                     throw new BaseException(BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY);
                 }
 
-                //카테고리 범위 검사(1~3,1~8)
+                //카테고리 범위 검사(1~5,1~12)
                 if(!ValidationRegex.bigCategoryRange(Long.toString(codeQuestionReq.getBigCategoryIdx()))
-                || !ValidationRegex.smallCategoryRange(Long.toString(codeQuestionReq.getSmallCategoryIdx()))) {
+                ) {
                     throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
                 }
+                if(codeQuestionReq.getBigCategoryIdx()!= 5)
+                    if(!ValidationRegex.smallCategoryRange(Long.toString(codeQuestionReq.getSmallCategoryIdx())))
+                        throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
                 List<String> imageUrls = null;
                 if(! multipartFile.get(0).getOriginalFilename().equals(""))
                     imageUrls = questionService.uploadS3image(multipartFile, codeQuestionReq.getUserIdx());
@@ -99,14 +102,20 @@ public class QuestionController {
             }
             if(conceptQueReq.getUserIdx() == 0 || conceptQueReq.getContent() == null
                     || conceptQueReq.getBigCategoryIdx() == 0
-                    || conceptQueReq.getSmallCategoryIdx() == 0 || conceptQueReq.getTitle() == null) {
+                    || conceptQueReq.getTitle() == null) {
                 throw new BaseException(BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY);
             }
-            if(!ValidationRegex.bigCategoryRange(Long.toString(conceptQueReq.getBigCategoryIdx()))
-                    || !ValidationRegex.smallCategoryRange(Long.toString(conceptQueReq.getSmallCategoryIdx()))){
+            if(conceptQueReq.getBigCategoryIdx()!= 5)
+                if(!ValidationRegex.smallCategoryRange(Long.toString(conceptQueReq.getSmallCategoryIdx())))
+                    throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
+            if(!ValidationRegex.bigCategoryRange(Long.toString(conceptQueReq.getBigCategoryIdx()))){
                 throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
             }
-            List<String> imageUrls = questionService.uploadS3image(multipartFile, conceptQueReq.getUserIdx());
+            List<String> imageUrls = null;
+            if(! multipartFile.get(0).getOriginalFilename().equals(""))
+                imageUrls = questionService.uploadS3image(multipartFile, conceptQueReq.getUserIdx());
+            else
+                imageUrls = new ArrayList<>();
             String result = questionService.conceptQuestion(imageUrls, conceptQueReq);
 
             return new BaseResponse<>(result);
