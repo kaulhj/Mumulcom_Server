@@ -72,7 +72,7 @@ public class QuestionController {
                 ) {
                     throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
                 }
-                if(codeQuestionReq.getSmallCategoryIdx()!= 0)
+                if(codeQuestionReq.getBigCategoryIdx()!= 5)
                     if(!ValidationRegex.smallCategoryRange(Long.toString(codeQuestionReq.getSmallCategoryIdx())))
                         throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
                 List<String> imageUrls = null;
@@ -105,7 +105,7 @@ public class QuestionController {
                     || conceptQueReq.getTitle() == null) {
                 throw new BaseException(BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY);
             }
-            if(conceptQueReq.getSmallCategoryIdx()!= 0)
+            if(conceptQueReq.getBigCategoryIdx()!= 5)
                 if(!ValidationRegex.smallCategoryRange(Long.toString(conceptQueReq.getSmallCategoryIdx())))
                     throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
             if(!ValidationRegex.bigCategoryRange(Long.toString(conceptQueReq.getBigCategoryIdx()))
