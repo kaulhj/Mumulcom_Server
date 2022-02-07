@@ -92,7 +92,7 @@ public class QuestionDao {
                 "      Question q\n" +
                 "INNER JOIN User u on q.userIdx = u.userIdx\n" +
                 "INNER JOIN BigCategory b on q.bigCategoryIdx = b.bigCategoryIdx\n" +
-                "INNER JOIN SmallCategory s on q.smallCategoryIdx = s.smallCategoryIdx\n" +
+                "LEFT JOIN SmallCategory s on q.smallCategoryIdx = s.smallCategoryIdx\n" +
                 "LEFT JOIN (SELECT questionIdx, count(CASE\n" +
                 "        WHEN ql1.status = 'active' then 1 end) AS likeCount FROM QuestionLike ql1 group by questionIdx) AS ql2\n" +
                 "                        ON q.questionIdx = ql2.questionIdx\n" +
@@ -186,7 +186,7 @@ public class QuestionDao {
                 "      Question q\n" +
                 "INNER JOIN User u on q.userIdx = u.userIdx\n" +
                 "INNER JOIN BigCategory b on q.bigCategoryIdx = b.bigCategoryIdx\n" +
-                "INNER JOIN SmallCategory s on q.smallCategoryIdx = s.smallCategoryIdx\n" +
+                "LEFT JOIN SmallCategory s on q.smallCategoryIdx = s.smallCategoryIdx\n" +
                 "LEFT JOIN (SELECT questionIdx, count(CASE\n" +
                 "        WHEN ql1.status = 'active' then 1 end) AS likeCount FROM QuestionLike ql1 group by questionIdx) AS ql2\n" +
                 "                        ON q.questionIdx = ql2.questionIdx\n" +
