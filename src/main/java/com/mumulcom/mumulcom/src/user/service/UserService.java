@@ -90,7 +90,7 @@ public class UserService {
                 .userIdx(user.getUserIdx())
                 .email(user.getEmail())
                 .name(user.getName())
-                .nickname(user.getName())
+                .nickname(user.getNickname())
                 .group(user.getGroup())
                 .myCategories(getMyCategoriesByUserIdx(user.getUserIdx()))
                 .profileImgUrl(user.getProfileImgUrl())
