@@ -55,7 +55,7 @@ public class ReplyDao {
         // 마지막으로 삽입된 ReplyIdx 값 추출
         String lastInsertIdQuery = "select last_insert_id()";
         Long lastReplyIdx = this.jdbcTemplate.queryForObject(lastInsertIdQuery, Long.class);
-        replyImgResult = "";
+        replyImgResult = null;
 
         // s3에서 받아온 url DB insert
         if(imgUrls.size() != 0) {
@@ -64,6 +64,7 @@ public class ReplyDao {
                 Object[] createReplyImgParams = new Object[]{lastReplyIdx, url};
                 this.jdbcTemplate.update(createReplyImgQuery, createReplyImgParams);
             }
+            replyImgResult = "이미지 삽입이 완료됐습니다.";
         }
 
         /*
@@ -100,7 +101,7 @@ public class ReplyDao {
                         rs.getLong("userIdx")),
                 postReplyReq.getQuestionIdx());
 
-        String noticeScrap = "";
+        String noticeScrap = null;
         if(scrapUserIdxList.isEmpty() == false) {
             String createReplyNoticeQuery2 = "INSERT INTO Notice(noticeCategoryIdx, questionIdx, userIdx, noticeContent) values (3, ?, ?, '회원님이 스크랩한 질문에 답변이 달렸습니다.')";
 
@@ -292,7 +293,7 @@ public class ReplyDao {
      */
     public List<GetReplyRes> getReplyList(int questionIdx) {
         String getReplyListQuery =
-                "SELECT r.replyIdx, r.questionIdx, r.userIdx, U.nickname, U.profileImgUrl, DATE_FORMAT(r.createdAt, '%m-%d, %y') AS createdAt, IFNULL(r.replyUrl, '') AS replyUrl, r.content, IFNULL(img.url, '') AS replyImgUrl, IFNULL(likeCount.lcount, 0) likeCount, IFNULL(reCount.rcount, 0) reReplyCount, CASE r.status WHEN 'active' THEN 'N' WHEN 'adopted' THEN 'Y' END AS status\n" +
+                "SELECT r.replyIdx, r.questionIdx, r.userIdx, U.nickname, U.profileImgUrl, DATE_FORMAT(r.createdAt, '%m-%d, %y') AS createdAt, r.replyUrl AS replyUrl, r.content, img.url AS replyImgUrl, IFNULL(likeCount.lcount, 0) likeCount, IFNULL(reCount.rcount, 0) reReplyCount, CASE r.status WHEN 'active' THEN 'N' WHEN 'adopted' THEN 'Y' END AS status\n" +
                 "FROM Reply r\n" +
                 "INNER JOIN User U on r.userIdx = U.userIdx\n" +
                 "LEFT JOIN (SELECT replyIdx, GROUP_CONCAT(url) url FROM ReplyImage GROUP BY replyIdx) img\n" +
@@ -304,21 +305,40 @@ public class ReplyDao {
                 "WHERE r.questionIdx = ?\n" +
                 "ORDER BY r.createdAt";
 
-        return this.jdbcTemplate.query(getReplyListQuery,
-                (rs, rowNum) -> new GetReplyRes(
-                        rs.getLong("replyIdx"),
-                        rs.getLong("questionIdx"),
-                        rs.getLong("userIdx"),
-                        rs.getString("nickname"),
-                        rs.getString("profileImgUrl"),
-                        rs.getString("createdAt"),
-                        rs.getString("replyUrl"),
-                        rs.getString("content"),
-                        Arrays.asList(rs.getString("replyImgUrl").split(",")),
-                        rs.getInt("likeCount"),
-                        rs.getInt("reReplyCount"),
-                        rs.getString("status")),
-                questionIdx);
+        try{
+            return this.jdbcTemplate.query(getReplyListQuery,
+                    (rs, rowNum) -> new GetReplyRes(
+                            rs.getLong("replyIdx"),
+                            rs.getLong("questionIdx"),
+                            rs.getLong("userIdx"),
+                            rs.getString("nickname"),
+                            rs.getString("profileImgUrl"),
+                            rs.getString("createdAt"),
+                            rs.getString("replyUrl"),
+                            rs.getString("content"),
+                            Arrays.asList(rs.getString("replyImgUrl").split(",")),
+                            rs.getInt("likeCount"),
+                            rs.getInt("reReplyCount"),
+                            rs.getString("status")),
+                    questionIdx);
+        } catch (NullPointerException nullPointerException) {
+            return this.jdbcTemplate.query(getReplyListQuery,
+                    (rs, rowNum) -> new GetReplyRes(
+                            rs.getLong("replyIdx"),
+                            rs.getLong("questionIdx"),
+                            rs.getLong("userIdx"),
+                            rs.getString("nickname"),
+                            rs.getString("profileImgUrl"),
+                            rs.getString("createdAt"),
+                            rs.getString("replyUrl"),
+                            rs.getString("content"),
+                            Arrays.asList(),
+                            rs.getInt("likeCount"),
+                            rs.getInt("reReplyCount"),
+                            rs.getString("status")),
+                    questionIdx);
+        }
+
     }
 
     /**
