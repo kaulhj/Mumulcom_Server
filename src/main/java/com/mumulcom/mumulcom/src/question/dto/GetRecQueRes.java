@@ -13,7 +13,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetRecQueRes {
     private long questionIdx;   //최근질문 순서, 가장최근 : 1\
-    private String questionCategoryName;
+    private int type;       //개념, 코딩질문 구분, 코딩이면 1
     private String BigCategoryName;
     private String SmallCategoryName;
     private String nickname;
