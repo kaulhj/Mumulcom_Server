@@ -51,7 +51,7 @@ public class QuestionLikeController {
             if (!userIdxByJwt.equals(postQueLikeReq.getUserIdx())) {
                 throw new BaseException(BaseResponseStatus.INVALID_JWT);
             }
-            if(postQueLikeReq.getQuestionIdx() == 0 || postQueLikeReq.getUserIdx() == 0 )
+            if(postQueLikeReq.getQuestionIdx() == null || postQueLikeReq.getUserIdx() == null )
                 throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
             PostLikeRes result = questionLikeService.createQuestionLike(postQueLikeReq);
             return new BaseResponse<>(result);
@@ -72,7 +72,7 @@ public class QuestionLikeController {
                 throw new BaseException(BaseResponseStatus.INVALID_JWT);
             }
 
-            if(postReplyLikeReq.getReplyIdx() == 0 || postReplyLikeReq.getUserIdx() == 0 )
+            if(postReplyLikeReq.getReplyIdx() == null || postReplyLikeReq.getUserIdx() == null )
                 throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
             PostLikeRes result = questionLikeService.createReplyLike(postReplyLikeReq);
             return new BaseResponse<>(result);

@@ -111,7 +111,8 @@ public class QuestionDao {
 
         return this.jdbcTemplate.query(getLateListQuery,
                 (rs, rowNum) -> new GetRecQueRes(
-                        new Long(rowNum+1),
+                        rowNum+1,
+                        rs.getLong("questionIdx"),
                         rs.getInt("type"),
                         rs.getString("bigCategoryName"),
                         rs.getString("smallCategoryName"),
@@ -212,6 +213,7 @@ public class QuestionDao {
         return this.jdbcTemplate.query(getRepListQuery,
                 (rs, rowNum) -> new GetRecQueRes(
                         rowNum+1,
+                        rs.getLong("questionIdx"),
                         rs.getInt("type"),
                         rs.getString("bigCategoryName"),
                         rs.getString("smallCategoryName"),

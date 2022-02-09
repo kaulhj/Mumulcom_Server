@@ -348,7 +348,7 @@ public class ScrapDao {
         String scrapAuthQuery = "select userIdx\n" +
                 "from Question\n" +
                 "where questionIdx = ?";
-         if(this.jdbcTemplate.queryForObject(scrapAuthQuery, int.class,
+         if(this.jdbcTemplate.queryForObject(scrapAuthQuery, long.class,
                 postScrapReq.getQuestionIdx()) == postScrapReq.getUserIdx()){
              return 0;
          }else
