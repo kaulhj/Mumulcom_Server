@@ -12,11 +12,11 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Data   //7번
 public class CodeQuestionReq {
-    private long userIdx;
+    private Long userIdx;
     private String currentError;
     private String myCodingSkill;
-    private long bigCategoryIdx;
-    private long smallCategoryIdx;
+    private Long bigCategoryIdx;
+    private Long smallCategoryIdx;
     private String title;
     private String codeQuestionUrl;
 

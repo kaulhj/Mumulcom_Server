@@ -10,6 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostScrapReq {
-    private long questionIdx;
-    private long userIdx;
+    private Long questionIdx;
+    private Long userIdx;
 }

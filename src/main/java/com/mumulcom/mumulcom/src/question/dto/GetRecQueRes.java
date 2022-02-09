@@ -12,7 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetRecQueRes {
-    private long questionIdx;   //최근질문 순서, 가장최근 : 1\
+    private int Number;    //최근질문 순서, 가장 최근
+    private Long questionIdx;   //
     private int type;       //개념, 코딩질문 구분, 코딩이면 1
     private String BigCategoryName;
     private String SmallCategoryName;

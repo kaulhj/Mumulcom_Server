@@ -8,6 +8,6 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 
 public class PostQueLikeReq {
-    private long questionIdx;
-    private long userIdx;
+    private Long questionIdx;
+    private Long userIdx;
 }
