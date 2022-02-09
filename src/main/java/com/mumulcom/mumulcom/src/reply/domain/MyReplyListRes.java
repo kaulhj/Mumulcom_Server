@@ -17,5 +17,4 @@ public class MyReplyListRes {
     private String createdAt;
     private int likeCount;
     private int replyCount;
-    private String content;
 }
