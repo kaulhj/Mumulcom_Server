@@ -88,8 +88,13 @@ public class QuestionDao {
         String getLateListQuery = "SELECT q.questionIdx,b.bigCategoryName,s.smallCategoryName,u.nickname,\n" +
                 "              concat(MONTH(q.createdAt),'/',day(q.createdAt),',',substring(year(q.createdAt),-2))as created\n" +
                 ",title, u.profileImgUrl,ifnull(ql2.likeCount, 0) likeCount, ifnull(rc2.replyCount,0) replyCount\n" +
-                " FROM\n" +
-                "      Question q\n" +
+                " ,(CASE\n" +
+                "                    WHEN codingIdx is not null then 1 \n" +
+                "                    WHEN conceptIdx is not null then 2 end)as type\n" +
+                "                 FROM\n" +
+                "                      Question q\n" +
+                "                LEFT JOIN ConceptQuestion CC ON q.questionIdx = CC.questionIdx\n" +
+                "                LEFT JOIN CodeQuestion CQ ON q.questionIdx = CQ.questionIdx\n" +
                 "INNER JOIN User u on q.userIdx = u.userIdx\n" +
                 "INNER JOIN BigCategory b on q.bigCategoryIdx = b.bigCategoryIdx\n" +
                 "LEFT JOIN SmallCategory s on q.smallCategoryIdx = s.smallCategoryIdx\n" +
@@ -106,7 +111,8 @@ public class QuestionDao {
 
         return this.jdbcTemplate.query(getLateListQuery,
                 (rs, rowNum) -> new GetRecQueRes(
-                        rowNum+1,
+                        new Long(rowNum+1),
+                        rs.getInt("type"),
                         rs.getString("bigCategoryName"),
                         rs.getString("smallCategoryName"),
                         rs.getString("nickname"),
@@ -182,8 +188,13 @@ public class QuestionDao {
         String getRepListQuery = "SELECT q.questionIdx,b.bigCategoryName,s.smallCategoryName,u.nickname,\n" +
                 "              concat(MONTH(q.createdAt),'/',day(q.createdAt),',',substring(year(q.createdAt),-2))as created\n" +
                 ",title, u.profileImgUrl,ifnull(ql2.likeCount, 0) likeCount, ifnull(rc2.replyCount,0) replyCount\n" +
+                ",(CASE\n" +
+                "                    WHEN codingIdx is not null then 1\n" +
+                "                    WHEN conceptIdx is not null then 2 end)as type" +
                 " FROM\n" +
                 "      Question q\n" +
+                "LEFT JOIN ConceptQuestion CC ON q.questionIdx = CC.questionIdx\n" +
+                " LEFT JOIN CodeQuestion CQ ON q.questionIdx = CQ.questionIdx\n" +
                 "INNER JOIN User u on q.userIdx = u.userIdx\n" +
                 "INNER JOIN BigCategory b on q.bigCategoryIdx = b.bigCategoryIdx\n" +
                 "LEFT JOIN SmallCategory s on q.smallCategoryIdx = s.smallCategoryIdx\n" +
@@ -201,6 +212,7 @@ public class QuestionDao {
         return this.jdbcTemplate.query(getRepListQuery,
                 (rs, rowNum) -> new GetRecQueRes(
                         rowNum+1,
+                        rs.getInt("type"),
                         rs.getString("bigCategoryName"),
                         rs.getString("smallCategoryName"),
                         rs.getString("nickname"),
