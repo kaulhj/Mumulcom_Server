@@ -156,8 +156,7 @@ public class ReplyDao {
                         rs.getString("title"),
                         rs.getString("createdAt"),
                         rs.getInt("likeCount"),
-                        rs.getInt("replyCount"),
-                        rs.getString("content")
+                        rs.getInt("replyCount")
                 ), userIdx);
     }
 
@@ -206,8 +205,7 @@ public class ReplyDao {
                         rs.getString("title"),
                         rs.getString("createdAt"),
                         rs.getInt("likeCount"),
-                        rs.getInt("replyCount"),
-                        rs.getString("content")
+                        rs.getInt("replyCount")
                 ), userIdx);
     }
 
