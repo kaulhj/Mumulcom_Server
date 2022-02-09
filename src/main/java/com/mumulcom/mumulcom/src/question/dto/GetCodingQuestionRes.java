@@ -1,5 +1,6 @@
 package com.mumulcom.mumulcom.src.question.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetCodingQuestionRes {
     private Long questionIdx;
     private Long userIdx;
@@ -21,5 +23,4 @@ public class GetCodingQuestionRes {
     private String smallCategoryName;
     private int likeCount;
     private int replyCount;
-
 }

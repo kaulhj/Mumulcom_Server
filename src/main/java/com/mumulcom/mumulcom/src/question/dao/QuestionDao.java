@@ -329,7 +329,7 @@ public class QuestionDao {
      */
     public List<GetCodingQuestionRes> getCodingQuestions(int questionIdx) {
         String getCodingQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, IFNULL(I.url,'') AS questionImgUrl, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, ifnull(SC.smallCategoryName, '') AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -345,22 +345,42 @@ public class QuestionDao {
                         "WHERE q.questionIdx = ?";
         int getCodingQuestionParams = questionIdx;
 
-        return this.jdbcTemplate.query(getCodingQuestionQuery,
-                (rs, rowNum) -> new GetCodingQuestionRes(
-                        rs.getLong("questionIdx"),
-                        rs.getLong("userIdx"),
-                        rs.getString("nickname"),
-                        rs.getString("profileImgUrl"),
-                        rs.getString("createdAt"),
-                        rs.getString("title"),
-                        Arrays.asList(rs.getString("questionImgUrl").split(",")),
-                        rs.getString("currentError"),
-                        rs.getString("myCodingSkill"),
-                        rs.getString("bigCategoryName"),
-                        rs.getString("smallCategoryName"),
-                        rs.getInt("likeCount"),
-                        rs.getInt("replyCount")),
-                getCodingQuestionParams, getCodingQuestionParams, getCodingQuestionParams);
+        try{
+            return this.jdbcTemplate.query(getCodingQuestionQuery,
+                    (rs, rowNum) -> new GetCodingQuestionRes(
+                            rs.getLong("questionIdx"),
+                            rs.getLong("userIdx"),
+                            rs.getString("nickname"),
+                            rs.getString("profileImgUrl"),
+                            rs.getString("createdAt"),
+                            rs.getString("title"),
+                            Arrays.asList(rs.getString("questionImgUrl").split(",")),
+                            rs.getString("currentError"),
+                            rs.getString("myCodingSkill"),
+                            rs.getString("bigCategoryName"),
+                            rs.getString("smallCategoryName"),
+                            rs.getInt("likeCount"),
+                            rs.getInt("replyCount")),
+                    getCodingQuestionParams, getCodingQuestionParams, getCodingQuestionParams);
+        } catch (NullPointerException nullPointerException) {
+            return this.jdbcTemplate.query(getCodingQuestionQuery,
+                    (rs, rowNum) -> new GetCodingQuestionRes(
+                            rs.getLong("questionIdx"),
+                            rs.getLong("userIdx"),
+                            rs.getString("nickname"),
+                            rs.getString("profileImgUrl"),
+                            rs.getString("createdAt"),
+                            rs.getString("title"),
+                            Arrays.asList(),
+                            rs.getString("currentError"),
+                            rs.getString("myCodingSkill"),
+                            rs.getString("bigCategoryName"),
+                            rs.getString("smallCategoryName"),
+                            rs.getInt("likeCount"),
+                            rs.getInt("replyCount")),
+                    getCodingQuestionParams, getCodingQuestionParams, getCodingQuestionParams);
+        }
+
     }
 
     /**
@@ -369,7 +389,7 @@ public class QuestionDao {
      */
     public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx) {
         String getConceptQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, IFNULL(I.url,'') AS questionImgUrl, CQ.content, BC.bigCategoryName, ifnull(SC.smallCategoryName, '') AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.content, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -384,22 +404,40 @@ public class QuestionDao {
                         "ON q.questionIdx = r.questionIdx\n" +
                         "WHERE q.questionIdx = ?";
         int getConceptQuestionParams = questionIdx;
-        
-        return this.jdbcTemplate.query(getConceptQuestionQuery,
-                (rs, rowNum) -> new GetConceptQuestionRes(
-                        rs.getLong("questionIdx"),
-                        rs.getLong("userIdx"),
-                        rs.getString("nickname"),
-                        rs.getString("profileImgUrl"),
-                        rs.getString("createdAt"),
-                        rs.getString("title"),
-                        Arrays.asList(rs.getString("questionImgUrl").split(",")),
-                        rs.getString("content"),
-                        rs.getString("bigCategoryName"),
-                        rs.getString("smallCategoryName"),
-                        rs.getInt("likeCount"),
-                        rs.getInt("replyCount")),
-                getConceptQuestionParams, getConceptQuestionParams, getConceptQuestionParams);
+
+        try{
+            return this.jdbcTemplate.query(getConceptQuestionQuery,
+                    (rs, rowNum) -> new GetConceptQuestionRes(
+                            rs.getLong("questionIdx"),
+                            rs.getLong("userIdx"),
+                            rs.getString("nickname"),
+                            rs.getString("profileImgUrl"),
+                            rs.getString("createdAt"),
+                            rs.getString("title"),
+                            Arrays.asList(rs.getString("questionImgUrl").split(",")),
+                            rs.getString("content"),
+                            rs.getString("bigCategoryName"),
+                            rs.getString("smallCategoryName"),
+                            rs.getInt("likeCount"),
+                            rs.getInt("replyCount")),
+                    getConceptQuestionParams, getConceptQuestionParams, getConceptQuestionParams);
+        } catch (NullPointerException nullPointerException) {
+            return this.jdbcTemplate.query(getConceptQuestionQuery,
+                    (rs, rowNum) -> new GetConceptQuestionRes(
+                            rs.getLong("questionIdx"),
+                            rs.getLong("userIdx"),
+                            rs.getString("nickname"),
+                            rs.getString("profileImgUrl"),
+                            rs.getString("createdAt"),
+                            rs.getString("title"),
+                            Arrays.asList(),
+                            rs.getString("content"),
+                            rs.getString("bigCategoryName"),
+                            rs.getString("smallCategoryName"),
+                            rs.getInt("likeCount"),
+                            rs.getInt("replyCount")),
+                    getConceptQuestionParams, getConceptQuestionParams, getConceptQuestionParams);
+        }
     }
 
     /**
@@ -426,7 +464,7 @@ public class QuestionDao {
 
         if(smallCategoryIdx == 0) {
             if(isReplied == true) {
-                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, ifnull(SC.smallCategoryName, '') AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -441,7 +479,7 @@ public class QuestionDao {
                         "order by "+ orderBy +" desc\n" +
                         "limit ?, ?";
             } else {
-                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, ifnull(SC.smallCategoryName, '') AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -458,7 +496,7 @@ public class QuestionDao {
             } getQuestionsParams = new Object[]{bigCategoryIdx, lastQuestionIdx, perPage};
         } else {
             if(isReplied == true) {
-                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, ifnull(SC.smallCategoryName, '') AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -473,7 +511,7 @@ public class QuestionDao {
                         "order by "+ orderBy +" desc\n" +
                         "limit ?, ?";
             } else {
-                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, ifnull(SC.smallCategoryName, '') AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                getQuestionsQuery = "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
