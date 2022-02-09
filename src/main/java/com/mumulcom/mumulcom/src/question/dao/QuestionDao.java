@@ -603,8 +603,8 @@ public class QuestionDao {
                 "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                 "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                 "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
-                "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx" +
-                "order by updatedAt desc";
+                "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx \n" +
+                "order by q.updatedAt desc";
 
         return this.jdbcTemplate.query(searchConceptQuestionQuery,
                 (rs, rowNum) -> new SearchConceptQuestionRes(
@@ -634,8 +634,8 @@ public class QuestionDao {
                 "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                 "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
                 "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
-                "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx" +
-                "order by updatedAt desc";
+                "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx \n" +
+                "order by q.updatedAt desc";
         return this.jdbcTemplate.query(searchCodingQuestionQuery,
                 (rs, rowNum) -> new SearchCodingQuestionRes(
                         rs.getLong("questionIdx"),
