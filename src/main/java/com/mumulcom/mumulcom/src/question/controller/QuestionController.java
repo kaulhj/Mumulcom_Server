@@ -169,10 +169,10 @@ public class QuestionController {
      * [GET] /questions/coding/:questionIdx
      */
     @ResponseBody
-    @GetMapping("/coding/{questionIdx}")
-    public BaseResponse<List<GetCodingQuestionRes>> getCodingQuestions(@PathVariable("questionIdx") int questionIdx) {
+    @GetMapping("/coding/{questionIdx}/{userIdx}")
+    public BaseResponse<List<GetCodingQuestionRes>> getCodingQuestions(@PathVariable("questionIdx") int questionIdx, @PathVariable("userIdx") int userIdx) {
         try{
-            List<GetCodingQuestionRes> getCodingQuestionRes = questionService.getCodingQuestions(questionIdx);
+            List<GetCodingQuestionRes> getCodingQuestionRes = questionService.getCodingQuestions(questionIdx, userIdx);
             return new BaseResponse<>(getCodingQuestionRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
@@ -184,10 +184,10 @@ public class QuestionController {
      * [GET] /questions/concept/:questionIdx
      */
     @ResponseBody
-    @GetMapping("/concept/{questionIdx}")
-    public BaseResponse<List<GetConceptQuestionRes>> getConceptQuestions(@PathVariable("questionIdx") int questionIdx) {
+    @GetMapping("/concept/{questionIdx}/{userIdx}")
+    public BaseResponse<List<GetConceptQuestionRes>> getConceptQuestions(@PathVariable("questionIdx") int questionIdx, @PathVariable("userIdx") int userIdx) {
         try {
-            List<GetConceptQuestionRes> getConceptQuestionRes = questionService.getConceptQuestions(questionIdx);
+            List<GetConceptQuestionRes> getConceptQuestionRes = questionService.getConceptQuestions(questionIdx, userIdx);
             return new BaseResponse<>(getConceptQuestionRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));

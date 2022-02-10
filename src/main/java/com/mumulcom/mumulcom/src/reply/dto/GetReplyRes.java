@@ -24,4 +24,5 @@ public class GetReplyRes {
     private int likeCount;
     private int reReplyCount;
     private String status;
+    private String isLiked;
 }

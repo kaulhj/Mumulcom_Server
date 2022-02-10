@@ -24,4 +24,5 @@ public class GetConceptQuestionRes {
     private String smallCategoryName;
     private int like;
     private int replyCount;
+    private String isLiked;
 }
