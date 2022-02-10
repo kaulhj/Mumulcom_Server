@@ -40,8 +40,6 @@ public class QuestionLikeService {
             PostLikeRes result = null;
             if(questionLikeProvider.likeQueIdxExist(postQueLikeReq.getQuestionIdx()) == 0)
                 throw new BaseException(BaseResponseStatus.GET_QUESTIONS_EMPTY_DATA);
-            if(questionLikeProvider.likeAuth(postQueLikeReq) == 0)
-                throw new BaseException(BaseResponseStatus.POST_INVALID_LIKE_AUTH);
             if(questionLikeProvider.checkUserStatus(postQueLikeReq) != 0)
                 throw new BaseException(BaseResponseStatus.POST_USERS_INACTIVE_STATUS);
             switch (questionLikeProvider.getLikeStatus(postQueLikeReq)){
@@ -73,8 +71,6 @@ public class QuestionLikeService {
             PostLikeRes result = null;
             if(questionLikeProvider.likeReplyIdxExist(postReplyLikeReq.getReplyIdx()) == 0)
                 throw new BaseException(BaseResponseStatus.GET_QUESTIONS_EMPTY_DATA);
-            if(questionLikeProvider.ReplylikeAuth(postReplyLikeReq) == 0)
-                throw new BaseException(BaseResponseStatus.POST_INVALID_LIKE_AUTH);
             if(questionLikeProvider.checkUserStatus(postReplyLikeReq) != 0)
                 throw new BaseException(BaseResponseStatus.POST_USERS_INACTIVE_STATUS);
             switch (questionLikeProvider.getLikeStatus(postReplyLikeReq)){

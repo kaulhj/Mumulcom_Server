@@ -70,13 +70,13 @@ public class QuestionLikeDao {
                         "SET status = 'inactive'\n" +
                         "where questionIdx = ? AND userIdx = ?";
                 this.jdbcTemplate.update(changeToInactiveQuery,createQueLikeParams);
-                return new PostLikeRes(0,"해당 글을 좋아요 취소하였습니다.");
+                return new PostLikeRes(new Long(0),"해당 글을 좋아요 취소하였습니다.");
             default: //3
                 String changeToActiveQuery =  "update QuestionLike\n" +
                         "SET status = 'active'\n" +
                         "where questionIdx = ? AND userIdx = ?";
                 this.jdbcTemplate.update(changeToActiveQuery,createQueLikeParams);
-                return new PostLikeRes(0, "해당 글을 다시 좋아요 하였습니다.");
+                return new PostLikeRes(new Long(0), "해당 글을 다시 좋아요 하였습니다.");
 
         }
 
@@ -133,13 +133,13 @@ public class QuestionLikeDao {
                             "SET status = 'inactive'\n" +
                             "where ReplyIdx = ? AND userIdx = ?";
                     this.jdbcTemplate.update(changeToInactiveQuery,creatRepLikeParams);
-                    return new PostLikeRes(0,"해당 답변 좋아요를 취소하였습니다.");
+                    return new PostLikeRes(new Long(0),"해당 답변 좋아요를 취소하였습니다.");
                 default : //3
                     String changeToActiveQuery =  "update ReplyLike\n" +
                             "SET status = 'active'\n" +
                             "where ReplyIdx = ? AND userIdx = ?";
                     this.jdbcTemplate.update(changeToActiveQuery,creatRepLikeParams);
-                    return new PostLikeRes(0,"해당 답변을 다시 좋아요 하였습니다.");
+                    return new PostLikeRes(new Long(0),"해당 답변을 다시 좋아요 하였습니다.");
 
         }
     }

@@ -289,9 +289,9 @@ public class ReplyDao {
      * yeji
      * 전체 답변 조회 API (명세서 22번)
      */
-    public List<GetReplyRes> getReplyList(int questionIdx) {
+    public List<GetReplyRes> getReplyList(int questionIdx, int userIdx) {
         String getReplyListQuery =
-                "SELECT r.replyIdx, r.questionIdx, r.userIdx, U.nickname, U.profileImgUrl, DATE_FORMAT(r.createdAt, '%m-%d, %y') AS createdAt, r.replyUrl AS replyUrl, r.content, img.url AS replyImgUrl, IFNULL(likeCount.lcount, 0) likeCount, IFNULL(reCount.rcount, 0) reReplyCount, CASE r.status WHEN 'active' THEN 'N' WHEN 'adopted' THEN 'Y' END AS status\n" +
+                "SELECT r.replyIdx, r.questionIdx, r.userIdx, U.nickname, U.profileImgUrl, DATE_FORMAT(r.createdAt, '%m-%d, %y') AS createdAt, r.replyUrl AS replyUrl, r.content, img.url AS replyImgUrl, IFNULL(likeCount.lcount, 0) likeCount, IFNULL(reCount.rcount, 0) reReplyCount, CASE r.status WHEN 'active' THEN 'N' WHEN 'adopted' THEN 'Y' END AS status, IFNULL(il.isliked, 'N') AS isliked\n" +
                 "FROM Reply r\n" +
                 "INNER JOIN User U on r.userIdx = U.userIdx\n" +
                 "LEFT JOIN (SELECT replyIdx, GROUP_CONCAT(url) url FROM ReplyImage GROUP BY replyIdx) img\n" +
@@ -300,6 +300,8 @@ public class ReplyDao {
                 "ON r.replyIdx = likeCount.replyIdx\n" +
                 "LEFT JOIN (SELECT replyIdx, count(replyIdx) AS rcount FROM Rereply group by replyIdx) reCount\n" +
                 "on r.replyIdx = reCount.replyIdx\n" +
+                "LEFT JOIN (SELECT replyIdx, CASE status WHEN 'active' THEN 'Y' WHEN 'inactive' THEN 'N' END AS isliked FROM ReplyLike WHERE userIdx = ?) il\n" +
+                "ON r.replyIdx = il.replyIdx\n" +
                 "WHERE r.questionIdx = ?\n" +
                 "ORDER BY r.createdAt";
 
@@ -317,8 +319,9 @@ public class ReplyDao {
                             Arrays.asList(rs.getString("replyImgUrl").split(",")),
                             rs.getInt("likeCount"),
                             rs.getInt("reReplyCount"),
-                            rs.getString("status")),
-                    questionIdx);
+                            rs.getString("status"),
+                            rs.getString("isLiked")),
+                    userIdx, questionIdx);
         } catch (NullPointerException nullPointerException) {
             return this.jdbcTemplate.query(getReplyListQuery,
                     (rs, rowNum) -> new GetReplyRes(
@@ -333,8 +336,9 @@ public class ReplyDao {
                             Arrays.asList(),
                             rs.getInt("likeCount"),
                             rs.getInt("reReplyCount"),
-                            rs.getString("status")),
-                    questionIdx);
+                            rs.getString("status"),
+                            rs.getString("isLiked")),
+                    userIdx, questionIdx);
         }
 
     }

@@ -52,7 +52,7 @@ public class ScrapController {
                 throw new BaseException(BaseResponseStatus.INVALID_JWT);
             }
 
-            if(postScrapReq.getQuestionIdx() == 0 && postScrapReq.getUserIdx() == 0)
+            if( postScrapReq.getQuestionIdx() == null   && postScrapReq.getUserIdx() == null )
                 throw new BaseException(BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY);
             String result = scrapService.createScrap(postScrapReq);
             return new BaseResponse<>(result);
