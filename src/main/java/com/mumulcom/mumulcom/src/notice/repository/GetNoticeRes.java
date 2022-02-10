@@ -12,4 +12,6 @@ public class GetNoticeRes {
     private String profileImgUrl;
     private String noticeContent;
     private String diffTime;
+    private String bigCategoryName;
+    private int type;
 }
