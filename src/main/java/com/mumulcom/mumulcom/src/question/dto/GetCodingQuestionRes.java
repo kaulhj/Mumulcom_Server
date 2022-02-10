@@ -23,4 +23,5 @@ public class GetCodingQuestionRes {
     private String smallCategoryName;
     private int likeCount;
     private int replyCount;
+    private String isLiked;
 }

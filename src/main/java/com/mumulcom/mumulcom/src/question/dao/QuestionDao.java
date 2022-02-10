@@ -331,9 +331,9 @@ public class QuestionDao {
      * yeji 10번 API
      * 코딩 질문 조회
      */
-    public List<GetCodingQuestionRes> getCodingQuestions(int questionIdx) {
+    public List<GetCodingQuestionRes> getCodingQuestions(int questionIdx, int userIdx) {
         String getCodingQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount, IFNULL(il.isliked, 'N') AS isLiked\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -344,10 +344,12 @@ public class QuestionDao {
                         "on q.questionIdx = I.questionIdx\n"+
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` WHERE questionIdx = ? and status = 'active') l\n" +
                         "ON q.questionIdx = l.questionIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, CASE status WHEN 'active' THEN 'Y' WHEN 'inactive' THEN 'N' END AS isliked FROM QuestionLike WHERE userIdx = ?) il\n" +
+                        "ON q.questionIdx = il.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
                         "ON q.questionIdx = r.questionIdx\n" +
                         "WHERE q.questionIdx = ?";
-        int getCodingQuestionParams = questionIdx;
+        Object[] getCodingQuestionParams = new Object[]{questionIdx, userIdx, questionIdx, questionIdx};
 
         try{
             return this.jdbcTemplate.query(getCodingQuestionQuery,
@@ -364,8 +366,9 @@ public class QuestionDao {
                             rs.getString("bigCategoryName"),
                             rs.getString("smallCategoryName"),
                             rs.getInt("likeCount"),
-                            rs.getInt("replyCount")),
-                    getCodingQuestionParams, getCodingQuestionParams, getCodingQuestionParams);
+                            rs.getInt("replyCount"),
+                            rs.getString("isLiked")),
+                    getCodingQuestionParams);
         } catch (NullPointerException nullPointerException) {
             return this.jdbcTemplate.query(getCodingQuestionQuery,
                     (rs, rowNum) -> new GetCodingQuestionRes(
@@ -381,8 +384,9 @@ public class QuestionDao {
                             rs.getString("bigCategoryName"),
                             rs.getString("smallCategoryName"),
                             rs.getInt("likeCount"),
-                            rs.getInt("replyCount")),
-                    getCodingQuestionParams, getCodingQuestionParams, getCodingQuestionParams);
+                            rs.getInt("replyCount"),
+                            rs.getString("isLiked")),
+                    getCodingQuestionParams);
         }
 
     }
@@ -391,9 +395,9 @@ public class QuestionDao {
      * yeji 11번 API
      * 개념 질문 조회
      */
-    public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx) {
+    public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx, int userIdx) {
         String getConceptQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.content, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount\n" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.content, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount, IFNULL(il.isliked, 'N') AS isLiked\n\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -404,10 +408,12 @@ public class QuestionDao {
                         "on q.questionIdx = I.questionIdx\n"+
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS likeCount FROM `QuestionLike` WHERE questionIdx = ? and status = 'active') l\n" +
                         "ON q.questionIdx = l.questionIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, CASE status WHEN 'active' THEN 'Y' WHEN 'inactive' THEN 'N' END AS isliked FROM QuestionLike WHERE userIdx = ?) il\n" +
+                        "ON q.questionIdx = il.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
                         "ON q.questionIdx = r.questionIdx\n" +
                         "WHERE q.questionIdx = ?";
-        int getConceptQuestionParams = questionIdx;
+        Object[] getConceptQuestionParams = new Object[]{questionIdx, userIdx, questionIdx, questionIdx};
 
         try{
             return this.jdbcTemplate.query(getConceptQuestionQuery,
@@ -423,8 +429,9 @@ public class QuestionDao {
                             rs.getString("bigCategoryName"),
                             rs.getString("smallCategoryName"),
                             rs.getInt("likeCount"),
-                            rs.getInt("replyCount")),
-                    getConceptQuestionParams, getConceptQuestionParams, getConceptQuestionParams);
+                            rs.getInt("replyCount"),
+                            rs.getString("isLiked")),
+                    getConceptQuestionParams);
         } catch (NullPointerException nullPointerException) {
             return this.jdbcTemplate.query(getConceptQuestionQuery,
                     (rs, rowNum) -> new GetConceptQuestionRes(
@@ -439,8 +446,9 @@ public class QuestionDao {
                             rs.getString("bigCategoryName"),
                             rs.getString("smallCategoryName"),
                             rs.getInt("likeCount"),
-                            rs.getInt("replyCount")),
-                    getConceptQuestionParams, getConceptQuestionParams, getConceptQuestionParams);
+                            rs.getInt("replyCount"),
+                            rs.getString("isLiked")),
+                    getConceptQuestionParams);
         }
     }
 

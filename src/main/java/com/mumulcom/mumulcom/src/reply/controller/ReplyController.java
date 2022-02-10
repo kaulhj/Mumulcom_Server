@@ -72,10 +72,10 @@ public class ReplyController {
      * 전체 답변 조회 API
      */
     @ResponseBody
-    @GetMapping("/{questionIdx}")
-    public BaseResponse<List<GetReplyRes>> getReplyList(@PathVariable("questionIdx") int questionIdx) {
+    @GetMapping("/{questionIdx}/{userIdx}")
+    public BaseResponse<List<GetReplyRes>> getReplyList(@PathVariable("questionIdx") int questionIdx, @PathVariable("userIdx") int userIdx) {
         try {
-            List<GetReplyRes> getReplyRes = replyService.getReplyList(questionIdx);
+            List<GetReplyRes> getReplyRes = replyService.getReplyList(questionIdx, userIdx);
             return new BaseResponse<>(getReplyRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));

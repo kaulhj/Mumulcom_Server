@@ -82,9 +82,9 @@ public class ReplyService {
      * yeji
      * 전체 답변 조회 API
      */
-    public List<GetReplyRes> getReplyList(int questionIdx) throws BaseException {
+    public List<GetReplyRes> getReplyList(int questionIdx, int userIdx) throws BaseException {
         try {
-            List<GetReplyRes> getReplyRes = replyDao.getReplyList(questionIdx);
+            List<GetReplyRes> getReplyRes = replyDao.getReplyList(questionIdx, userIdx);
             return getReplyRes;
         } catch (Exception exception) {
             exception.printStackTrace();
