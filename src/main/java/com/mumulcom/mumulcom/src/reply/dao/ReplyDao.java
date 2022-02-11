@@ -55,7 +55,7 @@ public class ReplyDao {
         replyImgResult = null;
 
         // s3에서 받아온 url DB insert
-        if(imgUrls.size() != 0) {
+        if(imgUrls.size() != 0 && imgUrls.get(0) != "이미지 전송 실패") {
             String createReplyImgQuery = "insert into ReplyImage(replyIdx, url) value (?, ?)";
             for(String url : imgUrls) {
                 Object[] createReplyImgParams = new Object[]{lastReplyIdx, url};
