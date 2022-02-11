@@ -260,9 +260,9 @@ public class ReplyDao {
         int questionIdx = this.jdbcTemplate.queryForObject(questionIdxQuery,int.class,postReReplReq.getReplyIdx());
         String ReReplNotQuery = "INSERT INTO Notice(NOTICECATEGORYIDX, QUESTIONIDX, USERIDX, " +
                 "NOTICECONTENT) VALUES (?, ?, ?, ?)";
-        Object[] ReReplyNotParams = new Object[]{4, questionIdx, postReReplReq.getUserIdx(), new String("회원님이 답변한 글에 댓글이 달렸습니다.")};
+        Object[] ReReplyNotParams = new Object[]{4, questionIdx, noticeTargetUserIdx, new String("회원님이 답변한 글에 댓글이 달렸습니다.")};
         this.jdbcTemplate.update(ReReplNotQuery, ReReplyNotParams);
-        return new PostReRepRes(noticeTargetUserIdx,"답변에 답글을 달았습니다");
+        return new PostReRepRes(noticeTargetUserIdx,"회원님이 답변한 글에 답글을 달았습니다");
 
 
     }

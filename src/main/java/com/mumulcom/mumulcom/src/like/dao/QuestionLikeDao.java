@@ -59,7 +59,7 @@ public class QuestionLikeDao {
 
 
 
-                Object[] creLikeNotParams = new Object[]{2, postQueLikeReq.getQuestionIdx(), postQueLikeReq.getUserIdx(),
+                Object[] creLikeNotParams = new Object[]{2, postQueLikeReq.getQuestionIdx(), targetUserIdx,
                         nContent};
 
                 this.jdbcTemplate.update(creLikNotQuery,creLikeNotParams);
@@ -96,7 +96,7 @@ public class QuestionLikeDao {
                             "WHERE replyIdx = ?", long.class,postReplyLikeReq.getReplyIdx());
                     String createLikeQuery = "INSERT INTO ReplyLike(ReplyIdx, USERIDX) VALUES (?, ?)";
                     Object[] createLikeParams = new Object[]{postReplyLikeReq.getReplyIdx(),
-                            postReplyLikeReq.getUserIdx()};
+                           postReplyLikeReq.getUserIdx()};
                     this.jdbcTemplate.update(createLikeQuery, createLikeParams);
 
                     String creLikNotQuery = "INSERT INTO Notice (noticeCategoryIdx,questionIdx,userIdx,noticeContent)\n" +
@@ -123,7 +123,7 @@ public class QuestionLikeDao {
                             "답변을 좋아합니다");
 
 
-                    Object[] creLikeNotParams = new Object[]{5, postReplyLikeReq.getReplyIdx(), postReplyLikeReq.getUserIdx(),
+                    Object[] creLikeNotParams = new Object[]{5, postReplyLikeReq.getReplyIdx(), noticeTargetUserIdx,
                             nContent};
 
                     this.jdbcTemplate.update(creLikNotQuery, creLikeNotParams);
