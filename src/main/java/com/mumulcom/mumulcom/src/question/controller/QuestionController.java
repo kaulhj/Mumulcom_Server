@@ -72,9 +72,11 @@ public class QuestionController {
                 ) {
                     throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
                 }
-                if(codeQuestionReq.getBigCategoryIdx()!= 5)
-                    if(!ValidationRegex.smallCategoryRange(Long.toString(codeQuestionReq.getSmallCategoryIdx())))
+                if(codeQuestionReq.getBigCategoryIdx()!= 5) {
+                    if (!ValidationRegex.smallCategoryRange(Long.toString(codeQuestionReq.getSmallCategoryIdx()))) {
                         throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
+                    }
+                }
                 List<String> imageUrls = null;
                 if(! multipartFile.get(0).getOriginalFilename().equals(""))
                     imageUrls = questionService.uploadS3image(multipartFile, codeQuestionReq.getUserIdx());
