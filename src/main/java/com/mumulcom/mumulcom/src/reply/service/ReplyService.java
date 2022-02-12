@@ -130,7 +130,10 @@ public class ReplyService {
                 throw new BaseException(BaseResponseStatus.GET_REPLIES_EMPTY_DATA);
             if(replyProvider.reReplyAuth(postReReplReq) == 0)
                 throw new BaseException(POST_INVALID_REREPLY_AUTH);
-            PostReRepRes result = replyDao.rereply(postReReplReq);
+            Long targetUserIdx = replyDao.getTargetUserIndex(postReReplReq.getReplyIdx());
+            if(targetUserIdx == null)
+                throw new BaseException(GET_TARGETUSERS_EMPTY_DATA);
+            PostReRepRes result = replyDao.rereply(postReReplReq, targetUserIdx);
             return result;
         }catch(BaseException baseException){
             baseException.printStackTrace();
