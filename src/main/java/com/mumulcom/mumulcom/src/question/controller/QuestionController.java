@@ -172,7 +172,7 @@ public class QuestionController {
      */
     @ResponseBody
     @GetMapping("/coding/{questionIdx}/{userIdx}")
-    public BaseResponse<List<GetCodingQuestionRes>> getCodingQuestions(@PathVariable("questionIdx") int questionIdx, @PathVariable("userIdx") int userIdx) {
+    public BaseResponse<List<GetCodingQuestionRes>> getCodingQuestions(@PathVariable("questionIdx") Long questionIdx, @PathVariable("userIdx") Long userIdx) {
         try{
             List<GetCodingQuestionRes> getCodingQuestionRes = questionService.getCodingQuestions(questionIdx, userIdx);
             return new BaseResponse<>(getCodingQuestionRes);
@@ -187,7 +187,7 @@ public class QuestionController {
      */
     @ResponseBody
     @GetMapping("/concept/{questionIdx}/{userIdx}")
-    public BaseResponse<List<GetConceptQuestionRes>> getConceptQuestions(@PathVariable("questionIdx") int questionIdx, @PathVariable("userIdx") int userIdx) {
+    public BaseResponse<List<GetConceptQuestionRes>> getConceptQuestions(@PathVariable("questionIdx") Long questionIdx, @PathVariable("userIdx") Long userIdx) {
         try {
             List<GetConceptQuestionRes> getConceptQuestionRes = questionService.getConceptQuestions(questionIdx, userIdx);
             return new BaseResponse<>(getConceptQuestionRes);

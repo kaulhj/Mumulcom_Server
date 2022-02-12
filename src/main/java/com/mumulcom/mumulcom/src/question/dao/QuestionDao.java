@@ -32,7 +32,7 @@ public class QuestionDao {
                 "    FROM\n" +
                 "Question Q\n" +
                 "LEFT JOIN `QuestionLike` L ON Q.questionIdx = L.questionIdx\n" +
-                "where Q.userIdx = ? AND Q.status = 'active' \n" +
+                "where Q.userIdx = ?  \n" +
                 "#group by Q.questionIdx\n" +
                 "order by Q.questionIdx desc limit 4";
         return this.jdbcTemplate.queryForObject(countQuery, int.class, userIdx);
@@ -99,7 +99,8 @@ public class QuestionDao {
                 "INNER JOIN BigCategory b on q.bigCategoryIdx = b.bigCategoryIdx\n" +
                 "LEFT JOIN SmallCategory s on q.smallCategoryIdx = s.smallCategoryIdx\n" +
                 "LEFT JOIN (SELECT questionIdx, count(CASE\n" +
-                "        WHEN ql1.status = 'active' then 1 end) AS likeCount FROM QuestionLike ql1 group by questionIdx) AS ql2\n" +
+                "        WHEN ql1.status = 'active' then 1\n " +
+                "           WHEN ql1.status = 'active' then 1 end) AS likeCount FROM QuestionLike ql1 group by questionIdx) AS ql2\n" +
                 "                        ON q.questionIdx = ql2.questionIdx\n" +
                 "LEFT JOIN (SELECT questionIdx, count(CASE\n" +
                 "    WHEN rc1.status = 'active' then 1\n" +
@@ -134,7 +135,7 @@ public class QuestionDao {
                 "                    FROM\n" +
                 "                Question Q\n" +
                 "                INNER JOIN `Reply` L ON Q.questionIdx = L.questionIdx\n" +
-                "                where Q.userIdx = ? and Q.status = 'active'\n" +
+                "                where Q.userIdx = ?\n" +
                 "                group by Q.questionIdx\n" +
                 "                order by Q.questionIdx desc";
         return this.jdbcTemplate.queryForObject(countQuery,int.class,userIdx);
@@ -200,7 +201,8 @@ public class QuestionDao {
                 "INNER JOIN BigCategory b on q.bigCategoryIdx = b.bigCategoryIdx\n" +
                 "LEFT JOIN SmallCategory s on q.smallCategoryIdx = s.smallCategoryIdx\n" +
                 "LEFT JOIN (SELECT questionIdx, count(CASE\n" +
-                "        WHEN ql1.status = 'active' then 1 end) AS likeCount FROM QuestionLike ql1 group by questionIdx) AS ql2\n" +
+                "        WHEN ql1.status = 'active' then 1 " +
+                "       WHEN ql1.status = 'adopted' then 1 end) AS likeCount FROM QuestionLike ql1 group by questionIdx) AS ql2\n" +
                 "                        ON q.questionIdx = ql2.questionIdx\n" +
                 "INNER JOIN (SELECT questionIdx, count(CASE\n" +
                 "    WHEN rc1.status = 'active' then 1\n" +
@@ -276,7 +278,8 @@ public class QuestionDao {
     public int checkUserStatus(long userIdx){
         String checkUStaQuery = "SELECT count(\n" +
                 "    CASE\n" +
-                "        WHEN u.status = 'active' then 1 end\n" +
+                "        WHEN u.status = 'active' then 1 " +
+                "       WHEN u.status = 'adopted' then 1 end\n" +
                 "           )\n" +
                 "FROM User u\n" +
                 "where userIdx = ?";
@@ -331,7 +334,7 @@ public class QuestionDao {
      * yeji 10번 API
      * 코딩 질문 조회
      */
-    public List<GetCodingQuestionRes> getCodingQuestions(int questionIdx, int userIdx) {
+    public List<GetCodingQuestionRes> getCodingQuestions(Long questionIdx, Long userIdx) {
         String getCodingQuestionQuery =
                 "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, \n" +
                             "ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount, \n" +
@@ -404,7 +407,7 @@ public class QuestionDao {
      * yeji 11번 API
      * 개념 질문 조회
      */
-    public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx, int userIdx) {
+    public List<GetConceptQuestionRes> getConceptQuestions(Long questionIdx, Long userIdx) {
         String getConceptQuestionQuery =
                 "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.content, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, \n" +
                             "ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount, \n" +

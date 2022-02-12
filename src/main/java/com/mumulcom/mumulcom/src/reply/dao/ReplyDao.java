@@ -85,10 +85,10 @@ public class ReplyDao {
         // 질문한 유저 인덱스 추출 (알림 대상 유저)
         Long questionUserIdx = this.jdbcTemplate.queryForObject("SELECT userIdx FROM Question WHERE questionIdx = ?", Long.class, postReplyReq.getQuestionIdx());
 
-        String createReplyNoticeQuery = "INSERT INTO Notice(noticeCategoryIdx, questionIdx, userIdx, noticeContent) values (1, ?, ?, " + "'" + userNickname + "님이 회원님의 질문에 답변을 달았습니다.')";
+        String createReplyNoticeQuery = "INSERT INTO Notice(noticeCategoryIdx, questionIdx, userIdx, noticeContent) values (1, ?, ?, " + "'" + userNickname + "님이 회원님의 질문에 답변을 달았습니다')";
         Object[] createReplyNoticeParams = new Object[]{postReplyReq.getQuestionIdx(), questionUserIdx};
         this.jdbcTemplate.update(createReplyNoticeQuery, createReplyNoticeParams);
-        String noticeReply = userNickname + "님이 회원님의 질문에 답변을 달았습니다.";
+        String noticeReply = userNickname + "님이 회원님의 질문에 답변을 달았습니다";
 
         // 2. 질문을 스크랩한 유저들에게 알림
         // 스크랩한 유저 인덱스 추출 (알림 대상 유저)
@@ -100,13 +100,13 @@ public class ReplyDao {
 
         String noticeScrap = null;
         if(scrapUserIdxList.isEmpty() == false) {
-            String createReplyNoticeQuery2 = "INSERT INTO Notice(noticeCategoryIdx, questionIdx, userIdx, noticeContent) values (3, ?, ?, '회원님이 스크랩한 질문에 답변이 달렸습니다.')";
+            String createReplyNoticeQuery2 = "INSERT INTO Notice(noticeCategoryIdx, questionIdx, userIdx, noticeContent) values (3, ?, ?, '회원님이 스크랩한 질문에 답변이 달렸습니다')";
 
             for(Long userIdx : scrapUserIdxList) {
                 Object[] createReplyNoticeParams2 = new Object[]{postReplyReq.getQuestionIdx(), userIdx};
                 this.jdbcTemplate.update(createReplyNoticeQuery2, createReplyNoticeParams2);
             }
-            noticeScrap = "회원님이 스크랩한 질문에 답변이 달렸습니다.";
+            noticeScrap = "회원님이 스크랩한 질문에 답변이 달렸습니다";
         }
 
         return new PostReplyRes(lastReplyIdx, replyImgResult, noticeReply, questionUserIdx, noticeScrap, scrapUserIdxList);
@@ -291,9 +291,9 @@ public class ReplyDao {
         int questionIdx = this.jdbcTemplate.queryForObject(questionIdxQuery,int.class,postReReplReq.getReplyIdx());
         String ReReplNotQuery = "INSERT INTO Notice(NOTICECATEGORYIDX, QUESTIONIDX, USERIDX, " +
                 "NOTICECONTENT) VALUES (?, ?, ?, ?)";
-        Object[] ReReplyNotParams = new Object[]{4, questionIdx, noticeTargetUserIdx, new String("회원님이 답변한 글에 댓글이 달렸습니다.")};
+        Object[] ReReplyNotParams = new Object[]{4, questionIdx, noticeTargetUserIdx, new String("회원님이 답변한 글에 댓글이 달렸습니다")};
         this.jdbcTemplate.update(ReReplNotQuery, ReReplyNotParams);
-        return new PostReRepRes(noticeTargetUserIdx,"회원님이 답변한 글에 답글을 달았습니다");
+        return new PostReRepRes(noticeTargetUserIdx,"회원님이 답변한 글에 댓글이 달렸습니다");
 
 
     }
@@ -320,7 +320,7 @@ public class ReplyDao {
      * yeji
      * 전체 답변 조회 API (명세서 22번)
      */
-    public List<GetReplyRes> getReplyList(int questionIdx, int userIdx) {
+    public List<GetReplyRes> getReplyList(Long questionIdx, Long userIdx) {
         String getReplyListQuery =
                 "SELECT r.replyIdx, r.questionIdx, r.userIdx, U.nickname, U.profileImgUrl, DATE_FORMAT(r.createdAt, '%m-%d, %y') AS createdAt, r.replyUrl AS replyUrl, r.content, img.url AS replyImgUrl, IFNULL(likeCount.lcount, 0) likeCount, IFNULL(reCount.rcount, 0) reReplyCount, CASE r.status WHEN 'active' THEN 'N' WHEN 'adopted' THEN 'Y' END AS status, IFNULL(il.isliked, 'N') AS isliked\n" +
                 "FROM Reply r\n" +
@@ -390,8 +390,9 @@ public class ReplyDao {
 
     //31.학준
     public List<GetReReplyRes> getReReplies(long replyIdx){
-        String reReplyQuery = "select reReplyIdx, userIdx,content,imageUrl\n" +
-                "from Rereply\n" +
+        String reReplyQuery = "select reReplyIdx, R.userIdx,content,imageUrl,U.nickname,U.profileImgUrl,DATE_FORMAT(R.createdAt, '%m/%d,%y') as createdAt\n" +
+                "from Rereply R\n" +
+                "INNER JOIN User U on R.userIdx = U.userIdx\n" +
                 "where replyIdx =?\n" +
                 "order by createdAt desc ";
         return this.jdbcTemplate.query(reReplyQuery,
@@ -399,7 +400,10 @@ public class ReplyDao {
                         rs.getLong("reReplyIdx"),
                         rs.getLong("userIdx"),
                         rs.getString("content"),
-                        rs.getString("imageUrl")),
+                        rs.getString("imageUrl"),
+                        rs.getString("nickname"),
+                        rs.getString("createdAt"),
+                        rs.getString("profileImgUrl")),
                         replyIdx
                 );
     }
