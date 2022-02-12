@@ -23,14 +23,24 @@ public class QuestionLikeDao {
     public void setDataSource(DataSource dataSource){
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
+//25
+    public Long getTargetUserIdx(long questionIdx) {
+        return this.jdbcTemplate.queryForObject("select exists (select q.userIdx\n" +
+                "from Question q\n" +
+                "inner join User U on q.userIdx = U.userIdx\n" +
+                "where questionIdx = ?)", Long.class, questionIdx);
+
+    }
 
 //25.
     public PostLikeRes createQuestionLike(PostQueLikeReq postQueLikeReq, int status){
         Object[] createQueLikeParams = new Object[]{postQueLikeReq.getQuestionIdx(), postQueLikeReq.getUserIdx()};
         String result;
-        Long targetUserIdx = this.jdbcTemplate.queryForObject("SELECT userIdx\n" +
-                "FROM Question\n" +
-                "where questionIdx = ?", long.class, postQueLikeReq.getQuestionIdx());  //타겟 유저인덱스 추출(알림용)
+        Long targetUserIdx = this.jdbcTemplate.queryForObject("select q.userIdx\n" +
+                "from Question q\n" +
+                "inner join User U on q.userIdx = U.userIdx\n" +
+                "where questionIdx = ?", Long.class,postQueLikeReq.getQuestionIdx());
+        //타겟 유저인덱스 추출(알림용)
         switch(status) {
             case 1: //최초스크랩
                 String createQueLikeQuery = "INSERT INTO QuestionLike(QUESTIONIDX, USERIDX) VALUES (?, ?)";
@@ -43,7 +53,7 @@ public class QuestionLikeDao {
                 String lastContent = null;
 
                 lastContent = new String(" 질문에 좋아요를 눌렀습니다.");
-                String nContentQuery = "SELECT U.name,Q.title\n" +
+                String nContentQuery = "SELECT U.nickname,Q.title\n" +
                         "FROM `QuestionLike` L\n" +
                         "INNER JOIN Question Q on L.questionIdx = Q.questionIdx\n" +
                         "INNER JOIN User U on L.userIdx = U.userIdx" +
@@ -54,7 +64,7 @@ public class QuestionLikeDao {
                         nContentParams);
 
 
-                String nContent = new String(nContentParam2.get(0).get("name")+" 님이 회원님의 "+
+                String nContent = new String(nContentParam2.get(0).get("nickname")+" 님이 회원님의 "+
                         "질문을 좋아합니다");
 
 
@@ -84,16 +94,28 @@ public class QuestionLikeDao {
 
     }
 
+//26.5
+    public Long replyNotTarInd(Long questionIdx){
+        return this.jdbcTemplate.queryForObject("SELECT exists (select R.userIdx\n" +
+                "            FROM Reply R\n" +
+                "INNER JOIN User U on R.userIdx = U.userIdx\n" +
+                "                WHERE replyIdx\n" +
+                "  = ?)", long.class,questionIdx);
+    }
+
 
     //26.
     public PostLikeRes createReplyLike(PostReplyLikeReq postReplyLikeReq, int status){
 
             Object[] creatRepLikeParams = new Object[]{postReplyLikeReq.getReplyIdx(),postReplyLikeReq.getUserIdx()};
+            Long noticeTargetUserIdx = this.jdbcTemplate.queryForObject("select R.userIdx\n" +
+                    "            FROM Reply R\n" +
+                    "INNER JOIN User U on R.userIdx = U.userIdx\n" +
+                    "                WHERE replyIdx\n" +
+                    "  = ?", Long.class,postReplyLikeReq.getReplyIdx());
             switch (status) {
                 case 1:
-                    Long noticeTargetUserIdx = this.jdbcTemplate.queryForObject("SELECT userIdx\n" +
-                            "FROM Reply\n" +
-                            "WHERE replyIdx = ?", long.class,postReplyLikeReq.getReplyIdx());
+
                     String createLikeQuery = "INSERT INTO ReplyLike(ReplyIdx, USERIDX) VALUES (?, ?)";
                     Object[] createLikeParams = new Object[]{postReplyLikeReq.getReplyIdx(),
                            postReplyLikeReq.getUserIdx()};
@@ -122,8 +144,9 @@ public class QuestionLikeDao {
                     String nContent = new String(nickname + " 님이 회원님의 " +
                             "답변을 좋아합니다");
 
-
-                    Object[] creLikeNotParams = new Object[]{5, postReplyLikeReq.getReplyIdx(), noticeTargetUserIdx,
+                    long notQuestionidx = this.jdbcTemplate.queryForObject("select questionIdx from Reply where " +
+                            "replyIdx = ?",long.class,postReplyLikeReq.getReplyIdx());
+                    Object[] creLikeNotParams = new Object[]{5, notQuestionidx, noticeTargetUserIdx,
                             nContent};
 
                     this.jdbcTemplate.update(creLikNotQuery, creLikeNotParams);
