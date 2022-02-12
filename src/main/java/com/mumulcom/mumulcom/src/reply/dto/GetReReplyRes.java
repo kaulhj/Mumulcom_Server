@@ -15,4 +15,7 @@ public class GetReReplyRes {
     private Long reReplyIdx;
     private String content;
     private String imageUrl;
+    private String nickname;
+    private String createdAt;
+    private String profileImgUrl;
 }

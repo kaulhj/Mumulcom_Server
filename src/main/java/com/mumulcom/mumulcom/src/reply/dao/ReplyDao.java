@@ -274,9 +274,9 @@ public class ReplyDao {
         int questionIdx = this.jdbcTemplate.queryForObject(questionIdxQuery,int.class,postReReplReq.getReplyIdx());
         String ReReplNotQuery = "INSERT INTO Notice(NOTICECATEGORYIDX, QUESTIONIDX, USERIDX, " +
                 "NOTICECONTENT) VALUES (?, ?, ?, ?)";
-        Object[] ReReplyNotParams = new Object[]{4, questionIdx, noticeTargetUserIdx, new String("회원님이 답변한 글에 댓글이 달렸습니다.")};
+        Object[] ReReplyNotParams = new Object[]{4, questionIdx, noticeTargetUserIdx, new String("회원님이 답변한 글에 댓글이 달렸습니다")};
         this.jdbcTemplate.update(ReReplNotQuery, ReReplyNotParams);
-        return new PostReRepRes(noticeTargetUserIdx,"회원님이 답변한 글에 답글을 달았습니다");
+        return new PostReRepRes(noticeTargetUserIdx,"회원님이 답변한 글에 댓글이 달렸습니다");
 
 
     }
@@ -373,8 +373,9 @@ public class ReplyDao {
 
     //31.학준
     public List<GetReReplyRes> getReReplies(long replyIdx){
-        String reReplyQuery = "select reReplyIdx, userIdx,content,imageUrl\n" +
-                "from Rereply\n" +
+        String reReplyQuery = "select reReplyIdx, R.userIdx,content,imageUrl,U.nickname,U.profileImgUrl,DATE_FORMAT(R.createdAt, '%m/%d,%y') as createdAt\n" +
+                "from Rereply R\n" +
+                "INNER JOIN User U on R.userIdx = U.userIdx\n" +
                 "where replyIdx =?\n" +
                 "order by createdAt desc ";
         return this.jdbcTemplate.query(reReplyQuery,
@@ -382,7 +383,10 @@ public class ReplyDao {
                         rs.getLong("reReplyIdx"),
                         rs.getLong("userIdx"),
                         rs.getString("content"),
-                        rs.getString("imageUrl")),
+                        rs.getString("imageUrl"),
+                        rs.getString("nickname"),
+                        rs.getString("createdAt"),
+                        rs.getString("profileImgUrl")),
                         replyIdx
                 );
     }
