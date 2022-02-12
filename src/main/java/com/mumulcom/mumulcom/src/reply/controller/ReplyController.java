@@ -52,6 +52,10 @@ public class ReplyController {
     public BaseResponse<PostReplyRes> createReply(@RequestPart(value = "images", required = false) List<MultipartFile> multipartFileList,
                                                   @RequestPart(value = "postReplyReq") PostReplyReq postReplyReq) {
         try {
+            if(replyService.checkUserIdx(postReplyReq.getUserIdx()) == 0) {
+                return new BaseResponse<>(POST_USERS_INACTIVE_STATUS);
+            }
+
             Long userIdxByJwt = jwtService.getUserIdx();
 
             if(postReplyReq.getUserIdx() != userIdxByJwt) {
