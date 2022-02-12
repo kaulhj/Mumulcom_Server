@@ -85,10 +85,10 @@ public class ReplyDao {
         // 질문한 유저 인덱스 추출 (알림 대상 유저)
         Long questionUserIdx = this.jdbcTemplate.queryForObject("SELECT userIdx FROM Question WHERE questionIdx = ?", Long.class, postReplyReq.getQuestionIdx());
 
-        String createReplyNoticeQuery = "INSERT INTO Notice(noticeCategoryIdx, questionIdx, userIdx, noticeContent) values (1, ?, ?, " + "'" + userNickname + "님이 회원님의 질문에 답변을 달았습니다.')";
+        String createReplyNoticeQuery = "INSERT INTO Notice(noticeCategoryIdx, questionIdx, userIdx, noticeContent) values (1, ?, ?, " + "'" + userNickname + "님이 회원님의 질문에 답변을 달았습니다')";
         Object[] createReplyNoticeParams = new Object[]{postReplyReq.getQuestionIdx(), questionUserIdx};
         this.jdbcTemplate.update(createReplyNoticeQuery, createReplyNoticeParams);
-        String noticeReply = userNickname + "님이 회원님의 질문에 답변을 달았습니다.";
+        String noticeReply = userNickname + "님이 회원님의 질문에 답변을 달았습니다";
 
         // 2. 질문을 스크랩한 유저들에게 알림
         // 스크랩한 유저 인덱스 추출 (알림 대상 유저)
@@ -100,13 +100,13 @@ public class ReplyDao {
 
         String noticeScrap = null;
         if(scrapUserIdxList.isEmpty() == false) {
-            String createReplyNoticeQuery2 = "INSERT INTO Notice(noticeCategoryIdx, questionIdx, userIdx, noticeContent) values (3, ?, ?, '회원님이 스크랩한 질문에 답변이 달렸습니다.')";
+            String createReplyNoticeQuery2 = "INSERT INTO Notice(noticeCategoryIdx, questionIdx, userIdx, noticeContent) values (3, ?, ?, '회원님이 스크랩한 질문에 답변이 달렸습니다')";
 
             for(Long userIdx : scrapUserIdxList) {
                 Object[] createReplyNoticeParams2 = new Object[]{postReplyReq.getQuestionIdx(), userIdx};
                 this.jdbcTemplate.update(createReplyNoticeQuery2, createReplyNoticeParams2);
             }
-            noticeScrap = "회원님이 스크랩한 질문에 답변이 달렸습니다.";
+            noticeScrap = "회원님이 스크랩한 질문에 답변이 달렸습니다";
         }
 
         return new PostReplyRes(lastReplyIdx, replyImgResult, noticeReply, questionUserIdx, noticeScrap, scrapUserIdxList);
