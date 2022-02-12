@@ -373,8 +373,9 @@ public class ReplyDao {
 
     //31.학준
     public List<GetReReplyRes> getReReplies(long replyIdx){
-        String reReplyQuery = "select reReplyIdx, userIdx,content,imageUrl\n" +
-                "from Rereply\n" +
+        String reReplyQuery = "select reReplyIdx, R.userIdx,content,imageUrl,U.nickname,U.profileImgUrl,DATE_FORMAT(R.createdAt, '%m/%d,%y') as createdAt\n" +
+                "from Rereply R\n" +
+                "INNER JOIN User U on R.userIdx = U.userIdx\n" +
                 "where replyIdx =?\n" +
                 "order by createdAt desc ";
         return this.jdbcTemplate.query(reReplyQuery,
@@ -382,7 +383,10 @@ public class ReplyDao {
                         rs.getLong("reReplyIdx"),
                         rs.getLong("userIdx"),
                         rs.getString("content"),
-                        rs.getString("imageUrl")),
+                        rs.getString("imageUrl"),
+                        rs.getString("nickname"),
+                        rs.getString("profileImgUrl"),
+                        rs.getString("createdAt")),
                         replyIdx
                 );
     }
