@@ -597,17 +597,18 @@ public class QuestionDao {
      * 입력받은 keyword를 이용해서 질문 받아오기
      * */
     public List<SearchConceptQuestionRes> searchConceptQuestionRes(String keyword) {
-        String searchConceptQuestionQuery = "select * \n" +
-                "from (select q.questionIdx, u.profileImgUrl, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, content, likeCount, replyCount\n" +
-                "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
+        String searchConceptQuestionQuery = "select form.questionIdx, form.profileImgUrl, form.nickname, form.bigCategoryName, s.smallCategoryName, form.title, form.updatedAt, form.content, form.likeCount, form.replyCount\n" +
+                "from\n" +
+                "(select q.questionIdx, u.profileImgUrl, nickname, bigCategoryName, smallCategoryIdx, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, content, likeCount, replyCount\n" +
+                "from Question q, BigCategory b, User u, ConceptQuestion c ,\n" +
                 "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
                 "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' and q.status='active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                 "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                 "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
-                "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
-                "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) as form\n" +
-                "where form.title like ? OR form.content like ?" +
-                "order by updatedAt desc";
+                "where q.bigCategoryIdx = b.bigCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx\n" +
+                "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) as form left join SmallCategory s on form.smallCategoryIdx = s.smallCategoryIdx\n" +
+                "where form.title like ? OR form.content like ?\n" +
+                "order by form.updatedAt desc";
         String keywordForm = "%" + keyword + "%";
         Object[] keyWordList = new Object[] {keywordForm, keywordForm};
         return this.jdbcTemplate.query(searchConceptQuestionQuery,
@@ -627,15 +628,17 @@ public class QuestionDao {
 
     public List<SearchConceptQuestionRes> searchConceptQuestionRes() {
 
-        String searchConceptQuestionQuery = "select q.questionIdx,u.profileImgUrl, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, content, likeCount, replyCount\n" +
-                "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
+        String searchConceptQuestionQuery = "select form.questionIdx, form.profileImgUrl, form.nickname, form.bigCategoryName, s.smallCategoryName, form.title, form.updatedAt, form.content, form.likeCount, form.replyCount\n" +
+                "from\n" +
+                "(select q.questionIdx, u.profileImgUrl, nickname, bigCategoryName, smallCategoryIdx, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, content, likeCount, replyCount\n" +
+                "from Question q, BigCategory b, User u, ConceptQuestion c ,\n" +
                 "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
                 "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' and q.status='active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                 "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                 "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
-                "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
-                "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx \n" +
-                "order by q.updatedAt desc";
+                "where q.bigCategoryIdx = b.bigCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx\n" +
+                "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) as form left join SmallCategory s on form.smallCategoryIdx = s.smallCategoryIdx\n" +
+                "order by form.updatedAt desc";
 
         return this.jdbcTemplate.query(searchConceptQuestionQuery,
                 (rs, rowNum) -> new SearchConceptQuestionRes(
@@ -658,15 +661,17 @@ public class QuestionDao {
      * 입력받은 keyword를 이용해서 질문 받아오기
      * */
     public List<SearchCodingQuestionRes> searchCodingQuestionRes() {
-        String searchCodingQuestionQuery = "select q.questionIdx, u.profileImgUrl, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, c.currentError, c.myCodingSkill, likeCount, replyCount \n" +
-                "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
+        String searchCodingQuestionQuery = "select form.questionIdx, form.profileImgUrl, form.nickname, form.bigCategoryName, s.smallCategoryName, form.title, form.updatedAt, form.currentError, form.myCodingSkill, form.likeCount, form.replyCount\n" +
+                "from\n" +
+                "(select q.questionIdx, u.profileImgUrl, nickname, bigCategoryName, smallCategoryIdx, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, currentError,myCodingSkill, likeCount, replyCount\n" +
+                "from Question q, BigCategory b, User u, CodeQuestion c ,\n" +
                 "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
                 "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' and q.status='active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                 "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                 "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
-                "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
-                "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx \n" +
-                "order by q.updatedAt desc";
+                "where q.bigCategoryIdx = b.bigCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx\n" +
+                "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) as form  left join SmallCategory s on form.smallCategoryIdx = s.smallCategoryIdx\n" +
+                "order by form.updatedAt desc";
         return this.jdbcTemplate.query(searchCodingQuestionQuery,
                 (rs, rowNum) -> new SearchCodingQuestionRes(
                         rs.getLong("questionIdx"),
@@ -683,17 +688,19 @@ public class QuestionDao {
                 ));
     }
     public List<SearchCodingQuestionRes> searchCodingQuestionRes(String keyword) {
-        String searchCodingQuestionQuery = "select *\n" +
-                "from (select q.questionIdx, u.profileImgUrl,  nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, c.currentError, c.myCodingSkill, likeCount, replyCount\n" +
-                "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
+        String searchCodingQuestionQuery = "select form.questionIdx, form.profileImgUrl, form.nickname, form.bigCategoryName, s.smallCategoryName, form.title, form.updatedAt, form.currentError, form.myCodingSkill, form.likeCount, form.replyCount\n" +
+                "from\n" +
+                "(select q.questionIdx, u.profileImgUrl, nickname, bigCategoryName, smallCategoryIdx, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, currentError,myCodingSkill, likeCount, replyCount\n" +
+                "from Question q, BigCategory b, User u, CodeQuestion c ,\n" +
                 "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
                 "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' and q.status='active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                 "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                 "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
-                "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
-                "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) as form\n" +
+                "where q.bigCategoryIdx = b.bigCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx\n" +
+                "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) as form  left join SmallCategory s on form.smallCategoryIdx = s.smallCategoryIdx\n" +
                 "where form.title like ? OR form.currentError like ? OR form.myCodingSkill like ?\n" +
-                "order by updatedAt desc";
+                "order by form.updatedAt desc";
+
         String keywordForm = "%" + keyword + "%";
         Object[] keyWordList = new Object[] {keywordForm, keywordForm, keywordForm};
         return this.jdbcTemplate.query(searchCodingQuestionQuery,
@@ -721,30 +728,30 @@ public class QuestionDao {
     public List<MyQuestionListRes> myCodingQuestionListRes (long userIdx, boolean isReplied) {
         String myQuestionListQuery;
         if(isReplied == false) {
-            myQuestionListQuery = "select * \n" +
+            myQuestionListQuery = "select form.userIdx, form.questionIdx, form.profileImgUrl, form.nickname, form.bigCategoryName, s.smallCategoryName, form.title, form.updatedAt, form.likeCount, form.replyCount\n" +
                     "from\n" +
-                    "(select u.userIdx, q.questionIdx, u.profileImgUrl, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, likeCount, replyCount\n" +
-                    "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
+                    "(select q.userIdx, q.questionIdx, u.profileImgUrl, nickname, bigCategoryName, smallCategoryIdx, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, likeCount, replyCount\n" +
+                    "from Question q, BigCategory b, User u, CodeQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
                     "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' and q.status='active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
-                    "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
-                    "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) questionList\n" +
+                    "where q.bigCategoryIdx = b.bigCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx\n" +
+                    "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) as form  left join SmallCategory s on form.smallCategoryIdx = s.smallCategoryIdx\n" +
                     "where userIdx =?\n" +
                     "order by updatedAt desc";
         }else {
-            myQuestionListQuery = "select * \n" +
+            myQuestionListQuery = "select form.userIdx, form.questionIdx, form.profileImgUrl, form.nickname, form.bigCategoryName, s.smallCategoryName, form.title, form.updatedAt, form.likeCount, form.replyCount\n" +
                     "from\n" +
-                    "(select u.userIdx, q.questionIdx, u.profileImgUrl,nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, likeCount, replyCount\n" +
-                    "from Question q, BigCategory b, SmallCategory s , User u, CodeQuestion c ,\n" +
+                    "(select q.userIdx, q.questionIdx, u.profileImgUrl, nickname, bigCategoryName, smallCategoryIdx, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, likeCount, replyCount\n" +
+                    "from Question q, BigCategory b, User u, CodeQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
                     "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' and q.status='active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
-                    "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
-                    "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) questionList\n" +
-                    "where userIdx = ? and replyCount <> 0\n" +
+                    "where q.bigCategoryIdx = b.bigCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx\n" +
+                    "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) as form  left join SmallCategory s on form.smallCategoryIdx = s.smallCategoryIdx\n" +
+                    "where userIdx =? and replyCount <> 0\n" +
                     "order by updatedAt desc";
         }
         return this.jdbcTemplate.query(myQuestionListQuery,
@@ -771,30 +778,30 @@ public class QuestionDao {
     public List<MyQuestionListRes> myConceptQuestionListRes (long userIdx, boolean isReplied) {
         String myQuestionListQuery;
         if(isReplied == false) {
-            myQuestionListQuery = " select * \n" +
+            myQuestionListQuery = "select form.userIdx, form.questionIdx, form.profileImgUrl, form.nickname, form.bigCategoryName, s.smallCategoryName, form.title, form.updatedAt, form.likeCount, form.replyCount\n" +
                     "from\n" +
-                    "(select u.userIdx, q.questionIdx, u.profileImgUrl, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, likeCount, replyCount\n" +
-                    "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
+                    "(select q.userIdx, q.questionIdx, u.profileImgUrl, nickname, bigCategoryName, smallCategoryIdx, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, likeCount, replyCount\n" +
+                    "from Question q, BigCategory b, User u, ConceptQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
                     "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' and q.status='active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
-                    "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
-                    "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) questionList\n" +
+                    "where q.bigCategoryIdx = b.bigCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx\n" +
+                    "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) as form  left join SmallCategory s on form.smallCategoryIdx = s.smallCategoryIdx\n" +
                     "where userIdx =?\n" +
                     "order by updatedAt desc";
         }else {
-            myQuestionListQuery = " select * \n" +
+            myQuestionListQuery = "select form.userIdx, form.questionIdx, form.profileImgUrl, form.nickname, form.bigCategoryName, s.smallCategoryName, form.title, form.updatedAt, form.likeCount, form.replyCount\n" +
                     "from\n" +
-                    "(select u.userIdx, q.questionIdx, u.profileImgUrl, nickname, bigCategoryName, smallCategoryName, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, likeCount, replyCount\n" +
-                    "from Question q, BigCategory b, SmallCategory s , User u, ConceptQuestion c ,\n" +
+                    "(select q.userIdx, q.questionIdx, u.profileImgUrl, nickname, bigCategoryName, smallCategoryIdx, title, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS updatedAt, likeCount, replyCount\n" +
+                    "from Question q, BigCategory b, User u, ConceptQuestion c ,\n" +
                     "(select q.questionIdx, ifnull(likeCount,0) as likeCount\n" +
                     "from Question q left join (select questionIdx, count(*) likeCount from QuestionLike q join User u on q.userIdx = u.userIdx where u.status = 'Active' and q.status='active' group by questionIdx) l on  q.questionIdx = l.questionIdx) l,\n" +
                     "(select q.questionIdx, ifnull(replyCount,0) as replyCount\n" +
                     "from Question q left join (select questionIdx, count(*) replyCount from Reply group by questionIdx) r on q.questionIdx = r.questionIdx) r\n" +
-                    "where q.bigCategoryIdx = b.bigCategoryIdx and q.smallCategoryIdx = s.smallCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx \n" +
-                    "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) questionList\n" +
-                    "where userIdx = ? and replyCount <> 0\n" +
+                    "where q.bigCategoryIdx = b.bigCategoryIdx and u.userIdx = q.userIdx and c.questionIdx = q.questionIdx\n" +
+                    "and q.questionIdx = l.questionIdx and q.questionIdx = r.questionIdx) as form  left join SmallCategory s on form.smallCategoryIdx = s.smallCategoryIdx\n" +
+                    "where userIdx =? and replyCount <> 0\n" +
                     "order by updatedAt desc";
         }
         return this.jdbcTemplate.query(myQuestionListQuery,

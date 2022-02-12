@@ -109,9 +109,10 @@ public class ReplyService {
      * 휘정 채택 API
      * */
     @Transactional
-    public void adoptReply(long replyIdx) throws BaseException {
+    public void adoptReply(long replyIdx, long questionIdx) throws BaseException {
         try {
             int result = replyDao.adoptReply(replyIdx);
+            replyDao.updateStatus(questionIdx);
             if(result == 0) {
                 throw new BaseException(FAILED_ADOPT_REPLY);
             }

@@ -83,6 +83,7 @@ public enum BaseResponseStatus {
     // [PATCH] /replies/adoption/:userIdx/:replyIdx
     PATCH_ADOPT_NOT_SAME(false,3600,"해당 답변을 채택할 권한이 없습니다."),
     FAILED_ADOPT_REPLY(false,3601,"답변 채택에 실패하였습니다."),
+    ALREADY_ADOPTED(false,3602,"이미 채택이 완료된 질문입니다."),
 
     /**
      * 4000 : Database, Server 오류

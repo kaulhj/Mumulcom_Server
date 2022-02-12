@@ -11,4 +11,5 @@ public class ReplyInfoRes {
     private Long writer;
     private Long answerer;
     private Long questionIdx;
+    private String status;
 }
