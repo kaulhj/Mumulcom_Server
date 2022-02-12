@@ -77,7 +77,7 @@ public class ReplyController {
      */
     @ResponseBody
     @GetMapping("/{questionIdx}/{userIdx}")
-    public BaseResponse<List<GetReplyRes>> getReplyList(@PathVariable("questionIdx") int questionIdx, @PathVariable("userIdx") int userIdx) {
+    public BaseResponse<List<GetReplyRes>> getReplyList(@PathVariable("questionIdx") Long questionIdx, @PathVariable("userIdx") Long userIdx) {
         try {
             List<GetReplyRes> getReplyRes = replyService.getReplyList(questionIdx, userIdx);
             return new BaseResponse<>(getReplyRes);

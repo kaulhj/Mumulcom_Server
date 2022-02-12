@@ -331,7 +331,7 @@ public class QuestionDao {
      * yeji 10번 API
      * 코딩 질문 조회
      */
-    public List<GetCodingQuestionRes> getCodingQuestions(int questionIdx, int userIdx) {
+    public List<GetCodingQuestionRes> getCodingQuestions(Long questionIdx, Long userIdx) {
         String getCodingQuestionQuery =
                 "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, \n" +
                             "ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount, \n" +
@@ -404,7 +404,7 @@ public class QuestionDao {
      * yeji 11번 API
      * 개념 질문 조회
      */
-    public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx, int userIdx) {
+    public List<GetConceptQuestionRes> getConceptQuestions(Long questionIdx, Long userIdx) {
         String getConceptQuestionQuery =
                 "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.content, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, \n" +
                             "ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount, \n" +
