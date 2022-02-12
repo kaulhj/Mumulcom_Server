@@ -130,13 +130,13 @@ public class QuestionDao {
     //16-1 배열 사이즈 추출
     public int getRecQueSize(long userIdx){     //long 대문자
         String countQuery = "SELECT\n" +
-                "    count(distinct Q.questionIdx)\n" +
-                "    FROM\n" +
-                "Question Q\n" +
-                "INNER JOIN `QuestionLike` L ON Q.questionIdx = L.questionIdx\n" +
-                "where Q.userIdx = ? and Q.status = 'active' \n" +
-                "#group by Q.questionIdx\n" +
-                "order by Q.questionIdx desc";
+                "                   count(distinct Q.questionIdx)\n" +
+                "                    FROM\n" +
+                "                Question Q\n" +
+                "                INNER JOIN `Reply` L ON Q.questionIdx = L.questionIdx\n" +
+                "                where Q.userIdx = ? and Q.status = 'active'\n" +
+                "                group by Q.questionIdx\n" +
+                "                order by Q.questionIdx desc";
         return this.jdbcTemplate.queryForObject(countQuery,int.class,userIdx);
     }
     //16-2
