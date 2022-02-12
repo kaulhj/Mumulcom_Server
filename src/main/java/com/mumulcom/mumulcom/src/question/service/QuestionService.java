@@ -106,7 +106,7 @@ public class QuestionService {
      * yeji
      * 10번 API 코딩 질문 조회
      */
-    public List<GetCodingQuestionRes> getCodingQuestions(int questionIdx, int userIdx) throws BaseException {
+    public List<GetCodingQuestionRes> getCodingQuestions(Long questionIdx, Long userIdx) throws BaseException {
         try{
             List<GetCodingQuestionRes> getCodingQuestionRes = questionDao.getCodingQuestions(questionIdx, userIdx);
             return getCodingQuestionRes;
@@ -120,7 +120,7 @@ public class QuestionService {
      * yeji
      * 11번 API 개념 질문 조회
      */
-    public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx, int userIdx) throws BaseException {
+    public List<GetConceptQuestionRes> getConceptQuestions(Long questionIdx, Long userIdx) throws BaseException {
         try {
             List<GetConceptQuestionRes> getConceptQuestionRes = questionDao.getConceptQuestions(questionIdx, userIdx);
             return getConceptQuestionRes;
