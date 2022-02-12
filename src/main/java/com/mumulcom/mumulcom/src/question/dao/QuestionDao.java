@@ -333,7 +333,10 @@ public class QuestionDao {
      */
     public List<GetCodingQuestionRes> getCodingQuestions(int questionIdx, int userIdx) {
         String getCodingQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount, IFNULL(il.isliked, 'N') AS isLiked\n" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, \n" +
+                            "ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount, \n" +
+                            "IFNULL(il.isliked, 'N') AS isLiked, IFNULL(isScraped.isScraped, 'N') AS isScraped,\n" +
+                            "IF(q.status='adopted', 'Y', 'N') AS isAdopted\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -348,8 +351,10 @@ public class QuestionDao {
                         "ON q.questionIdx = il.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
                         "ON q.questionIdx = r.questionIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, CASE status WHEN 'active' THEN 'Y' WHEN 'inactive' THEN 'N' END AS isScraped FROM Scrap WHERE userIdx = ?) isScraped\n" +
+                        "ON q.questionIdx = isScraped.questionIdx\n" +
                         "WHERE q.questionIdx = ?";
-        Object[] getCodingQuestionParams = new Object[]{questionIdx, userIdx, questionIdx, questionIdx};
+        Object[] getCodingQuestionParams = new Object[]{questionIdx, userIdx, questionIdx, userIdx, questionIdx};
 
         try{
             return this.jdbcTemplate.query(getCodingQuestionQuery,
@@ -367,7 +372,9 @@ public class QuestionDao {
                             rs.getString("smallCategoryName"),
                             rs.getInt("likeCount"),
                             rs.getInt("replyCount"),
-                            rs.getString("isLiked")),
+                            rs.getString("isLiked"),
+                            rs.getString("isScraped"),
+                            rs.getString("isAdopted")),
                     getCodingQuestionParams);
         } catch (NullPointerException nullPointerException) {
             return this.jdbcTemplate.query(getCodingQuestionQuery,
@@ -385,7 +392,9 @@ public class QuestionDao {
                             rs.getString("smallCategoryName"),
                             rs.getInt("likeCount"),
                             rs.getInt("replyCount"),
-                            rs.getString("isLiked")),
+                            rs.getString("isLiked"),
+                            rs.getString("isScraped"),
+                            rs.getString("isAdopted")),
                     getCodingQuestionParams);
         }
 
@@ -397,7 +406,10 @@ public class QuestionDao {
      */
     public List<GetConceptQuestionRes> getConceptQuestions(int questionIdx, int userIdx) {
         String getConceptQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.content, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount, IFNULL(il.isliked, 'N') AS isLiked\n\n" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl,DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.content, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, \n" +
+                            "ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount, \n" +
+                            "IFNULL(il.isliked, 'N') AS isLiked, IFNULL(isScraped.isScraped, 'N') AS isScraped, \n" +
+                            "IF(q.status='adopted', 'Y', 'N') AS isAdopted\n" +
                         "FROM User u\n" +
                         "INNER JOIN Question q\n" +
                         "on u.userIdx = q.userIdx\n" +
@@ -412,8 +424,10 @@ public class QuestionDao {
                         "ON q.questionIdx = il.questionIdx\n" +
                         "LEFT JOIN (SELECT questionIdx, count(questionIdx) AS replyCount FROM Reply WHERE questionIdx = ?) r\n" +
                         "ON q.questionIdx = r.questionIdx\n" +
+                        "LEFT JOIN (SELECT questionIdx, CASE status WHEN 'active' THEN 'Y' WHEN 'inactive' THEN 'N' END AS isScraped FROM Scrap WHERE userIdx = ?) isScraped\n" +
+                        "ON q.questionIdx = isScraped.questionIdx\n" +
                         "WHERE q.questionIdx = ?";
-        Object[] getConceptQuestionParams = new Object[]{questionIdx, userIdx, questionIdx, questionIdx};
+        Object[] getConceptQuestionParams = new Object[]{questionIdx, userIdx, questionIdx, userIdx, questionIdx};
 
         try{
             return this.jdbcTemplate.query(getConceptQuestionQuery,
@@ -430,7 +444,9 @@ public class QuestionDao {
                             rs.getString("smallCategoryName"),
                             rs.getInt("likeCount"),
                             rs.getInt("replyCount"),
-                            rs.getString("isLiked")),
+                            rs.getString("isLiked"),
+                            rs.getString("isScraped"),
+                            rs.getString("isAdopted")),
                     getConceptQuestionParams);
         } catch (NullPointerException nullPointerException) {
             return this.jdbcTemplate.query(getConceptQuestionQuery,
@@ -447,7 +463,9 @@ public class QuestionDao {
                             rs.getString("smallCategoryName"),
                             rs.getInt("likeCount"),
                             rs.getInt("replyCount"),
-                            rs.getString("isLiked")),
+                            rs.getString("isLiked"),
+                            rs.getString("isScraped"),
+                            rs.getString("isAdopted")),
                     getConceptQuestionParams);
         }
     }
