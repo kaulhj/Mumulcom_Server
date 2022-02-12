@@ -5,6 +5,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.annotation.PostConstruct;
+import java.util.Locale;
 import java.util.TimeZone;
 
 @SpringBootApplication
@@ -19,6 +20,7 @@ public class MumulcomApplication {
     @PostConstruct
     public void start() {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+        Locale.setDefault(Locale.KOREA);
     }
 
     public static final String APPLICATION_LOCATIONS = "spring.config.location="
