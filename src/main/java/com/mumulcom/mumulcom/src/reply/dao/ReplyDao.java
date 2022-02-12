@@ -303,7 +303,7 @@ public class ReplyDao {
      * yeji
      * 전체 답변 조회 API (명세서 22번)
      */
-    public List<GetReplyRes> getReplyList(int questionIdx, int userIdx) {
+    public List<GetReplyRes> getReplyList(Long questionIdx, Long userIdx) {
         String getReplyListQuery =
                 "SELECT r.replyIdx, r.questionIdx, r.userIdx, U.nickname, U.profileImgUrl, DATE_FORMAT(r.createdAt, '%m-%d, %y') AS createdAt, r.replyUrl AS replyUrl, r.content, img.url AS replyImgUrl, IFNULL(likeCount.lcount, 0) likeCount, IFNULL(reCount.rcount, 0) reReplyCount, CASE r.status WHEN 'active' THEN 'N' WHEN 'adopted' THEN 'Y' END AS status, IFNULL(il.isliked, 'N') AS isliked\n" +
                 "FROM Reply r\n" +
