@@ -219,10 +219,10 @@ public class ReplyDao {
                 ), userIdx);
     }
 
-    // 해당 답변 idx를 가지고 질문자 알아내기
+    // 해당 질문 아이디를 이용한 상태 파악하기
 
     public ReplyInfoRes getReplyInfo(long replyIdx) {
-        String getQuestionWriterQuery = "select r.userIdx as answerer, q.userIdx as writer, q.questionIdx\n" +
+        String getQuestionWriterQuery = "select r.userIdx as answerer, q.userIdx as writer, q.questionIdx, q.status \n" +
                 "from Reply r join Question q on r.questionIdx = q.questionIdx\n" +
                 "where replyIdx = ?";
 
@@ -231,7 +231,8 @@ public class ReplyDao {
                     (rs,rowNum) -> new ReplyInfoRes(
                             rs.getLong("writer"),
                             rs.getLong("answerer"),
-                            rs.getLong("questionIdx")
+                            rs.getLong("questionIdx"),
+                            rs.getString("status")
                     )
                     ,replyIdx);
         } catch (EmptyResultDataAccessException e) {
@@ -247,6 +248,14 @@ public class ReplyDao {
     public int adoptReply(long replyIdx) {
         String adoptReplyQuery = "update Reply set status = 'adopted' , updatedAt = now() where replyIdx = ?";
         return this.jdbcTemplate.update(adoptReplyQuery, replyIdx); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
+    }
+
+    /**
+     * 채택 완료 시 status adopted로 변경하기
+     * */
+    public int updateStatus(long questionIdx) {
+        String updateStatusQuery = "update Question set status = 'adopted' , updatedAt = now() where questionIdx = ?";
+        return this.jdbcTemplate.update(updateStatusQuery,questionIdx);
     }
 
     //29.2 타겟 유저 인덱스 추출

@@ -136,6 +136,7 @@ public class ReplyController {
     public BaseResponse<AdoptRes> adoptReply(@PathVariable("replyIdx") long replyIdx, @PathVariable("userIdx") long userIdx) {
         try {
 
+            // jwt 처리
             Long userIdxByJwt = jwtService.getUserIdx();
             if (!userIdxByJwt.equals(userIdx)) {
                 throw new BaseException(BaseResponseStatus.INVALID_JWT);
@@ -148,7 +149,12 @@ public class ReplyController {
                 return new BaseResponse<>(PATCH_ADOPT_NOT_SAME);
             }
 
-            replyService.adoptReply(replyIdx); // 채택중
+            // 그리고 이미 채택된 질문이라면? -> 이제 못하게하기
+            if(replyInfo.getStatus().equals("adopted")) {
+                return new BaseResponse<>(ALREADY_ADOPTED);
+            }
+
+            replyService.adoptReply(replyIdx, replyInfo.getQuestionIdx()); // 채택중
             String result = replyIdx+"번째 답변이 채택되었습니다."; // 몇번째 답변이 채택됨을 알려줌
             String content = "회원님의 답변이 채택되었습니다.";
             AdoptRes adoptRes = replyService.addAdoptionNotice(replyInfo, content);
