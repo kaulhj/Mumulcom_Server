@@ -356,5 +356,21 @@ public class ReplyDao {
         return this.jdbcTemplate.queryForObject(lastInsertNoticeIdx, int.class); // 해당 쿼리문의 결과 마지막으로 삽인된 유저의 userIdx번호를 반환한다.
 
     }
+
+    //31.학준
+    public List<GetReReplyRes> getReReplies(long replyIdx){
+        String reReplyQuery = "select reReplyIdx, userIdx,content,imageUrl\n" +
+                "from Rereply\n" +
+                "where replyIdx =?\n" +
+                "order by createdAt desc ";
+        return this.jdbcTemplate.query(reReplyQuery,
+                (rs,rowNum)-> new GetReReplyRes(
+                        rs.getLong("reReplyIdx"),
+                        rs.getLong("userIdx"),
+                        rs.getString("content"),
+                        rs.getString("imageUrl")),
+                        replyIdx
+                );
+    }
 }
 

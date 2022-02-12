@@ -178,6 +178,18 @@ public class ReplyController {
         }
     }
 
+    @ResponseBody
+    @GetMapping("/rereply/{replyIdx}")
+    public BaseResponse<List<GetReReplyRes>> getReReplies(@PathVariable("replyIdx") long replyIdx){
+        try{
+
+            List<GetReReplyRes> getReReplyRes = replyProvider.getReReplies(replyIdx);
+            return new BaseResponse<>(getReReplyRes);
+        }catch (BaseException baseException){
+            return new BaseResponse<>(baseException.getStatus());
+        }
+    }
+
 
 
 }
