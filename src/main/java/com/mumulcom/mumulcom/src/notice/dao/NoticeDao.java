@@ -36,16 +36,16 @@ public class NoticeDao {
                 "    when((select timestampdiff(DAY,DATE_FORMAT(n.createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) >= 21 and (select timestampdiff(DAY,DATE_FORMAT(n.createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) <= 27) then '3주전'\n" +
                 "    when((select timestampdiff(DAY,DATE_FORMAT(n.createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) >= 28 and (select timestampdiff(DAY,DATE_FORMAT(n.createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) <= 59) then '1달전'\n" +
                 "    else '3달 넘은 오래된 게시물' \n" +
-                "end) as diffTime,bigCategoryName, type\n" +
+                "end) as diffTime,bigCategoryName, type , noticeCategoryIdx\n" +
                 "from \n" +
-                "(select profileImgUrl, q.questionIdx, bigCategoryName, type, n.createdAt, noticeContent\n" +
+                "(select profileImgUrl, q.questionIdx, bigCategoryName, type, n.createdAt, noticeContent , noticeCategoryIdx\n" +
                 "from\n" +
                 "(select profileImgUrl, q.questionIdx, bigCategoryName, ifnull(1,0) as type\n" +
                 "from Question q, User u, BigCategory b, CodeQuestion c\n" +
                 "where q.userIdx = u.userIdx and q.bigCategoryIdx = b.bigCategoryIdx and c.questionIdx = q.questionIdx) q, Notice n \n" +
                 "where n.questionIdx = q.questionIdx and userIdx = ?\n" +
                 "union all\n" +
-                "select profileImgUrl, q.questionIdx, bigCategoryName, type , n.createdAt, noticeContent\n" +
+                "select profileImgUrl, q.questionIdx, bigCategoryName, type , n.createdAt, noticeContent , noticeCategoryIdx\n" +
                 "from\n" +
                 "(select profileImgUrl, q.questionIdx, bigCategoryName, ifnull(2,0) as type\n" +
                 "from Question q, User u, BigCategory b, ConceptQuestion c\n" +
