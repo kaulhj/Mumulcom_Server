@@ -113,6 +113,16 @@ public class ReplyDao {
     }
 
     /**
+     * yeji
+     * 유저 존재 여부 확인
+     */
+    public int checkUserIdx(Long userIdx) {
+        String checkUserIdxQuery = "select exists(select userIdx from User where userIdx = ?)";
+        Long checkUserIdxParams = userIdx;
+        return this.jdbcTemplate.queryForObject(checkUserIdxQuery, int.class, checkUserIdxParams);
+    }
+
+    /**
      * 휘정
      * 내가 답변한 코딩 질문 리스트 조회 API
      */
