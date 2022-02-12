@@ -23,7 +23,7 @@ public class NoticeDao {
      * */
     public List<GetNoticeRes> noticeList (long userIdx) {
 
-        String noticeListQuery = "select n.questionIdx, noticeContent, profileImgUrl, (select CASE\n" +
+        String noticeListQuery = "select n.questionIdx, noticeContent,(select CASE\n" +
                 "\twhen((select timestampdiff(DAY,DATE_FORMAT(n.createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) = 0) then '오늘'\n" +
                 "    when((select timestampdiff(DAY,DATE_FORMAT(n.createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) = 1) then '어제'\n" +
                 "    when((select timestampdiff(DAY,DATE_FORMAT(n.createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) = 2) then '2일전'\n" +
@@ -36,18 +36,18 @@ public class NoticeDao {
                 "    when((select timestampdiff(DAY,DATE_FORMAT(n.createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) >= 21 and (select timestampdiff(DAY,DATE_FORMAT(n.createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) <= 27) then '3주전'\n" +
                 "    when((select timestampdiff(DAY,DATE_FORMAT(n.createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) >= 28 and (select timestampdiff(DAY,DATE_FORMAT(n.createdAt, '%y-%m-%d'),DATE_FORMAT(now(), '%y-%m-%d'))) <= 59) then '1달전'\n" +
                 "    else '3달 넘은 오래된 게시물' \n" +
-                "end) as diffTime,bigCategoryName, type , noticeCategoryIdx\n" +
+                "end) as diffTime,bigCategoryName, type, noticeCategoryIdx, title\n" +
                 "from \n" +
-                "(select profileImgUrl, q.questionIdx, bigCategoryName, type, n.createdAt, noticeContent , noticeCategoryIdx\n" +
+                "(select q.questionIdx, bigCategoryName, type, n.createdAt, noticeContent , noticeCategoryIdx, title\n" +
                 "from\n" +
-                "(select profileImgUrl, q.questionIdx, bigCategoryName, ifnull(1,0) as type\n" +
+                "(select q.questionIdx, q.title, bigCategoryName, ifnull(1,0) as type\n" +
                 "from Question q, User u, BigCategory b, CodeQuestion c\n" +
                 "where q.userIdx = u.userIdx and q.bigCategoryIdx = b.bigCategoryIdx and c.questionIdx = q.questionIdx) q, Notice n \n" +
                 "where n.questionIdx = q.questionIdx and userIdx = ?\n" +
                 "union all\n" +
-                "select profileImgUrl, q.questionIdx, bigCategoryName, type , n.createdAt, noticeContent , noticeCategoryIdx\n" +
+                "select q.questionIdx, bigCategoryName, type , n.createdAt, noticeContent , noticeCategoryIdx, title\n" +
                 "from\n" +
-                "(select profileImgUrl, q.questionIdx, bigCategoryName, ifnull(2,0) as type\n" +
+                "(select q.questionIdx, q.title, bigCategoryName, ifnull(2,0) as type\n" +
                 "from Question q, User u, BigCategory b, ConceptQuestion c\n" +
                 "where q.userIdx = u.userIdx and q.bigCategoryIdx = b.bigCategoryIdx and c.questionIdx = q.questionIdx) q, Notice n \n" +
                 "where n.questionIdx = q.questionIdx and userIdx = ?) n\n" +
@@ -55,12 +55,12 @@ public class NoticeDao {
         return jdbcTemplate.query(noticeListQuery,
                 (rs,rowNum) -> new GetNoticeRes(
                         rs.getLong("questionIdx"),
-                        rs.getString("profileImgUrl"),
                         rs.getString("noticeContent"),
                         rs.getString("diffTime"),
                         rs.getString("bigCategoryName"),
                         rs.getInt("type"),
-                        rs.getInt("noticeCategoryIdx")
+                        rs.getInt("noticeCategoryIdx"),
+                        rs.getString("title")
                 ),userIdx, userIdx);
     }
 }

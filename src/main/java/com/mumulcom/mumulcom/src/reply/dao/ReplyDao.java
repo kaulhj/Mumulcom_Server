@@ -349,7 +349,7 @@ public class ReplyDao {
      * "회원님이 한 답변이 채택되었습니다."
      * */
     public int addAdoptionNotice (ReplyInfoRes replyInfoRes, String content) {
-        String adoptionNoticeQuery = "insert into Notice (NoticeCategoryIdx, questionIdx, userIdx, noticeContent) values (7,?,?,?)";
+        String adoptionNoticeQuery = "insert into Notice (NoticeCategoryIdx, questionIdx, userIdx, noticeContent) values (6,?,?,?)";
         Object[] adoptionNoticeParams = new Object[] {replyInfoRes.getQuestionIdx(), replyInfoRes.getAnswerer(), content};
         this.jdbcTemplate.update(adoptionNoticeQuery, adoptionNoticeParams);
         String lastInsertNoticeIdx = "select last_insert_id()";

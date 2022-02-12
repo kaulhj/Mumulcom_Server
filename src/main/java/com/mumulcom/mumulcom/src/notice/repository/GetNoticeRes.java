@@ -9,10 +9,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GetNoticeRes {
     private long questionIdx;
-    private String profileImgUrl;
     private String noticeContent;
     private String diffTime;
     private String bigCategoryName;
     private int type;
     private int noticeCategoryIdx;
+    private String title;
 }
