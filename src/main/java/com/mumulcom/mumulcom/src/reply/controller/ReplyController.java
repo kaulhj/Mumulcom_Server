@@ -156,7 +156,7 @@ public class ReplyController {
 
             replyService.adoptReply(replyIdx, replyInfo.getQuestionIdx()); // 채택중
             String result = replyIdx+"번째 답변이 채택되었습니다."; // 몇번째 답변이 채택됨을 알려줌
-            String content = "회원님의 답변이 채택되었습니다.";
+            String content = "회원님의 답변이 채택되었습니다";
             AdoptRes adoptRes = replyService.addAdoptionNotice(replyInfo, content);
             return new BaseResponse<>(adoptRes);
         } catch (BaseException exception) {
