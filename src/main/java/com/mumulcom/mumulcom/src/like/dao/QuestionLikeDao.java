@@ -43,7 +43,7 @@ public class QuestionLikeDao {
                 String lastContent = null;
 
                 lastContent = new String(" 질문에 좋아요를 눌렀습니다.");
-                String nContentQuery = "SELECT U.name,Q.title\n" +
+                String nContentQuery = "SELECT U.nickname,Q.title\n" +
                         "FROM `QuestionLike` L\n" +
                         "INNER JOIN Question Q on L.questionIdx = Q.questionIdx\n" +
                         "INNER JOIN User U on L.userIdx = U.userIdx" +
@@ -54,7 +54,7 @@ public class QuestionLikeDao {
                         nContentParams);
 
 
-                String nContent = new String(nContentParam2.get(0).get("name")+" 님이 회원님의 "+
+                String nContent = new String(nContentParam2.get(0).get("nickname")+" 님이 회원님의 "+
                         "질문을 좋아합니다");
 
 
