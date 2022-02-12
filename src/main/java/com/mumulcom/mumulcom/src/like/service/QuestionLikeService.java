@@ -42,6 +42,9 @@ public class QuestionLikeService {
                 throw new BaseException(BaseResponseStatus.GET_QUESTIONS_EMPTY_DATA);
             if(questionLikeProvider.checkUserStatus(postQueLikeReq) != 0)
                 throw new BaseException(BaseResponseStatus.POST_USERS_INACTIVE_STATUS);
+            if(questionLikeDao.getTargetUserIdx(postQueLikeReq.getQuestionIdx()) == 0)
+                throw new BaseException(BaseResponseStatus.GET_TARGETUSERS_EMPTY_DATA);
+            Long targetUserIdx = questionLikeDao.getTargetUserIdx(postQueLikeReq.getQuestionIdx());
             switch (questionLikeProvider.getLikeStatus(postQueLikeReq)){
                 case 1:     //생성된 게 없을 때
                     result = questionLikeDao.createQuestionLike(postQueLikeReq, 1);
@@ -53,7 +56,6 @@ public class QuestionLikeService {
                     result = questionLikeDao.createQuestionLike(postQueLikeReq, 3);
 
             }
-
             return result;
         }catch(BaseException baseException) {
             baseException.printStackTrace();
@@ -73,6 +75,8 @@ public class QuestionLikeService {
                 throw new BaseException(BaseResponseStatus.GET_QUESTIONS_EMPTY_DATA);
             if(questionLikeProvider.checkUserStatus(postReplyLikeReq) != 0)
                 throw new BaseException(BaseResponseStatus.POST_USERS_INACTIVE_STATUS);
+            if(questionLikeDao.replyNotTarInd(postReplyLikeReq.getReplyIdx()) == 0)
+                throw new BaseException(BaseResponseStatus.GET_TARGETUSERS_EMPTY_DATA);
             switch (questionLikeProvider.getLikeStatus(postReplyLikeReq)){
                 case 1:     //생성된 게 없을 때
                     result = questionLikeDao.createReplyLike(postReplyLikeReq, 1);

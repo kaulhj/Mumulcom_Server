@@ -2,24 +2,27 @@ package com.mumulcom.mumulcom.src.user.domain;
 
 
 import lombok.Getter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
-import java.time.LocalDateTime;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Getter
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
 public class BaseTimeEntity {
+    protected ZonedDateTime createdAt;
+    protected ZonedDateTime updatedAt;
 
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        this.updatedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+    }
 
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+    }
 }

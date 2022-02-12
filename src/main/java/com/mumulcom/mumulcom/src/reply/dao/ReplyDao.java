@@ -239,13 +239,17 @@ public class ReplyDao {
         return this.jdbcTemplate.update(adoptReplyQuery, replyIdx); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
     }
 
+    //29.2 타겟 유저 인덱스 추출
+    public Long getTargetUserIndex(Long replyIdx){
+        return this.jdbcTemplate.queryForObject("SELECT userIdx\n" +
+                "FROM Reply\n" +
+                "WHERE replyIdx = ?", Long.class, replyIdx);
+    }
     //학준 29.
 
     @Transactional(rollbackFor = Exception.class)
-    public PostReRepRes rereply(PostReReplReq postReReplReq) {
-        Long noticeTargetUserIdx = this.jdbcTemplate.queryForObject("SELECT userIdx\n" +
-                "FROM Reply\n" +
-                "WHERE replyIdx = ?", long.class, postReReplReq.getReplyIdx());
+    public PostReRepRes rereply(PostReReplReq postReReplReq, Long noticeTargetUserIdx) {
+
         String RereplQuery = "INSERT INTO Rereply(replyIdx, userIdx, content, imageUrl )\n" +
                 " VALUES (?, ?, ?, ?)";
         Object[] RereplParams = new Object[]{postReReplReq.getReplyIdx(), postReReplReq.getUserIdx(),
@@ -355,6 +359,22 @@ public class ReplyDao {
         String lastInsertNoticeIdx = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInsertNoticeIdx, int.class); // 해당 쿼리문의 결과 마지막으로 삽인된 유저의 userIdx번호를 반환한다.
 
+    }
+
+    //31.학준
+    public List<GetReReplyRes> getReReplies(long replyIdx){
+        String reReplyQuery = "select reReplyIdx, userIdx,content,imageUrl\n" +
+                "from Rereply\n" +
+                "where replyIdx =?\n" +
+                "order by createdAt desc ";
+        return this.jdbcTemplate.query(reReplyQuery,
+                (rs,rowNum)-> new GetReReplyRes(
+                        rs.getLong("reReplyIdx"),
+                        rs.getLong("userIdx"),
+                        rs.getString("content"),
+                        rs.getString("imageUrl")),
+                        replyIdx
+                );
     }
 }
 

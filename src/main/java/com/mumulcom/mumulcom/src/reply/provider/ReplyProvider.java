@@ -6,8 +6,8 @@ import com.mumulcom.mumulcom.src.reply.dao.ReplyDao;
 import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
 
 import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
+import com.mumulcom.mumulcom.src.reply.dto.GetReReplyRes;
 import com.mumulcom.mumulcom.src.reply.dto.PostReReplReq;
-import com.mumulcom.mumulcom.src.reply.dto.PostReplyReq;
 
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
@@ -79,6 +79,16 @@ public class ReplyProvider {
         try{
             int repExist = replyDao.repIdxExist(replyIdx);
             return repExist;
+        }catch (Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetReReplyRes> getReReplies(long replyIdx)throws  BaseException{
+        try{
+            List<GetReReplyRes> getReReplyRes = replyDao.getReReplies(replyIdx);
+            return getReReplyRes;
         }catch (Exception exception){
             exception.printStackTrace();
             throw new BaseException(DATABASE_ERROR);
