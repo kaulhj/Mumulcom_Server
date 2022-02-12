@@ -6,6 +6,7 @@ import lombok.Getter;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -16,12 +17,12 @@ public class BaseTimeEntity {
 
     @PrePersist
     public void prePersist() {
-        this.createdAt = ZonedDateTime.now();
-        this.updatedAt = ZonedDateTime.now();
+        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        this.updatedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 
     @PreUpdate
     public void preUpdate() {
-        this.updatedAt = ZonedDateTime.now();
+        this.updatedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 }
