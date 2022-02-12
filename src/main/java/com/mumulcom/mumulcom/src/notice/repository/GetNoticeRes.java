@@ -14,4 +14,5 @@ public class GetNoticeRes {
     private String diffTime;
     private String bigCategoryName;
     private int type;
+    private int noticeCategoryIdx;
 }

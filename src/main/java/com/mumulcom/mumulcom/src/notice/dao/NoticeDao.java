@@ -59,7 +59,8 @@ public class NoticeDao {
                         rs.getString("noticeContent"),
                         rs.getString("diffTime"),
                         rs.getString("bigCategoryName"),
-                        rs.getInt("type")
+                        rs.getInt("type"),
+                        rs.getInt("noticeCategoryIdx")
                 ),userIdx, userIdx);
     }
 }
