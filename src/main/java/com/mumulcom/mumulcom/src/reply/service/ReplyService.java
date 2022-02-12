@@ -62,6 +62,19 @@ public class ReplyService {
     }
 
     /**
+     * yeji
+     * 유저 존재 여부 확인
+     */
+    public int checkUserIdx(Long userIdx) throws BaseException {
+        try {
+            return replyDao.checkUserIdx(userIdx);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    /**
      * 답변 생성 s3 업로드
      */
     public List<String> uploadS3image(List<MultipartFile> multipartFileList, Long userIdx) {
