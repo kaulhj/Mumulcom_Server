@@ -25,4 +25,6 @@ public class GetConceptQuestionRes {
     private int like;
     private int replyCount;
     private String isLiked;
+    private String isScraped;
+    private String isAdopted;
 }

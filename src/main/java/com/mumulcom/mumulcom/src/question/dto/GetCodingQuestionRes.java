@@ -24,4 +24,6 @@ public class GetCodingQuestionRes {
     private int likeCount;
     private int replyCount;
     private String isLiked;
+    private String isScraped;
+    private String isAdopted;
 }
