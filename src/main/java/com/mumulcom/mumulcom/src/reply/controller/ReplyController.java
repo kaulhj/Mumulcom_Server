@@ -49,8 +49,7 @@ public class ReplyController {
      */
     @ResponseBody
     @PostMapping("")
-    public BaseResponse<PostReplyRes> createReply(@RequestPart(value = "images", required = false) List<MultipartFile> multipartFileList,
-                                                  @RequestPart(value = "postReplyReq") PostReplyReq postReplyReq) {
+    public BaseResponse<PostReplyRes> createReply(@RequestBody PostReplyReq postReplyReq) {
         try {
             if(replyService.checkUserIdx(postReplyReq.getUserIdx()) == 0) {
                 return new BaseResponse<>(POST_USERS_INACTIVE_STATUS);
@@ -62,8 +61,7 @@ public class ReplyController {
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
 
-            List<String> imgUrls = replyService.uploadS3image(multipartFileList, postReplyReq.getUserIdx());
-            PostReplyRes postReplyRes = replyService.createReply(imgUrls, postReplyReq);
+            PostReplyRes postReplyRes = replyService.createReply(postReplyReq);
 
             return new BaseResponse<>(postReplyRes);
         } catch (BaseException exception) {

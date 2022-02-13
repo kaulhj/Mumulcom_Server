@@ -13,4 +13,5 @@ public class PostReplyReq {
     private Long userIdx;
     private String replyUrl;
     private String content;
+    private List<String> images;
 }

@@ -32,7 +32,7 @@ public class ReplyDao {
      * yeji 19번 API
      * 답변 생성 + 알림
      */
-    public PostReplyRes creatReply(List<String> imgUrls, PostReplyReq postReplyReq) {
+    public PostReplyRes creatReply(PostReplyReq postReplyReq) {
 
         String replyImgResult;
         String createReplyQuery;
@@ -54,29 +54,15 @@ public class ReplyDao {
         Long lastReplyIdx = this.jdbcTemplate.queryForObject(lastInsertIdQuery, Long.class);
         replyImgResult = null;
 
-        // s3에서 받아온 url DB insert
-        if(imgUrls.size() != 0 && imgUrls.get(0) != "이미지 전송 실패") {
-            String createReplyImgQuery = "insert into ReplyImage(replyIdx, url) value (?, ?)";
-            for(String url : imgUrls) {
-                Object[] createReplyImgParams = new Object[]{lastReplyIdx, url};
-                this.jdbcTemplate.update(createReplyImgQuery, createReplyImgParams);
+        if(postReplyReq.getImages() != null) {
+            for(String imgs : postReplyReq.getImages()) {
+                String createReplyImageQuery = "insert into ReplyImage(replyIdx, url) value (?, ?)";
+                Object[] createReplyImageParams = new Object[]{lastReplyIdx, imgs};
+
+                this.jdbcTemplate.update(createReplyImageQuery, createReplyImageParams);
             }
             replyImgResult = "이미지 삽입이 완료됐습니다.";
         }
-
-        /*
-         ** s3 서버 사용하기 전 프론트에서 url 주소를 받아서 이미지 처리했을 때
-         * if (postReplyReq.getUrl() != null) {
-
-            // ReplyImg table insert
-            String createReplyImgQuery = "insert into ReplyImage(lastReplyIdx, url) value (?, ?)";
-            for (String url : postReplyReq.getUrl()) {
-                Object[] createReplyImgParams = new Object[]{replyIdx, url};
-                this.jdbcTemplate.update(createReplyImgQuery, createReplyImgParams);
-            }
-            replyImgResult = "이미지 삽입이 완료됐습니다.";
-            }
-         */
 
         // 알림 기능
         // 1. 질문 작성자에게 알림
