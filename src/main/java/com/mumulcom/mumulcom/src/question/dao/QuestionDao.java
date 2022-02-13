@@ -40,7 +40,7 @@ public class QuestionDao {
 
     //9.
     @Transactional
-    public List<GetRecQueRes> getRecQuestion(int countSize, long userIdx){
+    public List<GetRecQueRes> getRecQuestion(long userIdx){
 
 
     /*
