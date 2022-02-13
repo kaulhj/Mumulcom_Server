@@ -231,7 +231,8 @@ public class QuestionLikeDao {
                 "            WHEN EXISTS(SELECT userIdx, questionIdx from QuestionLike where userIdx = ? AND questionIdx = ? AND status = 'active')= '1' then 2\n" +
                 "            WHEN EXISTS(SELECT userIdx, questionIdx from QuestionLike where userIdx = ? AND questionIdx = ? AND status = 'inactive')= '1' then 3\n" +
                 "            ELSE 1 END\n" +
-                "FROM QuestionLike";
+                "FROM QuestionLike ql\n" +
+                "right join Question q on ql.questionIdx = q.questionIdx";
 
         Object[] getLikeStatParams = new Object[]{postQueLikeReq.getUserIdx(),postQueLikeReq.getQuestionIdx(),
         postQueLikeReq.getUserIdx(), postQueLikeReq.getQuestionIdx()};
@@ -241,13 +242,14 @@ public class QuestionLikeDao {
     }
 
     //26.4
-    public int getLikeStatus(PostReplyLikeReq postReplyLikeReq) {
+    public int getReLikeStatus(PostReplyLikeReq postReplyLikeReq) {
         String getLikeStatQuery = "SELECT\n" +
                 "        distinct CASE\n" +
                 "            WHEN EXISTS(SELECT userIdx, replyIdx from ReplyLike where userIdx = ? AND replyIdx = ? AND status = 'active')= '1' then 2\n" +
                 "            WHEN EXISTS(SELECT userIdx, replyIdx from ReplyLike where userIdx = ? AND replyIdx = ? AND status = 'inactive')= '1' then 3\n" +
                 "            ELSE 1 END\n" +
-                "FROM ReplyLike";
+                " FROM ReplyLike\n" +
+                "right join Reply R on ReplyLike.replyIdx = R.replyIdx";
 
         Object[] getLikeStatParams = new Object[]{postReplyLikeReq.getUserIdx(), postReplyLikeReq.getReplyIdx(),
                 postReplyLikeReq.getUserIdx(), postReplyLikeReq.getReplyIdx()};
