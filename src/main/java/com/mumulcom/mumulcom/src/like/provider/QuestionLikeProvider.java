@@ -100,7 +100,7 @@ public class QuestionLikeProvider {
     //26.4
     public int getLikeStatus(PostReplyLikeReq postReplyLikeReq)throws BaseException{
         try{
-            int LikeStatusNum = questionLikeDao.getLikeStatus(postReplyLikeReq);
+            int LikeStatusNum = questionLikeDao.getReLikeStatus(postReplyLikeReq);
             return LikeStatusNum;
         }catch (Exception exception){
             exception.printStackTrace();

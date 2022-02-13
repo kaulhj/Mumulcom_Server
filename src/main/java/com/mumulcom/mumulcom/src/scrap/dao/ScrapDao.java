@@ -402,7 +402,8 @@ public class ScrapDao {
                 "            WHEN EXISTS(SELECT userIdx, questionIdx from Scrap where userIdx = ? AND questionIdx = ? AND status = 'active')= '1' then 2\n" +
                 "            WHEN EXISTS(SELECT userIdx, questionIdx from Scrap where userIdx = ? AND questionIdx = ? AND status = 'inactive')= '1' then 3\n" +
                 "            ELSE 1 END\n" +
-                "FROM Scrap";
+                "FROM Scrap s\n" +
+                "right join Question q on s.questionIdx = q.questionIdx ";
 
 
         Object[] scrapStatusParams = new Object[]{postScrapReq.getUserIdx(), postScrapReq.getQuestionIdx(),
