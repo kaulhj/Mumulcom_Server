@@ -124,10 +124,10 @@ public class UserService {
         if (userOptional.isEmpty()) {
             throw new BaseException(BaseResponseStatus.RESPONSE_ERROR);
         }
-        if (existsByNickname(patchReq.getNickname())) {
+        User user = userOptional.get();
+        if (!user.getNickname().equals(patchReq.getNickname()) && existsByNickname(patchReq.getNickname())) {
             throw new BaseException(BaseResponseStatus.POST_USERS_EXISTS_NICKNAME);
         }
-        User user = userOptional.get();
         user.updateUserInfo(
                 patchReq.getNickname(),
                 patchReq.getGroup(),
