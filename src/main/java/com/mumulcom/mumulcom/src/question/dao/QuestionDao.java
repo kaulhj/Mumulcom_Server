@@ -336,7 +336,7 @@ public class QuestionDao {
      */
     public List<GetCodingQuestionRes> getCodingQuestions(Long questionIdx, Long userIdx) {
         String getCodingQuestionQuery =
-                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, \n" +
+                "SELECT q.questionIdx, u.userIdx, u.nickname, u.profileImgUrl, DATE_FORMAT(q.createdAt, '%m-%d, %y') AS createdAt, q.title, I.url AS questionImgUrl, CQ.codeQuestionUrl, CQ.currentError, CQ.myCodingSkill, BC.bigCategoryName, SC.smallCategoryName AS smallCategoryName, \n" +
                             "ifnull(l.likeCount, 0) likeCount, ifnull(r.replyCount, 0) replyCount, \n" +
                             "IFNULL(il.isliked, 'N') AS isLiked, IFNULL(isScraped.isScraped, 'N') AS isScraped,\n" +
                             "IF(q.status='adopted', 'Y', 'N') AS isAdopted\n" +
@@ -369,6 +369,7 @@ public class QuestionDao {
                             rs.getString("createdAt"),
                             rs.getString("title"),
                             Arrays.asList(rs.getString("questionImgUrl").split(",")),
+                            rs.getString("codeQuestionUrl"),
                             rs.getString("currentError"),
                             rs.getString("myCodingSkill"),
                             rs.getString("bigCategoryName"),
@@ -389,6 +390,7 @@ public class QuestionDao {
                             rs.getString("createdAt"),
                             rs.getString("title"),
                             Arrays.asList(),
+                            rs.getString("codeQuestionUrl"),
                             rs.getString("currentError"),
                             rs.getString("myCodingSkill"),
                             rs.getString("bigCategoryName"),

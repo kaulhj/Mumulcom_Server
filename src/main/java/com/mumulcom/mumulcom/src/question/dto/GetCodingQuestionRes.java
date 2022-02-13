@@ -17,6 +17,7 @@ public class GetCodingQuestionRes {
     private String createdAt;
     private String title;
     private List<String> questionImgUrl;
+    private String codeQuestionUrl;
     private String currentError;
     private String myCodingSkill;
     private String bigCategoryName;
