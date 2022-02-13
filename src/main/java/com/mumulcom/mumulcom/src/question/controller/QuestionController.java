@@ -53,8 +53,7 @@ public class QuestionController {
     @PostMapping("/coding")
     @Transactional(rollbackFor = Exception.class)
     public BaseResponse<String> codeQuestion(
-            @RequestPart(value = "images", required = false) List<MultipartFile> multipartFile,
-            @RequestPart(value = "codeQuestionReq") CodeQuestionReq codeQuestionReq){
+            @RequestBody CodeQuestionReq codeQuestionReq){
         //s3이미지 저장하고 url반환값
         try {
             Long userIdxByJwt = jwtService.getUserIdx();
@@ -77,12 +76,15 @@ public class QuestionController {
                         throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
                     }
                 }
+                /*
                 List<String> imageUrls = null;
                 if(! multipartFile.get(0).getOriginalFilename().equals(""))
                     imageUrls = questionService.uploadS3image(multipartFile, codeQuestionReq.getUserIdx());
                 else
                     imageUrls = new ArrayList<>();
-                String result = questionService.codeQuestion(imageUrls, codeQuestionReq);
+
+                 */
+                String result = questionService.codeQuestion( codeQuestionReq);
                 return new BaseResponse<>(result);
                 }catch (BaseException exception) {
                     exception.printStackTrace();
@@ -95,8 +97,7 @@ public class QuestionController {
     @ResponseBody
     @PostMapping("/concept")
     public BaseResponse<String> conceptQuestion(
-            @RequestPart(value = "images", required = false ) List<MultipartFile> multipartFile,
-            @RequestPart(value = "conceptQueReq") ConceptQueReq conceptQueReq){
+            @RequestBody ConceptQueReq conceptQueReq){
         try{
             Long userIdxByJwt = jwtService.getUserIdx();
             if (!userIdxByJwt.equals(conceptQueReq.getUserIdx())) {
@@ -113,12 +114,15 @@ public class QuestionController {
             if(!ValidationRegex.bigCategoryRange(Long.toString(conceptQueReq.getBigCategoryIdx()))){
                 throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
             }
+            /*
             List<String> imageUrls = null;
             if(! multipartFile.get(0).getOriginalFilename().equals(""))
                 imageUrls = questionService.uploadS3image(multipartFile, conceptQueReq.getUserIdx());
             else
                 imageUrls = new ArrayList<>();
-            String result = questionService.conceptQuestion(imageUrls, conceptQueReq);
+
+             */
+            String result = questionService.conceptQuestion( conceptQueReq);
 
             return new BaseResponse<>(result);
         }catch (BaseException exception){

@@ -17,7 +17,7 @@ public class ValidationRegex {
     }
 
     public static boolean smallCategoryRange(String str) {
-        return Pattern.matches("^[1-9]*$", str);
+        return Pattern.matches("^[1-9]$|^[1-1]{1}[0-2]{1}$", str);
     }
 
 

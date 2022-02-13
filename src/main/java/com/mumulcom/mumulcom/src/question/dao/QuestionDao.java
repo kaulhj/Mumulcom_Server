@@ -40,7 +40,7 @@ public class QuestionDao {
 
     //9.
     @Transactional
-    public List<GetRecQueRes> getRecQuestion(int countSize, long userIdx){
+    public List<GetRecQueRes> getRecQuestion(long userIdx){
 
 
     /*
@@ -231,8 +231,8 @@ public class QuestionDao {
 
 
     //7. 코딩질문하기
-
-    public String codeQuestion(List<String> imgUrls, CodeQuestionReq codeQuestionReq)  {
+    @Transactional(rollbackFor = Exception.class)
+    public String codeQuestion( CodeQuestionReq codeQuestionReq)  {
         //Question 테이블에 데이터 주입
         String InsertQueQuery = "INSERT INTO Question(userIdx,bigCategoryIdx,\n" +
                 "                     smallCategoryIdx,title )\n" +
@@ -262,10 +262,10 @@ public class QuestionDao {
         this.jdbcTemplate.update(CodQueTabQue, CodQueTabParams);
 
 
-        if (imgUrls.size() != 0) {
+        if (codeQuestionReq.getImages().size() != 0) {
             //이미지에 넣기
             String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
-            for (String img : imgUrls) {
+            for (String img : codeQuestionReq.getImages()) {
                 Object[] InsImgTabParams = new Object[]{lastQueId, img};
                 this.jdbcTemplate.update(InsImgTabQuery, InsImgTabParams);
             }
@@ -291,7 +291,7 @@ public class QuestionDao {
 
     //8.개념질문
     @Transactional
-    public String conceptQuestion(List<String> imgUrls, ConceptQueReq conceptQueReq) {
+    public String conceptQuestion( ConceptQueReq conceptQueReq) {
 
         //큰질문 테이블에 값 넣기
         String InsertQueQuery = "INSERT INTO Question(userIdx,bigCategoryIdx,\n" +
@@ -321,13 +321,15 @@ public class QuestionDao {
 
         //String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
         //Object[] InsImgTabParams = new Object[]{lastQueId, codeQuestionReq.getImageUrls()};
-
-        String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
-        for (String img : imgUrls) {
-            Object[] InsImgTabParams = new Object[]{lastQueId, img};
-            this.jdbcTemplate.update(InsImgTabQuery, InsImgTabParams);
+        if (conceptQueReq.getImages().size() != 0) {
+            String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
+            for (String img : conceptQueReq.getImages()) {
+                Object[] InsImgTabParams = new Object[]{lastQueId, img};
+                this.jdbcTemplate.update(InsImgTabQuery, InsImgTabParams);
+            }
         }
-        return new String("개념질문이 등록되었습니다");
+            return new String("개념질문이 등록되었습니다");
+
     }
     
     /**
