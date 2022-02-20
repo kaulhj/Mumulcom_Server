@@ -11,7 +11,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetReplyRes {
-
     private Long replyIdx;
     private Long questionIdx;
     private Long userIdx;
