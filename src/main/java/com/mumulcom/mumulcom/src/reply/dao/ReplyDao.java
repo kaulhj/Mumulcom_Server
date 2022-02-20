@@ -303,7 +303,7 @@ public class ReplyDao {
                 "LEFT JOIN (SELECT replyIdx, CASE status WHEN 'active' THEN 'Y' WHEN 'inactive' THEN 'N' END AS isliked FROM ReplyLike WHERE userIdx = ?) il\n" +
                 "ON r.replyIdx = il.replyIdx\n" +
                 "WHERE r.questionIdx = ?\n" +
-                "ORDER BY r.createdAt";
+                "ORDER BY r.status desc , r.createdAt";
 
         try{
             return this.jdbcTemplate.query(getReplyListQuery,
