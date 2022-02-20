@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.mumulcom.mumulcom.src.question.provider.*;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class QuestionLikeService {
@@ -35,6 +36,7 @@ public class QuestionLikeService {
     }
 
 //학준 25
+
     public PostLikeRes createQuestionLike(PostQueLikeReq postQueLikeReq)throws BaseException{
         try{
             PostLikeRes result = null;

@@ -43,7 +43,6 @@ public class QuestionLikeController {
 
     @ResponseBody
     @PostMapping("/questions/creation")
-    @Transactional(rollbackFor = Exception.class)
     public BaseResponse<PostLikeRes> createQueLike(@RequestBody PostQueLikeReq postQueLikeReq){
 
         try{
