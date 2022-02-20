@@ -380,7 +380,7 @@ public class ReplyDao {
                 "from Rereply R\n" +
                 "INNER JOIN User U on R.userIdx = U.userIdx\n" +
                 "where replyIdx =?\n" +
-                "order by createdAt desc ";
+                "order by R.createdAt desc ";
         return this.jdbcTemplate.query(reReplyQuery,
                 (rs,rowNum)-> new GetReReplyRes(
                         rs.getLong("reReplyIdx"),

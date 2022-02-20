@@ -8,6 +8,7 @@ import com.mumulcom.mumulcom.src.like.dto.PostReplyLikeReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -33,6 +34,7 @@ public class QuestionLikeDao {
     }
 
 //25.
+    @Transactional(rollbackFor = Exception.class)
     public PostLikeRes createQuestionLike(PostQueLikeReq postQueLikeReq, int status){
         Object[] createQueLikeParams = new Object[]{postQueLikeReq.getQuestionIdx(), postQueLikeReq.getUserIdx()};
         String result;
@@ -42,17 +44,29 @@ public class QuestionLikeDao {
                 "where questionIdx = ?", Long.class,postQueLikeReq.getQuestionIdx());
         //타겟 유저인덱스 추출(알림용)
         switch(status) {
-            case 1: //최초스크랩
-                String createQueLikeQuery = "INSERT INTO QuestionLike(QUESTIONIDX, USERIDX) VALUES (?, ?)";
-                this.jdbcTemplate.update(createQueLikeQuery,createQueLikeParams);
-                result =  new String("해당 글을 좋아요 하였습니다.");
-                String creLikNotQuery = "INSERT INTO Notice (noticeCategoryIdx,questionIdx,userIdx,noticeContent)\n" +
-                        "VALUES (?,?,?,?)";
+            case 1: //최초질문 좋아요
+                    String createQueLikeQuery = "INSERT INTO QuestionLike(QUESTIONIDX, USERIDX) VALUES (?, ?)";
+                    this.jdbcTemplate.update(createQueLikeQuery, createQueLikeParams);
+                    result = new String("해당 글을 좋아요 하였습니다.");
+                    String creLikNotQuery = "INSERT INTO Notice (noticeCategoryIdx,questionIdx,userIdx,noticeContent)\n" +
+                            "VALUES (?,?,?,?)";
 
-                int noticeCategory; //알림 카테고리 구하기
-                String lastContent = null;
+                    int noticeCategory; //알림 카테고리 구하기
+                try {
+                    String nNecQuery = "select userIdx\n" +
+                            "from Question\n" +
+                            "where questionIdx=?";
 
-                lastContent = new String(" 질문에 좋아요를 눌렀습니다.");
+                    Long uId = this.jdbcTemplate.queryForObject(nNecQuery, Long.class, postQueLikeReq.getQuestionIdx());
+
+                    if(uId == postQueLikeReq.getUserIdx())
+                        throw new IllegalArgumentException("자신의 질문을 좋아요 하였습니다.");
+                }catch (IllegalArgumentException e){
+                    return new PostLikeRes(targetUserIdx,e.getMessage());
+                }
+
+
+
                 String nContentQuery = "SELECT U.nickname,Q.title\n" +
                         "FROM `QuestionLike` L\n" +
                         "INNER JOIN Question Q on L.questionIdx = Q.questionIdx\n" +
@@ -105,6 +119,7 @@ public class QuestionLikeDao {
 
 
     //26.
+    @Transactional(rollbackFor = Exception.class)
     public PostLikeRes createReplyLike(PostReplyLikeReq postReplyLikeReq, int status){
 
             Object[] creatRepLikeParams = new Object[]{postReplyLikeReq.getReplyIdx(),postReplyLikeReq.getUserIdx()};
@@ -125,9 +140,19 @@ public class QuestionLikeDao {
                             "VALUES (?,?,?,?)";
 
                     int noticeCategory; //알림 카테고리 구하기
-                    String lastContent = null;
+                    try {
+                        String nNecQuery = "select userIdx\n" +
+                                "from Reply\n" +
+                                "where ReplyIdx=?";
 
-                    lastContent = new String(" 답변에 좋아요를 눌렀습니다.");
+                        Long uId = this.jdbcTemplate.queryForObject(nNecQuery, Long.class, postReplyLikeReq.getReplyIdx());
+
+                        if(uId == postReplyLikeReq.getUserIdx())
+                            throw new IllegalArgumentException("자신의 답변을 좋아요 하였습니다.");
+                    }catch (IllegalArgumentException e){
+                        return new PostLikeRes(noticeTargetUserIdx,e.getMessage());
+                    }
+
 
 
                     //
