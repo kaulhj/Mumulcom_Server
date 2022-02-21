@@ -262,7 +262,7 @@ public class QuestionDao {
         this.jdbcTemplate.update(CodQueTabQue, CodQueTabParams);
 
 
-        if (codeQuestionReq.getImages().size() != 0) {
+        if (codeQuestionReq.getImages() != null) {
             //이미지에 넣기
             String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
             for (String img : codeQuestionReq.getImages()) {
@@ -290,7 +290,7 @@ public class QuestionDao {
 
 
     //8.개념질문
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public String conceptQuestion( ConceptQueReq conceptQueReq) {
 
         //큰질문 테이블에 값 넣기
@@ -321,7 +321,7 @@ public class QuestionDao {
 
         //String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
         //Object[] InsImgTabParams = new Object[]{lastQueId, codeQuestionReq.getImageUrls()};
-        if (conceptQueReq.getImages().size() != 0) {
+        if (conceptQueReq.getImages() != null) {
             String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
             for (String img : conceptQueReq.getImages()) {
                 Object[] InsImgTabParams = new Object[]{lastQueId, img};

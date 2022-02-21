@@ -71,6 +71,10 @@ public class QuestionController {
                 ) {
                     throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
                 }
+                if(codeQuestionReq.getBigCategoryIdx()== 5 && codeQuestionReq.getSmallCategoryIdx() != 0) {
+                    throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_SMALLCATEGORY);
+
+                }
                 if(codeQuestionReq.getBigCategoryIdx()!= 5) {
                     if (!ValidationRegex.smallCategoryRange(Long.toString(codeQuestionReq.getSmallCategoryIdx()))) {
                         throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
@@ -111,6 +115,10 @@ public class QuestionController {
             if(conceptQueReq.getBigCategoryIdx()!= 5)
                 if(!ValidationRegex.smallCategoryRange(Long.toString(conceptQueReq.getSmallCategoryIdx())))
                     throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
+            if(conceptQueReq.getBigCategoryIdx()== 5 && conceptQueReq.getSmallCategoryIdx() != 0) {
+                throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_SMALLCATEGORY);
+
+            }
             if(!ValidationRegex.bigCategoryRange(Long.toString(conceptQueReq.getBigCategoryIdx()))){
                 throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
             }
