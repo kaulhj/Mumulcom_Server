@@ -40,14 +40,8 @@ public class UserService {
      * 회원가입
      */
     public UserDto.SignUpRes join(UserDto.SignUpReq signUpReq) throws BaseException {
-        if (userRepository.existsUserByEmail(signUpReq.getEmail())) {
-            Optional<User> userOptional = userRepository.findUserByEmail(signUpReq.getEmail());
-            if (userOptional.isPresent()) {
-                User user = userOptional.get();
-                if (user.getStatus().equals("active")) {
-                    throw new BaseException(BaseResponseStatus.POST_USERS_EXISTS_EMAIL);
-                }
-            }
+        if (userRepository.existsUserByEmailAndStatus(signUpReq.getEmail(), "active")) {
+            throw new BaseException(BaseResponseStatus.POST_USERS_EXISTS_EMAIL);
         }
         if (userRepository.existsUserByNickname(signUpReq.getNickname())) {
             throw new BaseException(BaseResponseStatus.POST_USERS_EXISTS_NICKNAME);
@@ -83,7 +77,7 @@ public class UserService {
      */
     public UserDto.SignInRes login(UserDto.SignInReq signInReq) throws BaseException {
         String email = signInReq.getEmail();
-        Optional<User> userOptional = userRepository.findUserByEmail(email);
+        Optional<User> userOptional = userRepository.findUserByEmailAndStatus(email, "active");
         if (userOptional.isEmpty()) {
             throw new BaseException(BaseResponseStatus.FAILED_TO_LOGIN);
         }
