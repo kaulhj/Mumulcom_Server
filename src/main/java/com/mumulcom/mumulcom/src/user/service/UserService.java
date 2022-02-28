@@ -62,11 +62,14 @@ public class UserService {
                 myCategoryRepository.save(mapper.map(myCategoryDto, MyCategory.class));
             }
         }
+        String jwt = jwtService.createJwt(user.getUserIdx());
         return UserDto.SignUpRes.builder()
+                .jwt(jwt)
                 .userIdx(user.getUserIdx())
                 .email(user.getEmail())
                 .name(user.getName())
                 .nickname(user.getNickname())
+                .group(user.getGroup())
                 .myCategories(getMyCategoriesByUserIdx(user.getUserIdx()))
                 .profileImgUrl(user.getProfileImgUrl())
                 .build();
