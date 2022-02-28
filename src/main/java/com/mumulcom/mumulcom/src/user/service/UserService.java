@@ -41,8 +41,15 @@ public class UserService {
      */
     public UserDto.SignUpRes join(UserDto.SignUpReq signUpReq) throws BaseException {
         if (userRepository.existsUserByEmail(signUpReq.getEmail())) {
-            throw new BaseException(BaseResponseStatus.POST_USERS_EXISTS_EMAIL);
-        } else if (userRepository.existsUserByNickname(signUpReq.getNickname())) {
+            Optional<User> userOptional = userRepository.findUserByEmail(signUpReq.getEmail());
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                if (user.getStatus().equals("active")) {
+                    throw new BaseException(BaseResponseStatus.POST_USERS_EXISTS_EMAIL);
+                }
+            }
+        }
+        if (userRepository.existsUserByNickname(signUpReq.getNickname())) {
             throw new BaseException(BaseResponseStatus.POST_USERS_EXISTS_NICKNAME);
         }
         User mappedUser = mapper.map(signUpReq, User.class);
@@ -184,6 +191,9 @@ public class UserService {
      * 닉네임 중복 여부 확인
      */
     public boolean existsByNickname(String nickname) {
+        if (nickname.equals("알 수 없음")) {
+            return true;
+        }
         return userRepository.existsUserByNickname(nickname);
     }
 
