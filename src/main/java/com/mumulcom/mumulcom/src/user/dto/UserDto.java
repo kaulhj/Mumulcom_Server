@@ -64,10 +64,12 @@ public class UserDto {
     @Builder
     @Getter
     public static class SignUpRes {
+        private String jwt;
         private Long userIdx;
         private String email;
         private String name;
         private String nickname;
+        private String group;
         private List<String> myCategories;
         private String profileImgUrl;
     }
