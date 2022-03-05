@@ -136,7 +136,7 @@ public class ReplyService {
     }
 
     //29
-    public PostReRepRes Rereply(PostReReplReq postReReplReq) throws BaseException{
+    public PostReRepRes Rereply(String imgUrls, PostReReplReq postReReplReq) throws BaseException{
 
 
         try{
@@ -147,7 +147,7 @@ public class ReplyService {
             Long targetUserIdx = replyDao.getTargetUserIndex(postReReplReq.getReplyIdx());
             if(targetUserIdx == null)
                 throw new BaseException(GET_TARGETUSERS_EMPTY_DATA);
-            PostReRepRes result = replyDao.rereply(postReReplReq, targetUserIdx);
+            PostReRepRes result = replyDao.rereply(imgUrls, postReReplReq, targetUserIdx);
             return result;
         }catch(BaseException baseException){
             baseException.printStackTrace();
@@ -155,6 +155,18 @@ public class ReplyService {
         }catch (Exception exception){
           exception.printStackTrace();
             throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
+    //18. 이미지 1개 s3에 저장
+    public String uploadS3image1(MultipartFile multipartFile, Long userIdx)throws BaseException{
+        try{
+            String imagePath1 = s3Uploader.upload1(multipartFile, "userIdx" + String.valueOf(userIdx));
+            return imagePath1;
+        }catch(Exception exception) {
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.POST_IMAGES_FAILED);
         }
     }
 }

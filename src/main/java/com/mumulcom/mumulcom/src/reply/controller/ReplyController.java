@@ -3,6 +3,7 @@ package com.mumulcom.mumulcom.src.reply.controller;
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
+import com.mumulcom.mumulcom.src.question.service.QuestionService;
 import com.mumulcom.mumulcom.src.reply.domain.AdoptRes;
 import com.mumulcom.mumulcom.src.reply.domain.MyReplyListRes;
 import com.mumulcom.mumulcom.src.reply.domain.ReplyInfoRes;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.mumulcom.mumulcom.config.BaseResponseStatus.*;
@@ -36,6 +38,7 @@ public class ReplyController {
     private final ReplyProvider replyProvider;
     @Autowired
     private final JwtService jwtService;
+
 
     public ReplyController(ReplyService replyService, ReplyProvider replyProvider, JwtService jwtService) {
         this.replyService = replyService;
@@ -163,10 +166,13 @@ public class ReplyController {
     }
 
 
-    //학준 29. 대답변하기 + 알림넣기
+    //학준 18. 대답변하기 + 알림넣기
+
     @ResponseBody
     @PostMapping("/reply")
-    public BaseResponse<PostReRepRes> Rereply(@RequestBody PostReReplReq postReReplReq){
+    public BaseResponse<PostReRepRes> Rereply(
+            @RequestPart(value = "images",required = false)MultipartFile multipartFile,
+            @RequestPart(value = "PostReReplReq") PostReReplReq postReReplReq){
         try{
             Long userIdxByJwt = jwtService.getUserIdx();
             if (!userIdxByJwt.equals(postReReplReq.getUserIdx())) {
@@ -177,7 +183,10 @@ public class ReplyController {
             || postReReplReq.getContent() == null){
                 throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
             }
-            PostReRepRes result = replyService.Rereply(postReReplReq);
+            String imageUrls = null;
+            if(! multipartFile.getOriginalFilename().equals(""))
+                imageUrls = replyService.uploadS3image1(multipartFile, postReReplReq.getUserIdx());
+            PostReRepRes result = replyService.Rereply(imageUrls, postReReplReq);
             return new BaseResponse<>(result);
         }catch (BaseException exception){
             exception.printStackTrace();

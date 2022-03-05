@@ -43,10 +43,25 @@ public class S3Uploader {
         }
         return imageUrls;
     }
+
+    // s3에 이미지 업로드 1개
+    public String upload1(MultipartFile uploadFile, String dirName) {
+
+            String fileType = uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().lastIndexOf("."));
+            String randomName = UUID.randomUUID().toString() + fileType; // 파일 중복되지 않게 고유식별자 생성
+            //중복될일 찾아보기
+            String fileName = dirName + "/" + randomName;
+            String imgUrl = putS3(uploadFile, fileName);
+
+
+        return imgUrl;
+    }
     public void deleteFileFromS3(String key) {
         //key는 경로, 파일이름 풀로 ex) static/test.txt
         deleteFile(key);
     }
+
+
 
     private String putS3(MultipartFile uploadFile, String fileName) {
         ObjectMetadata metadata = new ObjectMetadata();
