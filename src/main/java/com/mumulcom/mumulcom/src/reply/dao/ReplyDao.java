@@ -258,16 +258,18 @@ public class ReplyDao {
                 "FROM Reply\n" +
                 "WHERE replyIdx = ?", Long.class, replyIdx);
     }
-    //학준 29.
+
+    //학준 18. 대답변하기
 
     @Transactional(rollbackFor = Exception.class)
-    public PostReRepRes rereply(PostReReplReq postReReplReq, Long noticeTargetUserIdx) {
+    public PostReRepRes rereply(String imgUrls, PostReReplReq postReReplReq, Long noticeTargetUserIdx) {
 
-        String RereplQuery = "INSERT INTO Rereply(replyIdx, userIdx, content, imageUrl )\n" +
+        String RereplQuery = "INSERT INTO Rereply(replyIdx, userIdx, content, imageUrl)\n" +
                 " VALUES (?, ?, ?, ?)";
         Object[] RereplParams = new Object[]{postReReplReq.getReplyIdx(), postReReplReq.getUserIdx(),
-                postReReplReq.getContent(), postReReplReq.getImageUrl()};
+                postReReplReq.getContent(), imgUrls};
         this.jdbcTemplate.update(RereplQuery, RereplParams);
+
 
         //questionIdx값 추출
         String questionIdxQuery = "SELECT DISTINCT questionIdx\n" +

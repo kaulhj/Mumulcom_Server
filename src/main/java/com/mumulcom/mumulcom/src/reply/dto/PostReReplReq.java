@@ -10,6 +10,5 @@ public class PostReReplReq {
     private Long replyIdx;
     private Long userIdx;
     private String content;
-    private String imageUrl;
 
 }
