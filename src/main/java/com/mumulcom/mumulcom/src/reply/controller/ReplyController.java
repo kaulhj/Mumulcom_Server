@@ -166,7 +166,7 @@ public class ReplyController {
     }
 
 
-    //학준 18. 대답변하기 + 알림넣기
+    ///학준 18. 대답변하기 + 알림넣기
 
     @ResponseBody
     @PostMapping("/reply")
@@ -180,7 +180,7 @@ public class ReplyController {
             }
 
             if(postReReplReq.getReplyIdx() == 0 || postReReplReq.getUserIdx() == 0
-            || postReReplReq.getContent() == null){
+                    || postReReplReq.getContent() == null){
                 throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
             }
             String imageUrls = null;

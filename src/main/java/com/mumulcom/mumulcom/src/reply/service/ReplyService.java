@@ -130,7 +130,7 @@ public class ReplyService {
             AdoptRes adoptRes = new AdoptRes(replyInfoRes.getAnswerer(),replyInfoRes.getQuestionIdx(), content);
             return adoptRes;
         } catch (Exception exception) { // DB에 이상이 있는 경우 에러 메시지를 보냅니다.
-          exception.printStackTrace();
+            exception.printStackTrace();
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -153,7 +153,7 @@ public class ReplyService {
             baseException.printStackTrace();
             throw new BaseException(baseException.getStatus());
         }catch (Exception exception){
-          exception.printStackTrace();
+            exception.printStackTrace();
             throw new BaseException(DATABASE_ERROR);
         }
     }
