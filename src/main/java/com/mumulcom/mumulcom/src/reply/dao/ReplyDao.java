@@ -327,38 +327,25 @@ public class ReplyDao {
             return this.jdbcTemplate.query(getReplyListQuery,
                     (rs, rowNum) -> {
                         GetReplyRes getReplyRes;
+                        List<String> replyImgUrlList = new ArrayList<>();
+
                         if(rs.getString("replyImgUrl") != null) {
-                                getReplyRes = new GetReplyRes(
-                                        rs.getLong("replyIdx"),
-                                        rs.getLong("questionIdx"),
-                                        rs.getLong("userIdx"),
-                                        rs.getString("nickname"),
-                                        rs.getString("profileImgUrl"),
-                                        rs.getString("createdAt"),
-                                        rs.getString("replyUrl"),
-                                        rs.getString("content"),
-                                        Arrays.asList(rs.getString("replyImgUrl").split(",")),
-                                        rs.getInt("likeCount"),
-                                        rs.getInt("reReplyCount"),
-                                        rs.getString("status"),
-                                        rs.getString("isLiked"));
-                            } else {
-                            getReplyRes = new GetReplyRes(
-                                        rs.getLong("replyIdx"),
-                                        rs.getLong("questionIdx"),
-                                        rs.getLong("userIdx"),
-                                        rs.getString("nickname"),
-                                        rs.getString("profileImgUrl"),
-                                        rs.getString("createdAt"),
-                                        rs.getString("replyUrl"),
-                                        rs.getString("content"),
-                                        Arrays.asList(),
-                                        rs.getInt("likeCount"),
-                                        rs.getInt("reReplyCount"),
-                                        rs.getString("status"),
-                                        rs.getString("isLiked"));
-                            }
-                            return getReplyRes;
+                                    replyImgUrlList = Arrays.asList(rs.getString("replyImgUrl").split(","));
+                        }
+
+                        return getReplyRes = new GetReplyRes(rs.getLong("replyIdx"),
+                                    rs.getLong("questionIdx"),
+                                    rs.getLong("userIdx"),
+                                    rs.getString("nickname"),
+                                    rs.getString("profileImgUrl"),
+                                    rs.getString("createdAt"),
+                                    rs.getString("replyUrl"),
+                                    rs.getString("content"),
+                                    replyImgUrlList,
+                                    rs.getInt("likeCount"),
+                                    rs.getInt("reReplyCount"),
+                                    rs.getString("status"),
+                                    rs.getString("isLiked"));
                         }, userIdx, questionIdx);
                     }
 
