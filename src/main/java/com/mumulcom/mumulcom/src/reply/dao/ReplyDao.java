@@ -289,7 +289,7 @@ public class ReplyDao {
     //29.1
     public int reReplyAuth(PostReReplReq postReReplReq){
         String reRepAuthQuery = "SELECT userIdx from Reply where replyIdx = ?";
-               long result =  this.jdbcTemplate.queryForObject(reRepAuthQuery,
+        long result =  this.jdbcTemplate.queryForObject(reRepAuthQuery,
                 long.class,postReReplReq.getReplyIdx());
         if(result == postReReplReq.getUserIdx()){
             return 0;
@@ -348,6 +348,7 @@ public class ReplyDao {
                                     rs.getString("isLiked"));
                         }, userIdx, questionIdx);
                     }
+  
 
     /**
      * 휘정
@@ -369,7 +370,7 @@ public class ReplyDao {
                 "from Rereply R\n" +
                 "INNER JOIN User U on R.userIdx = U.userIdx\n" +
                 "where replyIdx =?\n" +
-                "order by R.createdAt desc ";
+                "order by R.createdAt ";
         return this.jdbcTemplate.query(reReplyQuery,
                 (rs,rowNum)-> new GetReReplyRes(
                         rs.getLong("reReplyIdx"),
@@ -379,8 +380,7 @@ public class ReplyDao {
                         rs.getString("nickname"),
                         rs.getString("createdAt"),
                         rs.getString("profileImgUrl")),
-                        replyIdx
-                );
+                replyIdx
+        );
     }
 }
-

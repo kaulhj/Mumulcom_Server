@@ -11,4 +11,5 @@ public class PostReReplReq {
     private Long userIdx;
     private String content;
 
+
 }
