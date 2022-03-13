@@ -166,11 +166,12 @@ public class ReplyController {
     }
 
 
-    //학준 18. 대답변하기 + 알림넣기
+    ///학준 18. 대답변하기 + 알림넣기
 
     @ResponseBody
     @PostMapping("/reply")
     public BaseResponse<PostReRepRes> Rereply(
+            //@RequestPart(value = "images",required = false) String ntext,
             @RequestPart(value = "images",required = false)MultipartFile multipartFile,
             @RequestPart(value = "PostReReplReq") PostReReplReq postReReplReq){
         try{
@@ -180,11 +181,11 @@ public class ReplyController {
             }
 
             if(postReReplReq.getReplyIdx() == 0 || postReReplReq.getUserIdx() == 0
-            || postReReplReq.getContent() == null){
+                    || postReReplReq.getContent() == null){
                 throw new BaseException(POST_EMPTY_ESSENTIAL_BODY);
             }
             String imageUrls = null;
-            if(! multipartFile.getOriginalFilename().equals(""))
+            if(multipartFile != null)
                 imageUrls = replyService.uploadS3image1(multipartFile, postReReplReq.getUserIdx());
             PostReRepRes result = replyService.Rereply(imageUrls, postReReplReq);
             return new BaseResponse<>(result);

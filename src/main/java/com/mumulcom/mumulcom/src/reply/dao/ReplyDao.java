@@ -289,7 +289,7 @@ public class ReplyDao {
     //29.1
     public int reReplyAuth(PostReReplReq postReReplReq){
         String reRepAuthQuery = "SELECT userIdx from Reply where replyIdx = ?";
-               long result =  this.jdbcTemplate.queryForObject(reRepAuthQuery,
+        long result =  this.jdbcTemplate.queryForObject(reRepAuthQuery,
                 long.class,postReReplReq.getReplyIdx());
         if(result == postReReplReq.getUserIdx()){
             return 0;
@@ -311,57 +311,54 @@ public class ReplyDao {
     public List<GetReplyRes> getReplyList(Long questionIdx, Long userIdx) {
         String getReplyListQuery =
                 "SELECT r.replyIdx, r.questionIdx, r.userIdx, U.nickname, U.profileImgUrl, DATE_FORMAT(r.createdAt, '%m-%d, %y') AS createdAt, r.replyUrl AS replyUrl, r.content, img.url AS replyImgUrl, IFNULL(likeCount.lcount, 0) likeCount, IFNULL(reCount.rcount, 0) reReplyCount, CASE r.status WHEN 'active' THEN 'N' WHEN 'adopted' THEN 'Y' END AS status, IFNULL(il.isliked, 'N') AS isliked\n" +
-                "FROM Reply r\n" +
-                "INNER JOIN User U on r.userIdx = U.userIdx\n" +
-                "LEFT JOIN (SELECT replyIdx, GROUP_CONCAT(url) url FROM ReplyImage GROUP BY replyIdx) img\n" +
-                "on r.replyIdx = img.replyIdx\n" +
-                "LEFT JOIN (SELECT replyIdx, count(replyIdx) AS lcount FROM ReplyLike where status = 'active' group by replyIdx) likeCount\n" +
-                "ON r.replyIdx = likeCount.replyIdx\n" +
-                "LEFT JOIN (SELECT replyIdx, count(replyIdx) AS rcount FROM Rereply group by replyIdx) reCount\n" +
-                "on r.replyIdx = reCount.replyIdx\n" +
-                "LEFT JOIN (SELECT replyIdx, CASE status WHEN 'active' THEN 'Y' WHEN 'inactive' THEN 'N' END AS isliked FROM ReplyLike WHERE userIdx = ?) il\n" +
-                "ON r.replyIdx = il.replyIdx\n" +
-                "WHERE r.questionIdx = ?\n" +
-                "ORDER BY r.status desc, r.createdAt";
-
-            return this.jdbcTemplate.query(getReplyListQuery,
-                    (rs, rowNum) -> {
-                        GetReplyRes getReplyRes;
-                        if(rs.getString("replyImgUrl") != null) {
-                                getReplyRes = new GetReplyRes(
-                                        rs.getLong("replyIdx"),
-                                        rs.getLong("questionIdx"),
-                                        rs.getLong("userIdx"),
-                                        rs.getString("nickname"),
-                                        rs.getString("profileImgUrl"),
-                                        rs.getString("createdAt"),
-                                        rs.getString("replyUrl"),
-                                        rs.getString("content"),
-                                        Arrays.asList(rs.getString("replyImgUrl").split(",")),
-                                        rs.getInt("likeCount"),
-                                        rs.getInt("reReplyCount"),
-                                        rs.getString("status"),
-                                        rs.getString("isLiked"));
-                            } else {
-                            getReplyRes = new GetReplyRes(
-                                        rs.getLong("replyIdx"),
-                                        rs.getLong("questionIdx"),
-                                        rs.getLong("userIdx"),
-                                        rs.getString("nickname"),
-                                        rs.getString("profileImgUrl"),
-                                        rs.getString("createdAt"),
-                                        rs.getString("replyUrl"),
-                                        rs.getString("content"),
-                                        Arrays.asList(),
-                                        rs.getInt("likeCount"),
-                                        rs.getInt("reReplyCount"),
-                                        rs.getString("status"),
-                                        rs.getString("isLiked"));
-                            }
-                            return getReplyRes;
-                        }, userIdx, questionIdx);
-                    }
-
+                        "FROM Reply r\n" +
+                        "INNER JOIN User U on r.userIdx = U.userIdx\n" +
+                        "LEFT JOIN (SELECT replyIdx, GROUP_CONCAT(url) url FROM ReplyImage GROUP BY replyIdx) img\n" +
+                        "on r.replyIdx = img.replyIdx\n" +
+                        "LEFT JOIN (SELECT replyIdx, count(replyIdx) AS lcount FROM ReplyLike where status = 'active' group by replyIdx) likeCount\n" +
+                        "ON r.replyIdx = likeCount.replyIdx\n" +
+                        "LEFT JOIN (SELECT replyIdx, count(replyIdx) AS rcount FROM Rereply group by replyIdx) reCount\n" +
+                        "on r.replyIdx = reCount.replyIdx\n" +
+                        "LEFT JOIN (SELECT replyIdx, CASE status WHEN 'active' THEN 'Y' WHEN 'inactive' THEN 'N' END AS isliked FROM ReplyLike WHERE userIdx = ?) il\n" +
+                        "ON r.replyIdx = il.replyIdx\n" +
+                        "WHERE r.questionIdx = ?\n" +
+                        "ORDER BY r.status desc, r.createdAt";
+        return this.jdbcTemplate.query(getReplyListQuery,(rs, rowNum) -> {
+            GetReplyRes getReplyRes;
+            if(rs.getString("replyImgUrl") != null) {
+                getReplyRes = new GetReplyRes(
+                        rs.getLong("replyIdx"),
+                        rs.getLong("questionIdx"),
+                        rs.getLong("userIdx"),
+                        rs.getString("nickname"),
+                        rs.getString("profileImgUrl"),
+                        rs.getString("createdAt"),
+                        rs.getString("replyUrl"),
+                        rs.getString("content"),
+                        Arrays.asList(rs.getString("replyImgUrl").split(",")),
+                        rs.getInt("likeCount"),
+                        rs.getInt("reReplyCount"),
+                        rs.getString("status"),
+                        rs.getString("isLiked"));
+            } else {
+                getReplyRes = new GetReplyRes(
+                        rs.getLong("replyIdx"),
+                        rs.getLong("questionIdx"),
+                        rs.getLong("userIdx"),
+                        rs.getString("nickname"),
+                        rs.getString("profileImgUrl"),
+                        rs.getString("createdAt"),
+                        rs.getString("replyUrl"),
+                        rs.getString("content"),
+                        Arrays.asList(),
+                        rs.getInt("likeCount"),
+                        rs.getInt("reReplyCount"),
+                        rs.getString("status"),
+                        rs.getString("isLiked"));
+            }
+            return getReplyRes;
+        }, userIdx, questionIdx);
+    }
     /**
      * 휘정
      * 채택된 답변에 대한 알림 생성
@@ -392,8 +389,7 @@ public class ReplyDao {
                         rs.getString("nickname"),
                         rs.getString("createdAt"),
                         rs.getString("profileImgUrl")),
-                        replyIdx
-                );
+                replyIdx
+        );
     }
 }
-
