@@ -322,46 +322,43 @@ public class ReplyDao {
                         "LEFT JOIN (SELECT replyIdx, CASE status WHEN 'active' THEN 'Y' WHEN 'inactive' THEN 'N' END AS isliked FROM ReplyLike WHERE userIdx = ?) il\n" +
                         "ON r.replyIdx = il.replyIdx\n" +
                         "WHERE r.questionIdx = ?\n" +
-                        "ORDER BY r.status desc , r.createdAt";
-
-        try{
-            return this.jdbcTemplate.query(getReplyListQuery,
-                    (rs, rowNum) -> new GetReplyRes(
-                            rs.getLong("replyIdx"),
-                            rs.getLong("questionIdx"),
-                            rs.getLong("userIdx"),
-                            rs.getString("nickname"),
-                            rs.getString("profileImgUrl"),
-                            rs.getString("createdAt"),
-                            rs.getString("replyUrl"),
-                            rs.getString("content"),
-                            Arrays.asList(rs.getString("replyImgUrl").split(",")),
-                            rs.getInt("likeCount"),
-                            rs.getInt("reReplyCount"),
-                            rs.getString("status"),
-                            rs.getString("isLiked")),
-                    userIdx, questionIdx);
-        } catch (NullPointerException nullPointerException) {
-            return this.jdbcTemplate.query(getReplyListQuery,
-                    (rs, rowNum) -> new GetReplyRes(
-                            rs.getLong("replyIdx"),
-                            rs.getLong("questionIdx"),
-                            rs.getLong("userIdx"),
-                            rs.getString("nickname"),
-                            rs.getString("profileImgUrl"),
-                            rs.getString("createdAt"),
-                            rs.getString("replyUrl"),
-                            rs.getString("content"),
-                            Arrays.asList(),
-                            rs.getInt("likeCount"),
-                            rs.getInt("reReplyCount"),
-                            rs.getString("status"),
-                            rs.getString("isLiked")),
-                    userIdx, questionIdx);
-        }
-
+                        "ORDER BY r.status desc, r.createdAt";
+        return this.jdbcTemplate.query(getReplyListQuery,(rs, rowNum) -> {
+            GetReplyRes getReplyRes;
+            if(rs.getString("replyImgUrl") != null) {
+                getReplyRes = new GetReplyRes(
+                        rs.getLong("replyIdx"),
+                        rs.getLong("questionIdx"),
+                        rs.getLong("userIdx"),
+                        rs.getString("nickname"),
+                        rs.getString("profileImgUrl"),
+                        rs.getString("createdAt"),
+                        rs.getString("replyUrl"),
+                        rs.getString("content"),
+                        Arrays.asList(rs.getString("replyImgUrl").split(",")),
+                        rs.getInt("likeCount"),
+                        rs.getInt("reReplyCount"),
+                        rs.getString("status"),
+                        rs.getString("isLiked"));
+            } else {
+                getReplyRes = new GetReplyRes(
+                        rs.getLong("replyIdx"),
+                        rs.getLong("questionIdx"),
+                        rs.getLong("userIdx"),
+                        rs.getString("nickname"),
+                        rs.getString("profileImgUrl"),
+                        rs.getString("createdAt"),
+                        rs.getString("replyUrl"),
+                        rs.getString("content"),
+                        Arrays.asList(),
+                        rs.getInt("likeCount"),
+                        rs.getInt("reReplyCount"),
+                        rs.getString("status"),
+                        rs.getString("isLiked"));
+            }
+            return getReplyRes;
+        }, userIdx, questionIdx);
     }
-
     /**
      * 휘정
      * 채택된 답변에 대한 알림 생성
