@@ -38,22 +38,22 @@ public class QuestionService {
 
 
 // 7.1 코딩질문
-    public String codeQuestion( CodeQuestionReq codeQuestionReq)throws BaseException{
+public String codeQuestion(List<String> imgUrls, CodeQuestionReq codeQuestionReq)throws BaseException{
 
 
-        try{
-            if(questionProvider.checkUserStatus(codeQuestionReq.getUserIdx()) == 0)
-                throw new BaseException(BaseResponseStatus.POST_USERS_INACTIVE_STATUS);
+    try{
+        if(questionProvider.checkUserStatus(codeQuestionReq.getUserIdx()) == 0)
+            throw new BaseException(BaseResponseStatus.POST_USERS_INACTIVE_STATUS);
 
-            String result = questionDao.codeQuestion( codeQuestionReq);
-            return result;
-        }catch (BaseException baseException) {
-            throw new BaseException(baseException.getStatus());
-        }catch (Exception exception){
-            exception.printStackTrace();
-            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
-        }
+        String result = questionDao.codeQuestion(imgUrls, codeQuestionReq);
+        return result;
+    }catch (BaseException baseException) {
+        throw new BaseException(baseException.getStatus());
+    }catch (Exception exception){
+        exception.printStackTrace();
+        throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
     }
+}
 
     //7.2 S3이미지업로드
     public List<String> uploadS3image(List<MultipartFile> multipartFileList, Long userIdx) throws BaseException {

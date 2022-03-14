@@ -53,48 +53,43 @@ public class QuestionController {
     @PostMapping("/coding")
     @Transactional(rollbackFor = Exception.class)
     public BaseResponse<String> codeQuestion(
-            @RequestBody CodeQuestionReq codeQuestionReq){
+            @RequestPart(value = "images", required = false) List<MultipartFile> multipartFile,
+            @RequestPart(value = "codeQuestionReq") CodeQuestionReq codeQuestionReq){
         //s3이미지 저장하고 url반환값
         try {
             Long userIdxByJwt = jwtService.getUserIdx();
             if (!userIdxByJwt.equals(codeQuestionReq.getUserIdx())) {
                 throw new BaseException(BaseResponseStatus.INVALID_JWT);
             }
-                if(codeQuestionReq.getUserIdx() == 0 || codeQuestionReq.getCurrentError() == null
-                         || codeQuestionReq.getBigCategoryIdx() == 0
-                         || codeQuestionReq.getTitle() == null) {
-                    throw new BaseException(BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY);
-                }
+            if(codeQuestionReq.getUserIdx() == 0 || codeQuestionReq.getCurrentError() == null
+                    || codeQuestionReq.getBigCategoryIdx() == 0
+                    || codeQuestionReq.getTitle() == null) {
+                throw new BaseException(BaseResponseStatus.POST_EMPTY_ESSENTIAL_BODY);
+            }
 
-                //카테고리 범위 검사(1~5,1~12)
-                if(!ValidationRegex.bigCategoryRange(Long.toString(codeQuestionReq.getBigCategoryIdx()))
-                ) {
+            //카테고리 범위 검사(1~5,1~12)
+            if(!ValidationRegex.bigCategoryRange(Long.toString(codeQuestionReq.getBigCategoryIdx()))
+            ) {
+                throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
+            }
+            if(codeQuestionReq.getBigCategoryIdx()!= 5) {
+                if (!ValidationRegex.smallCategoryRange(Long.toString(codeQuestionReq.getSmallCategoryIdx()))) {
                     throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
                 }
-                if(codeQuestionReq.getBigCategoryIdx()== 5 && codeQuestionReq.getSmallCategoryIdx() != 0) {
-                    throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_SMALLCATEGORY);
-
-                }
-                if(codeQuestionReq.getBigCategoryIdx()!= 5) {
-                    if (!ValidationRegex.smallCategoryRange(Long.toString(codeQuestionReq.getSmallCategoryIdx()))) {
-                        throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
-                    }
-                }
-                /*
-                List<String> imageUrls = null;
-                if(! multipartFile.get(0).getOriginalFilename().equals(""))
-                    imageUrls = questionService.uploadS3image(multipartFile, codeQuestionReq.getUserIdx());
-                else
-                    imageUrls = new ArrayList<>();
-
-                 */
-                String result = questionService.codeQuestion( codeQuestionReq);
-                return new BaseResponse<>(result);
-                }catch (BaseException exception) {
-                    exception.printStackTrace();
-                    return new BaseResponse<>(exception.getStatus());
             }
+            List<String> imageUrls = null;
+            if(multipartFile !=null)
+                imageUrls = questionService.uploadS3image(multipartFile, codeQuestionReq.getUserIdx());
+            else
+                imageUrls = new ArrayList<>();
+            String result = questionService.codeQuestion(imageUrls, codeQuestionReq);
+            return new BaseResponse<>(result);
+        }catch (BaseException exception) {
+            exception.printStackTrace();
+            return new BaseResponse<>(exception.getStatus());
         }
+    }
+
 
 
     //학준 8.개념질문하기
