@@ -231,8 +231,7 @@ public class QuestionDao {
 
 
     //7. 코딩질문하기
-    @Transactional(rollbackFor = Exception.class)
-    public String codeQuestion( CodeQuestionReq codeQuestionReq)  {
+    public String codeQuestion(List<String> imgUrls, CodeQuestionReq codeQuestionReq)  {
         //Question 테이블에 데이터 주입
         String InsertQueQuery = "INSERT INTO Question(userIdx,bigCategoryIdx,\n" +
                 "                     smallCategoryIdx,title )\n" +
@@ -262,10 +261,10 @@ public class QuestionDao {
         this.jdbcTemplate.update(CodQueTabQue, CodQueTabParams);
 
 
-        if (codeQuestionReq.getImages() != null) {
+        if (imgUrls.size() != 0) {
             //이미지에 넣기
             String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
-            for (String img : codeQuestionReq.getImages()) {
+            for (String img : imgUrls) {
                 Object[] InsImgTabParams = new Object[]{lastQueId, img};
                 this.jdbcTemplate.update(InsImgTabQuery, InsImgTabParams);
             }
@@ -273,7 +272,6 @@ public class QuestionDao {
         }
         return new String("코딩질문이 등록되었습니다");
     }
-
     //7.2 학준
     public int checkUserStatus(long userIdx){
         String checkUStaQuery = "SELECT count(\n" +

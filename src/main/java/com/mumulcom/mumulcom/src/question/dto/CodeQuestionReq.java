@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Data   //7번
 public class CodeQuestionReq {
-    private List<String> images;
+    //private List<String> images;
     private long userIdx;
     private String currentError;
     private String myCodingSkill;
