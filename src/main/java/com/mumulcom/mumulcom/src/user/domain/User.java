@@ -6,6 +6,7 @@ import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -35,6 +36,9 @@ public class User extends BaseTimeEntity {
 
     @Column(columnDefinition = "varchar(255) default 'active'")
     private String status;
+
+    private LocalDateTime nicknameChangedDate;
+
 
     public void updateUserInfo(String nickname, String group, String profileImgUrl) {
         this.nickname = nickname;
