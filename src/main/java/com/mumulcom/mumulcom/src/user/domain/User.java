@@ -3,6 +3,7 @@ package com.mumulcom.mumulcom.src.user.domain;
 import com.mumulcom.mumulcom.src.user.dto.UserProfileImg;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @DynamicInsert
+@EntityListeners(AuditingEntityListener.class)
 public class User extends BaseTimeEntity {
 
     @Id
@@ -34,13 +36,15 @@ public class User extends BaseTimeEntity {
 
     private String profileImgUrl;
 
-    @Column(columnDefinition = "varchar(255) default 'active'")
     private String status;
 
-    private LocalDateTime nicknameChangedDate;
+    private LocalDateTime nicknameUpdatedAt;
 
 
     public void updateUserInfo(String nickname, String group, String profileImgUrl) {
+        if (!this.nickname.equals(nickname)) {
+            updateNicknameUpdatedAt();
+        }
         this.nickname = nickname;
         this.group = group;
         this.profileImgUrl = profileImgUrl;
@@ -48,6 +52,10 @@ public class User extends BaseTimeEntity {
 
     public void updateProfileImgUrlRandomly() {
         this.profileImgUrl = UserProfileImg.getRandomProfileImgUrl();
+    }
+
+    public void updateNicknameUpdatedAt() {
+        this.nicknameUpdatedAt = LocalDateTime.now();
     }
 
     public void deleteUser() {
