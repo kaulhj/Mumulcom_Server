@@ -38,6 +38,7 @@ public enum BaseResponseStatus {
     GET_TARGETUSERS_EMPTY_DATA(false, 2030, "알림받을 유저가 존재하지 않습니다"),
     POST_USERS_INACTIVE_STATUS(false, 2050, "비활성화된 유저입니다"),
     POST_USERS_INVALID_CATEGORY(false, 2024, "잘못된 카테고리명입니다."),
+    PATCH_USERS_INVALID_NICKNAME_PERIOD(false, 2025, "닉네임 변경은 14일 이후에 가능합니다."),
 
     /**
      * 2500 : Questions 오류
