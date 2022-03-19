@@ -14,6 +14,8 @@ import com.mumulcom.mumulcom.utils.JwtService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -125,12 +127,23 @@ public class UserService {
      */
     public UserDto.UserRes updateUser(UserDto.PatchReq patchReq) throws BaseException {
         Optional<User> userOptional = userRepository.findById(patchReq.getUserIdx());
+        //요청에서 받은 userIdx에 해당하는 User가 없을 때
         if (userOptional.isEmpty()) {
             throw new BaseException(BaseResponseStatus.RESPONSE_ERROR);
         }
         User user = userOptional.get();
-        if (!user.getNickname().equals(patchReq.getNickname()) && existsByNickname(patchReq.getNickname())) {
-            throw new BaseException(BaseResponseStatus.POST_USERS_EXISTS_NICKNAME);
+        //닉네임을 변경하고자 하는 경우
+        if (!user.getNickname().equals(patchReq.getNickname())) {
+            //변경할 닉네임이 이미 사용 중인지 검사
+            if (existsByNickname(patchReq.getNickname())) {
+                throw new BaseException(BaseResponseStatus.POST_USERS_EXISTS_NICKNAME);
+            }
+            //마지막 닉네임 변경일로부터 14일이 지났는지 검사
+            final int PERIOD_FOR_NICKNAME = 14;
+            LocalDateTime nicknameUpdatedAt = user.getNicknameUpdatedAt();
+            if (ChronoUnit.DAYS.between(nicknameUpdatedAt, LocalDateTime.now()) < PERIOD_FOR_NICKNAME) {
+                throw new BaseException(BaseResponseStatus.PATCH_USERS_INVALID_NICKNAME_PERIOD);
+            }
         }
         user.updateUserInfo(
                 patchReq.getNickname(),
