@@ -4,6 +4,7 @@ import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.config.BaseResponse;
 import com.mumulcom.mumulcom.config.BaseResponseStatus;
 import com.mumulcom.mumulcom.src.report.dto.PostReportReq;
+import com.mumulcom.mumulcom.src.report.dto.PostReportRes;
 import com.mumulcom.mumulcom.src.report.service.ReportService;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
@@ -34,7 +35,7 @@ public class ReportController {
      */
     @ResponseBody
     @PostMapping("")
-    public BaseResponse<Long> postReport(@RequestBody PostReportReq postReportReq) {
+    public BaseResponse<PostReportRes> postReport(@RequestBody PostReportReq postReportReq) {
         try {
             Long userIdxByJwt = jwtService.getUserIdx();
 
@@ -42,7 +43,7 @@ public class ReportController {
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
 
-            Long reportIdx = reportService.createReport(postReportReq);
+            PostReportRes reportIdx = reportService.createReport(postReportReq);
 
             return new BaseResponse<>(reportIdx);
         } catch (BaseException exception) {

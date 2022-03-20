@@ -2,6 +2,7 @@ package com.mumulcom.mumulcom.src.report.service;
 
 import com.mumulcom.mumulcom.config.BaseException;
 import com.mumulcom.mumulcom.src.report.dto.PostReportReq;
+import com.mumulcom.mumulcom.src.report.dto.PostReportRes;
 import com.mumulcom.mumulcom.src.report.repository.ReportRepository;
 import com.mumulcom.mumulcom.utils.JwtService;
 import org.slf4j.Logger;
@@ -23,9 +24,9 @@ public class ReportService {
         this.jwtService = jwtService;
     }
 
-    public Long createReport(PostReportReq postReportReq) throws BaseException {
+    public PostReportRes createReport(PostReportReq postReportReq) throws BaseException {
         try {
-            Long reportIdx = reportRepository.createReport(postReportReq);
+            PostReportRes reportIdx = reportRepository.createReport(postReportReq);
             return reportIdx;
         } catch (Exception e) {
             e.printStackTrace();
