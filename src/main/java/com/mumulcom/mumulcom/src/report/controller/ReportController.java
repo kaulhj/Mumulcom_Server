@@ -22,9 +22,7 @@ public class ReportController {
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
     private final ReportService reportService;
-    @Autowired
     private final JwtService jwtService;
 
     /**
