@@ -16,8 +16,8 @@ public class ReportService {
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private ReportRepository reportRepository;
-    private JwtService jwtService;
+    private final ReportRepository reportRepository;
+    private final JwtService jwtService;
 
     public ReportService(ReportRepository reportRepository, JwtService jwtService) {
         this.reportRepository = reportRepository;
