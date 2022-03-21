@@ -7,6 +7,7 @@ import com.mumulcom.mumulcom.src.report.dto.PostReportReq;
 import com.mumulcom.mumulcom.src.report.dto.PostReportRes;
 import com.mumulcom.mumulcom.src.report.service.ReportService;
 import com.mumulcom.mumulcom.utils.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.mumulcom.mumulcom.config.BaseResponseStatus.INVALID_USER_JWT;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/reports")
 public class ReportController {
@@ -24,11 +26,6 @@ public class ReportController {
     private final ReportService reportService;
     @Autowired
     private final JwtService jwtService;
-
-    public ReportController(ReportService reportService, JwtService jwtService) {
-        this.reportService = reportService;
-        this.jwtService = jwtService;
-    }
 
     /**
      * [POST] /reports

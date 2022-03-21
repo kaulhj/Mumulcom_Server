@@ -5,12 +5,14 @@ import com.mumulcom.mumulcom.src.report.dto.PostReportReq;
 import com.mumulcom.mumulcom.src.report.dto.PostReportRes;
 import com.mumulcom.mumulcom.src.report.repository.ReportRepository;
 import com.mumulcom.mumulcom.utils.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import static com.mumulcom.mumulcom.config.BaseResponseStatus.*;
 
+@RequiredArgsConstructor
 @Service
 public class ReportService {
 
@@ -18,11 +20,6 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
     private final JwtService jwtService;
-
-    public ReportService(ReportRepository reportRepository, JwtService jwtService) {
-        this.reportRepository = reportRepository;
-        this.jwtService = jwtService;
-    }
 
     public PostReportRes createReport(PostReportReq postReportReq) throws BaseException {
         try {
