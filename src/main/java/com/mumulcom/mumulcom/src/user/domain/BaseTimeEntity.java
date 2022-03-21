@@ -2,27 +2,21 @@ package com.mumulcom.mumulcom.src.user.domain;
 
 
 import lombok.Getter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Getter
 @MappedSuperclass
 public class BaseTimeEntity {
-    protected ZonedDateTime createdAt;
-    protected ZonedDateTime updatedAt;
 
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        this.updatedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-    }
+    @CreatedDate
+    @Column(updatable = false)
+    protected LocalDateTime createdAt;
 
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-    }
+    @LastModifiedDate
+    protected LocalDateTime updatedAt;
 }
