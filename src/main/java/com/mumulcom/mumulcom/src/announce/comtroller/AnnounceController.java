@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,6 +36,16 @@ public class AnnounceController {
     public BaseResponse<List<AnnounceRes>> announceList() {
         try{
             List<AnnounceRes> announceResult = announceProvider.getAnnounceList();
+            return new BaseResponse<>(announceResult);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @GetMapping("/{announceIdx}")
+    public BaseResponse<AnnounceRes> announceListById(@PathVariable("announceIdx") long announceIdx) {
+        try{
+            AnnounceRes announceResult = announceProvider.getAnnounceById(announceIdx);
             return new BaseResponse<>(announceResult);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());

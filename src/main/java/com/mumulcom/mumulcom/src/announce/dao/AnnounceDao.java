@@ -19,12 +19,24 @@ public class AnnounceDao {
     }
 
     public List<AnnounceRes> getAnnounce() {
-        String announceQuery = "select announceTitle, announceContent, DATE_FORMAT(updatedAt, '%m-%d, %y') as updatedAt from Announce";
+        String announceQuery = "select announceIdx, announceTitle, announceContent, DATE_FORMAT(updatedAt, '%m-%d, %y') as updatedAt from Announce";
         return this.jdbcTemplate.query(announceQuery,
                 (rs,rowNum) -> new AnnounceRes(
+                        rs.getLong("announceIdx"),
                         rs.getString("announceTitle"),
                         rs.getString("announceContent"),
                         rs.getString("updatedAt")
                 ));
+    }
+
+    public AnnounceRes getAnnounce(long announceIdx) {
+        String announceQuery = "select announceIdx, announceTitle, announceContent, DATE_FORMAT(updatedAt, '%m-%d, %y') as updatedAt from Announce where announceIdx = ?";
+        return this.jdbcTemplate.queryForObject(announceQuery,
+                (rs,rowNum) -> new AnnounceRes(
+                        rs.getLong("announceIdx"),
+                        rs.getString("announceTitle"),
+                        rs.getString("announceContent"),
+                        rs.getString("updatedAt")
+                ),announceIdx);
     }
 }

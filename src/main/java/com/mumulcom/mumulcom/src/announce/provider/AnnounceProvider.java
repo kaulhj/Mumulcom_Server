@@ -35,4 +35,14 @@ public class AnnounceProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public AnnounceRes getAnnounceById(long announceIdx) throws BaseException {
+        try {
+            AnnounceRes getAnnounce = announceDao.getAnnounce(announceIdx);
+            return getAnnounce;
+        } catch (Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class AnnounceRes {
+    private long id;
     private String title;
     private String content;
     private String createdAt;
