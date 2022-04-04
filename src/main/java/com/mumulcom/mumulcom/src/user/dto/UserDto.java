@@ -19,6 +19,7 @@ public class UserDto {
         @Email
         @NotBlank
         private String email;
+        private String fcmToken;
     }
 
     @Getter
@@ -32,6 +33,7 @@ public class UserDto {
         private String group;
         private List<String> myCategories;
         private String profileImgUrl;
+        private String fcmToken;
     }
 
     @Getter

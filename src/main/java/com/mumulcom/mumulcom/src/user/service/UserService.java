@@ -90,6 +90,7 @@ public class UserService {
         if (user.getStatus().equals("inactive")) {
             throw new BaseException(BaseResponseStatus.FAILED_TO_LOGIN);
         }
+        user.updateFcmToken(signInReq.getFcmToken());
         String jwt = jwtService.createJwt(user.getUserIdx());
         return UserDto.SignInRes.builder()
                 .jwt(jwt)
@@ -100,6 +101,7 @@ public class UserService {
                 .group(user.getGroup())
                 .myCategories(getMyCategoriesByUserIdx(user.getUserIdx()))
                 .profileImgUrl(user.getProfileImgUrl())
+                .fcmToken(user.getFcmToken())
                 .build();
     }
 

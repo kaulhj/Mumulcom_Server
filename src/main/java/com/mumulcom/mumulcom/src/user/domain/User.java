@@ -36,10 +36,15 @@ public class User extends BaseTimeEntity {
 
     private String profileImgUrl;
 
+    private String fcmToken;
+
     private String status;
 
     private LocalDateTime nicknameUpdatedAt;
 
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 
     public void updateUserInfo(String nickname, String group, String profileImgUrl) {
         if (!this.nickname.equals(nickname)) {
