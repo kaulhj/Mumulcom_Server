@@ -2,6 +2,7 @@ package com.mumulcom.mumulcom;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.annotation.PostConstruct;
 import java.util.Locale;
@@ -12,6 +13,7 @@ import java.util.TimeZone;
 // @Controller, @Service, @Repository 등의 Annotation 스캔 및 Bean 등록
 // 사전의 정의한 라이브러리들을 Bean 등록
 // Bean 간단 설명, 스프링 컨테이너가 관리하는 자바 객체
+@EnableJpaAuditing
 public class MumulcomApplication {
 
     @PostConstruct
