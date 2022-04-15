@@ -51,9 +51,9 @@ public class ReplyService {
      * yeji
      * 답변 생성 API
      */
-    public PostReplyRes createReply(PostReplyReq postReplyReq) throws BaseException {
+    public PostReplyRes createReply(List<String> imgUrls, PostReplyReq postReplyReq) throws BaseException {
         try {
-            PostReplyRes postReplyRes = replyDao.creatReply(postReplyReq);
+            PostReplyRes postReplyRes = replyDao.creatReply(imgUrls, postReplyReq);
             return postReplyRes;
         } catch (Exception exception) {
             exception.printStackTrace();
