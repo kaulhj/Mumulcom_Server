@@ -289,7 +289,7 @@ public class QuestionDao {
 
     //8.개념질문
     @Transactional(rollbackFor = Exception.class)
-    public String conceptQuestion( ConceptQueReq conceptQueReq) {
+    public String conceptQuestion(List<String> imgUrls, ConceptQueReq conceptQueReq) {
 
         //큰질문 테이블에 값 넣기
         String InsertQueQuery = "INSERT INTO Question(userIdx,bigCategoryIdx,\n" +
@@ -319,17 +319,16 @@ public class QuestionDao {
 
         //String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
         //Object[] InsImgTabParams = new Object[]{lastQueId, codeQuestionReq.getImageUrls()};
-        if (conceptQueReq.getImages() != null) {
-            String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
-            for (String img : conceptQueReq.getImages()) {
-                Object[] InsImgTabParams = new Object[]{lastQueId, img};
-                this.jdbcTemplate.update(InsImgTabQuery, InsImgTabParams);
-            }
-        }
-            return new String("개념질문이 등록되었습니다");
 
+        String InsImgTabQuery = "INSERT INTO Image(questionIdx, imageUrl) VALUES (?, ?)";
+        for (String img : imgUrls) {
+            Object[] InsImgTabParams = new Object[]{lastQueId, img};
+            this.jdbcTemplate.update(InsImgTabQuery, InsImgTabParams);
+        }
+        return new String("개념질문이 등록되었습니다");
     }
-    
+
+
     /**
      * yeji 10번 API
      * 코딩 질문 조회
