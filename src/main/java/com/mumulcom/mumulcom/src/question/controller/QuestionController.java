@@ -95,8 +95,10 @@ public class QuestionController {
     //학준 8.개념질문하기
     @ResponseBody
     @PostMapping("/concept")
+    @Transactional(rollbackFor = Exception.class)
     public BaseResponse<String> conceptQuestion(
-            @RequestBody ConceptQueReq conceptQueReq){
+            @RequestPart(value = "images", required = false ) List<MultipartFile> multipartFile,
+            @RequestPart(value = "conceptQueReq") ConceptQueReq conceptQueReq){
         try{
             Long userIdxByJwt = jwtService.getUserIdx();
             if (!userIdxByJwt.equals(conceptQueReq.getUserIdx())) {
@@ -110,22 +112,15 @@ public class QuestionController {
             if(conceptQueReq.getBigCategoryIdx()!= 5)
                 if(!ValidationRegex.smallCategoryRange(Long.toString(conceptQueReq.getSmallCategoryIdx())))
                     throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
-            if(conceptQueReq.getBigCategoryIdx()== 5 && conceptQueReq.getSmallCategoryIdx() != 0) {
-                throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_SMALLCATEGORY);
-
-            }
             if(!ValidationRegex.bigCategoryRange(Long.toString(conceptQueReq.getBigCategoryIdx()))){
                 throw new BaseException(BaseResponseStatus.POST_QUESTIONS_INVALID_CATEGORY_RANGE);
             }
-            /*
             List<String> imageUrls = null;
-            if(! multipartFile.get(0).getOriginalFilename().equals(""))
+            if(multipartFile !=null)
                 imageUrls = questionService.uploadS3image(multipartFile, conceptQueReq.getUserIdx());
             else
                 imageUrls = new ArrayList<>();
-
-             */
-            String result = questionService.conceptQuestion( conceptQueReq);
+            String result = questionService.conceptQuestion(imageUrls, conceptQueReq);
 
             return new BaseResponse<>(result);
         }catch (BaseException exception){

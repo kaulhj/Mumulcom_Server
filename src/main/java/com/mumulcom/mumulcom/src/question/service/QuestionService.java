@@ -72,12 +72,12 @@ public String codeQuestion(List<String> imgUrls, CodeQuestionReq codeQuestionReq
     }
 
     //학준 8. 개념질문
-    public String conceptQuestion( ConceptQueReq conceptQueReq)throws BaseException{
+    public String conceptQuestion(List<String> imgUrls, ConceptQueReq conceptQueReq)throws BaseException{
         try{
             if(questionProvider.checkUserStatus(conceptQueReq.getUserIdx()) == 0)
                 throw new BaseException(BaseResponseStatus.POST_USERS_INACTIVE_STATUS);
 
-            String result = questionDao.conceptQuestion(conceptQueReq);
+            String result = questionDao.conceptQuestion(imgUrls, conceptQueReq);
             return result;
 
         }catch (BaseException baseException) {

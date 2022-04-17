@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Data
 public class ConceptQueReq {
-    private List<String> images;
+    //private List<String> images;
     private long userIdx;
     private String content;
     private long bigCategoryIdx;
