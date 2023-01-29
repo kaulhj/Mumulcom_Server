@@ -21,7 +21,7 @@
 
 **무엇이든 물어보살 + 컴퓨터 ⇒ 무엇이든 물어 컴퓨터 ⇒ 무물컴**
 
-![Untitled](%F0%9F%92%BBMumulcom%207656121e97be4ffa9a7920afbf63d7dc/Untitled.png)
+![image](https://user-images.githubusercontent.com/89002687/215300349-718e75d7-1f4b-454a-8b7b-ae3f2a78909b.png)
 
 제가 즐겨 보는 예능 프로그램에 *무엇이든 물어보살*이 있습니다. 이 예능은 선녀와 동자 컨셉을 한 연예인 두 분이 일반인의 여러 고민들을 들어주고 해결책을 제시하며 미래를 점괘해주는 프로그램입니다. 고민 당사자들은 고민을 해결할 수 있고 시청자들은 해당 고민을 공감하거나 응원합니다.
 
@@ -58,7 +58,7 @@ Backend Developer
 
 ## WBS
 
-![Untitled](%F0%9F%92%BBMumulcom%207656121e97be4ffa9a7920afbf63d7dc/Untitled%201.png)
+![image](https://user-images.githubusercontent.com/89002687/215300360-15ba6d60-ec3f-482a-a5cf-130e410503f0.png)
 
 ## 무물컴 API 명세서 링크
 https://docs.google.com/spreadsheets/d/1XojB-LC4RCaclwmZTpB_VZYjejVyMx41jwOokvoHpNo/edit?usp=sharing
