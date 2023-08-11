@@ -60,8 +60,6 @@ Backend Developer
 
 ![image](https://user-images.githubusercontent.com/89002687/215300360-15ba6d60-ec3f-482a-a5cf-130e410503f0.png)
 
-## 무물컴 API 명세서 링크
-https://docs.google.com/spreadsheets/d/1XojB-LC4RCaclwmZTpB_VZYjejVyMx41jwOokvoHpNo/edit?usp=sharing
 
 ## ERD 설계도
 ![image](https://user-images.githubusercontent.com/59432371/158396779-d0f1857e-673a-42ff-8c1b-94133aabb75e.png)
